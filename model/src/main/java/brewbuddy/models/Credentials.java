@@ -1,4 +1,4 @@
-package brewbuddy.model.models;
+package brewbuddy.models;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +23,6 @@ public class Credentials {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

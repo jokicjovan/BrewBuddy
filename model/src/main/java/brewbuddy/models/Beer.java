@@ -1,6 +1,7 @@
-package brewbuddy.model.models;
+package brewbuddy.models;
 
 
+import brewbuddy.enums.BeerType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,9 +36,8 @@ public class Beer {
     @Column(name = "type", nullable = false)
     private BeerType type;
 
-
-
-
-
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="brewery_id", nullable=false)
+    private Brewery brewery;
 
 }

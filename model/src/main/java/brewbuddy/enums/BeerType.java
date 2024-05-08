@@ -1,4 +1,4 @@
-package brewbuddy.model.models;
+package brewbuddy.enums;
 
 public enum BeerType {
     LAGER,

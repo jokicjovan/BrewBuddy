@@ -1,4 +1,4 @@
-package brewbuddy.model.models;
+package brewbuddy.models;
 
 
 import lombok.Getter;
@@ -7,7 +7,6 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 
 @Entity
 @NoArgsConstructor
@@ -27,7 +26,7 @@ public class Rating {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "beer_id")
     private Beer beer;
 
