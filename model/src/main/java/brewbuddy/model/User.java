@@ -1,12 +1,12 @@
-package brewbuddy.models;
+package brewbuddy.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -28,5 +28,5 @@ public class User {
     private Integer id;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private ArrayList<Coupon> coupons;
+    private List<Coupon> coupons;
 }

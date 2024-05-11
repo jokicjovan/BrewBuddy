@@ -1,4 +1,4 @@
-package brewbuddy.models;
+package brewbuddy.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

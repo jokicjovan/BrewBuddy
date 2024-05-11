@@ -1,6 +1,6 @@
-package brewbuddy.models;
+package brewbuddy.model;
 
-import brewbuddy.enums.CouponType;
+import brewbuddy.model.enums.CouponType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,7 +28,7 @@ public class Coupon {
     @Range(min = 1, max = 100)
     private Integer discountPercentage;
 
-    @Column(name = "type", nullable = false)
+    @Column(name = "type", nullable = false, insertable = false, updatable = false)
     @Enumerated(EnumType.STRING)
     private CouponType type;
 

@@ -1,18 +1,19 @@
-package brewbuddy.models;
+package brewbuddy.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name="Breweries")
-public class Brewery {
+@Table(name="Festivals")
+public class Festival {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -20,10 +21,13 @@ public class Brewery {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "date", nullable = false)
+    private Date eventDate;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="city_id", nullable=false)
     private City city;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "brewery", cascade = CascadeType.ALL)
-    private ArrayList<Beer> beers;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Brewery> breweries;
 }
