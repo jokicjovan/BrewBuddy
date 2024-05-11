@@ -26,6 +26,11 @@ INSERT INTO Beers(id, name, percentage_of_alcohol, ibu, price, type, brewery_id)
 INSERT INTO Festivals(id, name, event_date, city_id) VALUES (1, 'Dani piva', '2024-9-10', 1);
 INSERT INTO Festivals(id, name, event_date, city_id) VALUES (2, 'Beer fest', '2024-10-10', 2);
 
+INSERT INTO Festivals_Breweries(festival_id, breweries_id) VALUES (1, 1);
+INSERT INTO Festivals_Breweries(festival_id, breweries_id) VALUES (1, 2);
+-- INSERT INTO Festivals_Breweries(festival_id, breweries_id) VALUES (2, 2);
+INSERT INTO Festivals_Breweries(festival_id, breweries_id) VALUES (2, 3);
+
 -- Coupons
 INSERT INTO Coupons(valid_until, discount_percentage, type, user_id) VALUES('2024-10-10', 10, 'APPLICATION', 1);
 INSERT INTO Coupons(valid_until, discount_percentage, type, user_id) VALUES('2024-1-1', 80, 'APPLICATION', 1);
