@@ -21,7 +21,7 @@ public class Coupon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "date", nullable = false)
+    @Column(name = "valid_until", nullable = false)
     private Date validUntil;
 
     @Column(name = "discount_percentage", nullable = false)

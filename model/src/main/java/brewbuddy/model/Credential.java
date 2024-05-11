@@ -12,7 +12,7 @@ import javax.validation.constraints.Email;
 @Getter
 @Setter
 @Table(name="Credentials")
-public class Credentials {
+public class Credential {
     @Column(name = "email", nullable = false, unique = true)
     @Email
     private String email;

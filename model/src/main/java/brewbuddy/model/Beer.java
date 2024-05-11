@@ -34,6 +34,7 @@ public class Beer {
     private Double price;
 
     @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
     private BeerType type;
 
     @ManyToOne(cascade = CascadeType.ALL)

@@ -23,10 +23,13 @@ public class User {
     @Column(name = "birth_date",nullable = false)
     private Date birthDate;
 
+    @Column(name = "is_admin",nullable = false)
+    private boolean isAdmin;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private List<Coupon> coupons;
 }

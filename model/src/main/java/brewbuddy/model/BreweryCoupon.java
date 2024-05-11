@@ -13,6 +13,6 @@ import javax.persistence.*;
 @DiscriminatorValue("BREWERY")
 public class BreweryCoupon extends Coupon {
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="brewery_id", nullable=false)
+    @JoinColumn(name="brewery_id")
     private Brewery brewery;
 }

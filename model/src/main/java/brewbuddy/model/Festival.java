@@ -21,7 +21,7 @@ public class Festival {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "date", nullable = false)
+    @Column(name = "event_date", nullable = false)
     private Date eventDate;
 
     @ManyToOne(cascade = CascadeType.ALL)

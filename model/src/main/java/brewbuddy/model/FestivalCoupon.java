@@ -13,6 +13,6 @@ import javax.persistence.*;
 @DiscriminatorValue("FESTIVAL")
 public class FestivalCoupon extends Coupon{
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="festival_id", nullable=false)
+    @JoinColumn(name="festival_id")
     private Festival festival;
 }
