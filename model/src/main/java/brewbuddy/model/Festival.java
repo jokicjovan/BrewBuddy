@@ -28,6 +28,10 @@ public class Festival {
     @JoinColumn(name="city_id", nullable=false)
     private City city;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany
+    @JoinTable(
+            name = "festivals_breweries",
+            joinColumns = @JoinColumn(name = "festival_id"),
+            inverseJoinColumns = @JoinColumn(name = "brewery_id"))
     private List<Brewery> breweries;
 }

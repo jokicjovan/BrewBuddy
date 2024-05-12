@@ -1,11 +1,9 @@
 package brewbuddy.service;
 
+import brewbuddy.service.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -13,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class SampleAppController {
 	private static Logger log = LoggerFactory.getLogger(SampleAppController.class);
 
-	private final SampleAppService sampleService;
+	private final UserService sampleService;
 
 	@Autowired
-	public SampleAppController(SampleAppService sampleService) {
+	public SampleAppController(UserService sampleService) {
 		this.sampleService = sampleService;
 	}
 
