@@ -8,16 +8,21 @@ import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import java.util.List;
+import java.util.ArrayList;
 
 
 public class CEPConfigTest {
 
     @Test
     public void test() {
-         KieServices ks = KieServices.Factory.get();
-         KieContainer kContainer = ks.getKieClasspathContainer();
-         KieSession ksession = kContainer.newKieSession("cepKsession");
+
+        KieServices ks = KieServices.Factory.get();
+        KieContainer kContainer = ks.getKieClasspathContainer();
+        KieSession ksession = kContainer.newKieSession("recommendationKsession");
+
+        ArrayList<Beer> resultList = new ArrayList<>();
+        ksession.setGlobal("resultList", resultList);
+
          User user = new User();
          user.setId(1);
          Beer beer = new Beer();
@@ -26,12 +31,13 @@ public class CEPConfigTest {
          rating.setId(1);
          rating.setBeer(beer);
          rating.setUser(user);
+         rating.setRating(5);
          ksession.insert(rating);
          ksession.insert(beer);
          ksession.insert(user);
          int count = ksession.fireAllRules();
          System.out.println(count);
-         List<Beer> resultList = (List) ksession.getGlobal("resultList");
-
+         resultList = (ArrayList<Beer>) ksession.getGlobal("resultList");
+         System.out.println(resultList);
     }
 }

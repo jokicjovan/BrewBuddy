@@ -8,7 +8,6 @@ import brewbuddy.services.interfaces.IBeerService;
 import brewbuddy.repositories.BeerRepository;
 import brewbuddy.repositories.RatingRepository;
 import brewbuddy.services.interfaces.IUserService;
-import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +53,7 @@ public class BeerService implements IBeerService {
 
     @Override
     public List<Beer> recommend(Integer userId){
-        KieSession ksession = kieContainer.newKieSession("cepKsession");
+        KieSession ksession = kieContainer.newKieSession("recommendationKsession");
         User user= userService.get(userId);
         for(Rating r : ratingRepository.findAll()){
             ksession.insert(r);
@@ -66,7 +65,6 @@ public class BeerService implements IBeerService {
         int count = ksession.fireAllRules();
         System.out.println(count);
         List<Beer> resultList = (List) ksession.getGlobal("resultList");
-
         return resultList;
 
     }

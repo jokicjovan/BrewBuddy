@@ -1,0 +1,48 @@
+package rules.recommendation;
+dialect  "mvel"
+
+import brewbuddy.model.Beer;
+import brewbuddy.model.User;
+import brewbuddy.model.Rating;
+import brewbuddy.model.enums.BeerType;
+
+global java.util.ArrayList<Beer> resultList;
+
+declare BeerWrapper
+    beer:Beer
+end
+
+declare TypeWrapper
+    beerType:BeerType
+end
+
+rule "High Rating Filter"
+salience 100
+no-loop
+    when
+        $user: User()
+        $r: Rating(rating>=4,user==$user)
+    then
+        insert(new BeerWrapper($r.getBeer()));
+end
+
+
+rule "Filter Beer Category"
+salience 99
+no-loop
+    when
+        BeerWrapper($beer:beer)
+    then
+        insert(new TypeWrapper($beer.getType()));
+end
+
+rule "Filter All Beers"
+salience 98
+no-loop
+    when
+        TypeWrapper($type:beerType)
+        $beer: Beer(type==$type)
+    then
+        resultList.add($beer);
+end
+
