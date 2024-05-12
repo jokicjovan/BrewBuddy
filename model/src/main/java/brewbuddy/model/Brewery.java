@@ -26,4 +26,11 @@ public class Brewery {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "brewery", cascade = CascadeType.ALL)
     private List<Beer> beers;
+
+    @Override
+    public String toString() {
+        return "Brewery{" +
+                "id=" + id +
+                '}';
+    }
 }

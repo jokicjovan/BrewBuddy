@@ -1,0 +1,65 @@
+package rules.recommendation;
+
+dialect  "mvel"
+
+import brewbuddy.model.Beer;
+import brewbuddy.model.Brewery;
+import brewbuddy.model.User;
+import brewbuddy.model.Rating;
+import brewbuddy.model.enums.BeerType;
+
+global java.util.HashMap<Beer, Integer> recommendationMap;
+
+declare HighRatedBeers
+    beer:Beer
+end
+
+rule "Filter by High Rating"
+salience 100
+no-loop
+    when
+        $user: User()
+        $r: Rating(rating>=4,user==$user)
+    then
+        insert(new HighRatedBeers($r.getBeer()));
+end
+
+
+rule "Filter by Type"
+salience 99
+no-loop
+    when
+        HighRatedBeers($beer:beer)
+    then
+        insert($beer.getType());
+end
+
+rule "Filter All Beers by Type"
+salience 98
+no-loop
+    when
+        $type: BeerType()
+        $beer: Beer(type==$type)
+    then
+         recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);
+end
+
+rule "Filter by Brewery"
+salience 97
+no-loop
+    when
+        HighRatedBeers($beer:beer)
+    then
+        insert($beer.getBrewery());
+end
+
+rule "Filter All Beers by Brewery"
+salience 96
+no-loop
+    when
+        $brewery: Brewery()
+        $beer: Beer(brewery==$brewery)
+    then
+         recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);
+end
+

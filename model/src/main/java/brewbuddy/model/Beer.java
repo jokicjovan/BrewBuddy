@@ -5,6 +5,7 @@ import brewbuddy.model.enums.BeerType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.Positive;
@@ -41,4 +42,12 @@ public class Beer {
     @JoinColumn(name="brewery_id", nullable=false)
     private Brewery brewery;
 
+    @Override
+    public String toString() {
+        return "Beer{" +
+                "id=" + id +
+                ", brewery=" + brewery +
+                ", type=" + type +
+                '}';
+    }
 }
