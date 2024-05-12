@@ -1,4 +1,4 @@
-package rules.recommendation;
+package recommendation;
 
 dialect  "mvel"
 
@@ -14,6 +14,7 @@ declare HighRatedBeers
     beer:Beer
 end
 
+
 rule "Filter by High Rating"
 salience 100
 no-loop
@@ -23,7 +24,6 @@ no-loop
     then
         insert(new HighRatedBeers($r.getBeer()));
 end
-
 
 rule "Filter by Type"
 salience 99
@@ -61,5 +61,17 @@ no-loop
         $beer: Beer(brewery==$brewery)
     then
          recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);
+end
+
+rule "Filter by Alcohol Percentage"
+salience 95
+no-loop
+    when
+        $average: Number() from accumulate( HighRatedBeers( $alcohol:beer.getPercentageOfAlcohol() ),
+                                                 average( $alcohol ) )
+        $beer:Beer(percentageOfAlcohol>($average-1.5) && percentageOfAlcohol<($average+1.5))
+    then
+        System.out.println($average);
+        recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);
 end
 

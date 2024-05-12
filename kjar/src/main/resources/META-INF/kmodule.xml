@@ -8,4 +8,7 @@
     <kbase name="recommendationKbase" eventProcessingMode="stream" packages="recommendation">
         <ksession name="recommendationKsession" clockType="pseudo" type="stateful"/>
     </kbase>
+    <kbase name="couponKbase" eventProcessingMode="stream" packages="coupon">
+        <ksession name="couponKsession" clockType="pseudo" type="stateful"/>
+    </kbase>
 </kmodule>

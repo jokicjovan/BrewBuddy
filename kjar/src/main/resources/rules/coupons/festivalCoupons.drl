@@ -1,0 +1,89 @@
+package coupon;
+
+import brewbuddy.model.Beer;
+import brewbuddy.model.Brewery;
+import brewbuddy.model.User;
+import brewbuddy.model.Festival;
+import brewbuddy.model.UserBeerLogger
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Comparator;
+import java.util.Collections
+import coupon.UserBeersAccumulated;
+
+
+declare FestivalBeerLogger
+    $festivalBeerLogger:UserBeerLogger
+end
+
+declare UserBeersAccumulated
+    user:User
+    drunkBeers:Integer
+end
+
+global java.util.ArrayList<User> fullDiscount;
+global java.util.ArrayList<User> partialDiscount;
+
+rule "Filter Beers By Festival"
+salience 100
+no-loop
+    when
+        Festival($breweries: breweries)
+    then
+        for (Brewery brewery: (ArrayList<Brewery>)$breweries ){
+            for (Beer beer: brewery.getBeers()){
+                insert(beer);
+            }
+        }
+end
+
+
+rule "Filter Logger By Festival Beers"
+salience 99
+no-loop
+    when
+        $festivalBeer:Beer()
+        $userBeers:UserBeerLogger( beer==$festivalBeer)
+    then
+        insert(new FestivalBeerLogger($userBeers));
+end
+
+
+rule "Accumulate Drunk Beers By Users"
+salience 98
+no-loop
+    when
+        $user:User()
+        $drunkBeers: Number() from accumulate(FestivalBeerLogger($user==$festivalBeerLogger.getUser()),
+                                              count(1))
+    then
+       UserBeersAccumulated accumulatedValues=new UserBeersAccumulated();
+       accumulatedValues.setUser($user);
+       accumulatedValues.setDrunkBeers($drunkBeers.intValue());
+       insert(accumulatedValues);
+end
+
+rule "Sort By Drunken Beers"
+salience 98
+no-loop
+    when
+        $usersBeers:List( size > 0 ) from collect( UserBeersAccumulated() )
+    then
+        Collections.sort($usersBeers, new Comparator<UserBeersAccumulated>() {
+                public int compare(UserBeersAccumulated p1, UserBeersAccumulated p2) {
+                    return Integer.compare(p1.getDrunkBeers(), p2.getDrunkBeers())*-1;
+                }
+        });
+        for( int i=0;i<$usersBeers.size();i++){
+            if (i<1){
+                fullDiscount.add(((UserBeersAccumulated)$usersBeers.get(i)).getUser());
+            }
+            if (i>=1 && i<5){
+                partialDiscount.add(((UserBeersAccumulated)$usersBeers.get(i)).getUser());
+            }
+        }
+end
+
+
+
+

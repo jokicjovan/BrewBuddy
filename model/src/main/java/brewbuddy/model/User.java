@@ -32,4 +32,6 @@ public class User {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private List<Coupon> coupons;
+
+
 }
