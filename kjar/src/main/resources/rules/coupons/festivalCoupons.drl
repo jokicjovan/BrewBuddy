@@ -4,11 +4,13 @@ import brewbuddy.models.Beer;
 import brewbuddy.models.Brewery;
 import brewbuddy.models.User;
 import brewbuddy.models.Festival;
-import brewbuddy.models.UserBeerLogger
+import brewbuddy.models.UserBeerLogger;
+import brewbuddy.models.FestivalCoupon;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Comparator;
-import java.util.Collections;
+import java.util.Collections
+import brewbuddy.models.enums.CouponType;
 
 
 declare FestivalBeerLogger
@@ -20,8 +22,7 @@ declare UserBeersAccumulated
     drunkBeers:Integer
 end
 
-global java.util.ArrayList<User> fullDiscount;
-global java.util.ArrayList<User> partialDiscount;
+global java.util.ArrayList<FestivalCoupon> coupons;
 
 rule "Filter Beers By Festival"
 salience 100
@@ -66,6 +67,7 @@ rule "Sort By Drunken Beers"
 salience 97
 no-loop
     when
+        $festival:Festival()
         $usersBeers:List( size > 0 ) from collect( UserBeersAccumulated() )
     then
         Collections.sort($usersBeers, new Comparator<UserBeersAccumulated>() {
@@ -74,12 +76,17 @@ no-loop
                 }
         });
         for( int i=0;i<$usersBeers.size();i++){
+            FestivalCoupon coupon=new FestivalCoupon();
+                            coupon.setUser(((UserBeersAccumulated)$usersBeers.get(i)).getUser());
+                            coupon.setType(CouponType.FESTIVAL);
+                            coupon.setFestival($festival);
             if (i<1){
-                fullDiscount.add(((UserBeersAccumulated)$usersBeers.get(i)).getUser());
+                coupon.setDiscountPercentage(100);
             }
             if (i>=1 && i<5){
-                partialDiscount.add(((UserBeersAccumulated)$usersBeers.get(i)).getUser());
+                coupon.setDiscountPercentage(50);
             }
+                coupons.add(coupon);
         }
 end
 

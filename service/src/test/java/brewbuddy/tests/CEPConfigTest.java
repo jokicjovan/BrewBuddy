@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,10 +89,8 @@ public class CEPConfigTest {
         KieContainer kContainer = ks.getKieClasspathContainer();
         KieSession ksession = kContainer.newKieSession("couponKsession");
 
-        ArrayList<User> fullDiscount = new ArrayList<>();
-        ksession.setGlobal("fullDiscount", fullDiscount);
-        ArrayList<User> partialDiscount = new ArrayList<>();
-        ksession.setGlobal("partialDiscount", partialDiscount);
+        ArrayList<FestivalCoupon> coupons = new ArrayList<>();
+        ksession.setGlobal("coupons", coupons);
 
 
         User user = new User();
@@ -153,16 +153,64 @@ public class CEPConfigTest {
 
         int count = ksession.fireAllRules();
         System.out.println(count);
-        fullDiscount = (ArrayList<User>)  ksession.getGlobal("fullDiscount");
-        partialDiscount = (ArrayList<User>)  ksession.getGlobal("partialDiscount");
-        for (User u:fullDiscount){
-            System.out.println(u.getId());
-        }
+        coupons = (ArrayList<FestivalCoupon>)  ksession.getGlobal("coupons");
+        System.out.println(coupons.size());
 
-        System.out.println("------------------------------------");
-        for (User u:partialDiscount){
-            System.out.println(u.getId());
-        }
+    }
 
+
+    @Test
+    public void test3(){
+        KieServices ks = KieServices.Factory.get();
+        KieContainer kContainer = ks.getKieClasspathContainer();
+        KieSession ksession = kContainer.newKieSession("filterBeersKsession");
+
+
+
+
+        Brewery brewery1 = new Brewery();
+        brewery1.setId(1);
+        Brewery brewery2 = new Brewery();
+        brewery2.setId(2);
+
+        ksession.insert(brewery1);
+        ksession.insert(BeerType.IPA);
+        ksession.insert(8.0);
+        ksession.insert(20.0);
+
+        Beer beer1 = new Beer();
+        beer1.setId(1);
+        beer1.setType(BeerType.IPA);
+        beer1.setBrewery(brewery1);
+        beer1.setPercentageOfAlcohol(8.0);
+        beer1.setIbu(20.0);
+
+        Beer beer2 = new Beer();
+        beer2.setId(2);
+        beer2.setType(BeerType.IPA);
+        beer2.setBrewery(brewery1);
+        beer2.setPercentageOfAlcohol(5.0);
+        beer2.setIbu(30.0);
+
+        Beer beer3 = new Beer();
+        beer3.setId(3);
+        beer3.setType(BeerType.IPA);
+        beer3.setBrewery(brewery2);
+        beer3.setPercentageOfAlcohol(8.5);
+        beer3.setIbu(80.0);
+
+        Beer beer4 = new Beer();
+        beer4.setId(4);
+        beer4.setType(BeerType.ALE);
+        beer4.setBrewery(brewery2);
+        beer4.setPercentageOfAlcohol(4.0);
+        beer4.setIbu(99.0);
+
+        ksession.insert(beer1);
+        ksession.insert(beer2);
+        ksession.insert(beer3);
+        ksession.insert(beer4);
+        int count=ksession.fireAllRules();
+        System.out.println(count);
     }
 }

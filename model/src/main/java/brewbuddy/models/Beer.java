@@ -5,6 +5,7 @@ import brewbuddy.models.enums.BeerType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.kie.api.definition.type.Position;
 
 import javax.persistence.*;
 import javax.validation.constraints.Positive;
@@ -23,9 +24,12 @@ public class Beer {
     @Column(name = "name", nullable = false)
     private String name;
 
+
+    @Position(2)
     @Column(name = "percentage_of_alcohol", nullable = false)
     private Double percentageOfAlcohol;
 
+    @Position(3)
     @Column(name = "ibu", nullable = false)
     private Double ibu;
 
@@ -33,10 +37,12 @@ public class Beer {
     @Positive
     private Double price;
 
+    @Position(1)
     @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
     private BeerType type;
 
+    @Position(0)
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="brewery_id", nullable=false)
     private Brewery brewery;

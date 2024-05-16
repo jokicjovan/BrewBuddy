@@ -5,4 +5,7 @@
     <kbase name="couponKbase" eventProcessingMode="stream" packages="rules.coupon">
         <ksession name="couponKsession" clockType="pseudo" type="stateful"/>
     </kbase>
+    <kbase name="filterbBeersKbase" eventProcessingMode="stream" packages="rules.filter">
+        <ksession name="filterBeersKsession" clockType="pseudo" type="stateful"/>
+    </kbase>
 </kmodule>
