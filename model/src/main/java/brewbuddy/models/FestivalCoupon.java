@@ -1,4 +1,4 @@
-package brewbuddy.model;
+package brewbuddy.models;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,9 +10,9 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
-@DiscriminatorValue("BREWERY")
-public class BreweryCoupon extends Coupon {
+@DiscriminatorValue("FESTIVAL")
+public class FestivalCoupon extends Coupon{
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="brewery_id")
-    private Brewery brewery;
+    @JoinColumn(name="festival_id")
+    private Festival festival;
 }

@@ -1,7 +1,7 @@
 package brewbuddy.services;
 
 import brewbuddy.exceptions.NotFoundException;
-import brewbuddy.model.Festival;
+import brewbuddy.models.Festival;
 import brewbuddy.services.interfaces.IFestivalService;
 import brewbuddy.repositories.FestivalRepository;
 import org.kie.api.runtime.KieContainer;

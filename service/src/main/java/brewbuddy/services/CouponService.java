@@ -1,7 +1,7 @@
 package brewbuddy.services;
 
 import brewbuddy.exceptions.NotFoundException;
-import brewbuddy.model.Coupon;
+import brewbuddy.models.Coupon;
 import brewbuddy.services.interfaces.ICouponService;
 import brewbuddy.repositories.CouponRepository;
 import org.kie.api.runtime.KieContainer;

@@ -1,7 +1,7 @@
 package brewbuddy.services;
 
 import brewbuddy.exceptions.NotFoundException;
-import brewbuddy.model.Brewery;
+import brewbuddy.models.Brewery;
 import brewbuddy.services.interfaces.IBreweryService;
 import brewbuddy.repositories.BreweryRepository;
 import org.kie.api.runtime.KieContainer;

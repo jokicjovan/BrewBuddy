@@ -1,6 +1,6 @@
 package brewbuddy.controllers;
 
-import brewbuddy.model.User;
+import brewbuddy.models.User;
 import brewbuddy.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;

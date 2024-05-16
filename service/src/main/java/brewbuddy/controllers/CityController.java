@@ -1,6 +1,6 @@
 package brewbuddy.controllers;
 
-import brewbuddy.model.City;
+import brewbuddy.models.City;
 import brewbuddy.services.interfaces.ICityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;

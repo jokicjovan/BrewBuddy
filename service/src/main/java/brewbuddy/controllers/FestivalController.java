@@ -1,6 +1,6 @@
 package brewbuddy.controllers;
 
-import brewbuddy.model.Festival;
+import brewbuddy.models.Festival;
 import brewbuddy.services.interfaces.IFestivalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;

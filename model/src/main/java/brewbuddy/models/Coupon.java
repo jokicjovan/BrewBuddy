@@ -1,6 +1,6 @@
-package brewbuddy.model;
+package brewbuddy.models;
 
-import brewbuddy.model.enums.CouponType;
+import brewbuddy.models.enums.CouponType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

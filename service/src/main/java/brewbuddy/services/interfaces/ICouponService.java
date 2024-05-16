@@ -1,6 +1,6 @@
 package brewbuddy.services.interfaces;
 
-import brewbuddy.model.Coupon;
+import brewbuddy.models.Coupon;
 
 import java.util.List;
 

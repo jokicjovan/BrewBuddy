@@ -1,11 +1,10 @@
-package brewbuddy.model;
+package brewbuddy.models;
 
 
-import brewbuddy.model.enums.BeerType;
+import brewbuddy.models.enums.BeerType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.Positive;

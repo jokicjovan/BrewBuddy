@@ -1,7 +1,7 @@
 package brewbuddy.services;
 
 import brewbuddy.exceptions.BadRequestException;
-import brewbuddy.model.User;
+import brewbuddy.models.User;
 import brewbuddy.exceptions.NotFoundException;
 import brewbuddy.services.interfaces.IUserService;
 import brewbuddy.repositories.CredentialRepository;

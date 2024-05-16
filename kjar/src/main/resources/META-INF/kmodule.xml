@@ -1,14 +1,8 @@
 <kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://jboss.org/kie/6.0.0/kmodule">
-<!--    <kbase name="bwBase" packages="backward">-->
-<!--        <ksession name="bwKsession"/>-->
-<!--    </kbase>-->
-<!--    <kbase name="cepKbase" eventProcessingMode="stream" packages="cep">-->
-<!--        <ksession name="cepKsession" clockType="pseudo" type="stateful"/>-->
-<!--    </kbase>-->
-    <kbase name="recommendationKbase" eventProcessingMode="stream" packages="recommendation">
+    <kbase name="recommendationKbase" eventProcessingMode="stream" packages="rules.recommendation">
         <ksession name="recommendationKsession" clockType="pseudo" type="stateful"/>
     </kbase>
-    <kbase name="couponKbase" eventProcessingMode="stream" packages="coupon">
+    <kbase name="couponKbase" eventProcessingMode="stream" packages="rules.coupon">
         <ksession name="couponKsession" clockType="pseudo" type="stateful"/>
     </kbase>
 </kmodule>

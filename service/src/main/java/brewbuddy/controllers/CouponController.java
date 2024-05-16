@@ -1,7 +1,7 @@
 package brewbuddy.controllers;
 
 
-import brewbuddy.model.Coupon;
+import brewbuddy.models.Coupon;
 import brewbuddy.services.interfaces.ICouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;

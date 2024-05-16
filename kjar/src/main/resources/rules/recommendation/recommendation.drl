@@ -1,12 +1,12 @@
-package recommendation;
+package rules.recommendation;
 
 dialect  "mvel"
 
-import brewbuddy.model.Beer;
-import brewbuddy.model.Brewery;
-import brewbuddy.model.User;
-import brewbuddy.model.Rating;
-import brewbuddy.model.enums.BeerType;
+import brewbuddy.models.Beer;
+import brewbuddy.models.Brewery;
+import brewbuddy.models.User;
+import brewbuddy.models.Rating;
+import brewbuddy.models.enums.BeerType;
 
 global java.util.HashMap<Beer, Integer> recommendationMap;
 
@@ -71,7 +71,6 @@ no-loop
                                                  average( $alcohol ) )
         $beer:Beer(percentageOfAlcohol>($average-1.5) && percentageOfAlcohol<($average+1.5))
     then
-        System.out.println($average);
         recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);
 end
 

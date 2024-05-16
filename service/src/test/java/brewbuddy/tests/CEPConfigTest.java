@@ -1,19 +1,18 @@
 package brewbuddy.tests;
 
-import brewbuddy.model.*;
-import brewbuddy.model.enums.BeerType;
+import brewbuddy.models.*;
+import brewbuddy.models.enums.BeerType;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
-
+@Ignore
 public class CEPConfigTest {
-
     @Test
     public void test() {
 

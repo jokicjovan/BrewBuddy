@@ -1,6 +1,6 @@
 package brewbuddy.services.interfaces;
 
-import brewbuddy.model.Festival;
+import brewbuddy.models.Festival;
 
 import java.util.List;
 

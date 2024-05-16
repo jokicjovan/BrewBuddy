@@ -1,15 +1,14 @@
-package coupon;
+package rules.coupon;
 
-import brewbuddy.model.Beer;
-import brewbuddy.model.Brewery;
-import brewbuddy.model.User;
-import brewbuddy.model.Festival;
-import brewbuddy.model.UserBeerLogger
+import brewbuddy.models.Beer;
+import brewbuddy.models.Brewery;
+import brewbuddy.models.User;
+import brewbuddy.models.Festival;
+import brewbuddy.models.UserBeerLogger
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Comparator;
-import java.util.Collections
-import coupon.UserBeersAccumulated;
+import java.util.Collections;
 
 
 declare FestivalBeerLogger
@@ -64,7 +63,7 @@ no-loop
 end
 
 rule "Sort By Drunken Beers"
-salience 98
+salience 97
 no-loop
     when
         $usersBeers:List( size > 0 ) from collect( UserBeersAccumulated() )

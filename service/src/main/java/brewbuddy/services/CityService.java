@@ -1,7 +1,7 @@
 package brewbuddy.services;
 
 import brewbuddy.exceptions.NotFoundException;
-import brewbuddy.model.City;
+import brewbuddy.models.City;
 import brewbuddy.services.interfaces.ICityService;
 import brewbuddy.repositories.CityRepository;
 import org.kie.api.runtime.KieContainer;
