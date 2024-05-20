@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BeerService implements IBeerService {
@@ -51,8 +52,9 @@ public class BeerService implements IBeerService {
 
     @Override
     public List<Beer> recommend(Integer userId){
-        KieSession kieSession = kieContainer.newKieSession("recommendationKsession");
         User user= userService.get(userId);
+
+        KieSession kieSession = kieContainer.newKieSession("recommendationKsession");
         for(Rating r : ratingRepository.findAll()){
             kieSession.insert(r);
         }
@@ -63,8 +65,13 @@ public class BeerService implements IBeerService {
         HashMap<Beer, Integer> recommendationMap = new HashMap<>();
         kieSession.setGlobal("recommendationMap", recommendationMap);
         kieSession.fireAllRules();
+
         recommendationMap = (HashMap<Beer, Integer>) kieSession.getGlobal("recommendationMap");
-        return new ArrayList<>(recommendationMap.keySet());
+        return recommendationMap.entrySet()
+                .stream()
+                .sorted(Map.Entry.<Beer, Integer>comparingByValue().reversed())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 
     @Override

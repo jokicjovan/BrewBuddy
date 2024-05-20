@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class FestivalService implements IFestivalService {
@@ -74,26 +75,21 @@ public class FestivalService implements IFestivalService {
         User user= userService.get(userId);
 
         KieSession kieSession = kieContainer.newKieSession("recommendationKsession");
-        HashMap<Integer, Integer> festivalsMap = new HashMap<>();
-        kieSession.setGlobal("festivalsMap", festivalsMap);
-
         for (Beer beer : beerService.recommend(user.getId())) {
             kieSession.insert(new StringWrapper("Brewery-" + beer.getBrewery().getId().toString(), "Beer-" + beer.getId().toString(), "Beer"));
-            for (Festival festival : festivalRepository.getFestivalsByBreweries(beer.getBrewery().getId())){
-                kieSession.insert(new StringWrapper("Festival-" + festival.getId().toString(), "Brewery-" + beer.getBrewery().getId().toString(), "Festival"));
+            for (Festival festival : festivalRepository.getFestivalsByBreweries(beer.getBrewery())){
+                kieSession.insert(new StringWrapper(festival.getId().toString(), "Brewery-" + beer.getBrewery().getId().toString(), "Festival"));
             }
         }
+        HashMap<Integer, Integer> festivalsMap = new HashMap<>();
+        kieSession.setGlobal("festivalsMap", festivalsMap);
         kieSession.fireAllRules();
 
         festivalsMap = (HashMap<Integer, Integer>) kieSession.getGlobal("festivalsMap");
-        List<Map.Entry<Integer, Integer>> entryList = new ArrayList<>(festivalsMap.entrySet());
-        entryList.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
-        ArrayList<Festival> sortedFestivals = new ArrayList<>();
-        for (Map.Entry<Integer, Integer> entry : entryList) {
-            if (entry.getValue()>=2) {
-                sortedFestivals.add(get(entry.getKey()));
-            }
-        }
-        return sortedFestivals;
+        return festivalsMap.entrySet()
+                .stream()
+                .sorted(Map.Entry.<Integer, Integer>comparingByValue().reversed())
+                .map(entry -> get(entry.getKey()))
+                .collect(Collectors.toList());
     }
 }

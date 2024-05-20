@@ -14,7 +14,7 @@ declare HighRatedBeers
 end
 
 
-rule "Filter by High Rating"
+rule "Insert High Rated Beers Wrapped"
 salience 100
 no-loop
     when
@@ -24,7 +24,7 @@ no-loop
         insert(new HighRatedBeers($r.getBeer()));
 end
 
-rule "Filter by Type"
+rule "Insert Types"
 salience 99
 no-loop
     when
@@ -43,7 +43,7 @@ no-loop
          recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);
 end
 
-rule "Filter by Brewery"
+rule "Insert Breweries"
 salience 97
 no-loop
     when
@@ -62,7 +62,7 @@ no-loop
          recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);
 end
 
-rule "Filter by Alcohol Percentage"
+rule "Filter All Beers by Alcohol Percentage"
 salience 95
 no-loop
     when
