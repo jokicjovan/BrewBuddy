@@ -1,9 +1,8 @@
 package brewbuddy.services;
 
 import brewbuddy.exceptions.NotFoundException;
-import brewbuddy.models.Beer;
-import brewbuddy.models.Rating;
-import brewbuddy.models.User;
+import brewbuddy.models.*;
+import brewbuddy.models.enums.BeerType;
 import brewbuddy.services.interfaces.IBeerService;
 import brewbuddy.repositories.BeerRepository;
 import brewbuddy.repositories.RatingRepository;
@@ -13,10 +12,7 @@ import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class BeerService implements IBeerService {
@@ -69,5 +65,95 @@ public class BeerService implements IBeerService {
         kieSession.fireAllRules();
         recommendationMap = (HashMap<Beer, Integer>) kieSession.getGlobal("recommendationMap");
         return new ArrayList<>(recommendationMap.keySet());
+    }
+
+    @Override
+    public List<Beer> filterBeers(BeerType type,Brewery brewery, String alcoholCategory){
+        HashMap<Integer, Integer> filterMap = new HashMap<>();
+        HashMap<Integer,Integer> result= new HashMap<>();
+        result=breweryFilter(brewery);
+        for (Map.Entry<Integer, Integer> entry : result.entrySet()) {
+            filterMap.put(entry.getKey(), filterMap.getOrDefault(entry.getKey(),0) + 1);
+        }
+        result=alcoholFilter(alcoholCategory);
+        for (Map.Entry<Integer, Integer> entry : result.entrySet()) {
+            filterMap.put(entry.getKey(), filterMap.getOrDefault(entry.getKey(),0) + 1);
+        }
+        result=typeFilter(type);
+        for (Map.Entry<Integer, Integer> entry : result.entrySet()) {
+            filterMap.put(entry.getKey(), filterMap.getOrDefault(entry.getKey(),0) + 1);
+        }
+
+        List<Map.Entry<Integer, Integer>> entryList = new ArrayList<>(filterMap.entrySet());
+        entryList.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
+        ArrayList<Beer> sortedBeer = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> entry : entryList) {
+            if (entry.getValue()>=2) {
+                sortedBeer.add(get(entry.getKey()));
+            }
+        }
+        return sortedBeer;
+    }
+
+    private HashMap<Integer,Integer> breweryFilter(Brewery brewery){
+        KieSession kieSession = kieContainer.newKieSession("filterBeersKsession");
+        HashMap<Integer, Integer> filterMap = new HashMap<>();
+        kieSession.setGlobal("filterMap", filterMap);
+        kieSession.setGlobal("param", "Brewery-"+brewery.getId().toString());
+        for (Beer beer:beerRepository.findAll()){
+            String alcCategory="Medium";
+            if (beer.getPercentageOfAlcohol()>7.0)
+                alcCategory="High";
+            if (beer.getPercentageOfAlcohol()<4.5)
+                alcCategory="Low";
+
+            kieSession.insert(new StringWrapper("BeerType-"+beer.getType().toString(),"AlcoholCategory-"+alcCategory,"Brewery"));
+            kieSession.insert(new StringWrapper("Brewery-"+beer.getBrewery().getId().toString(),"BeerType-"+beer.getType().toString(),"Category"));
+            kieSession.insert(new StringWrapper(beer.getId().toString(),"Brewery-"+beer.getBrewery().getId().toString(),"Beer"));
+        }
+        kieSession.fireAllRules();
+
+        return (HashMap<Integer, Integer>) kieSession.getGlobal("filterMap");
+    }
+    private HashMap<Integer,Integer> alcoholFilter(String alcoholCategory){
+        KieSession kieSession = kieContainer.newKieSession("filterBeersKsession");
+        HashMap<Integer, Integer> filterMap = new HashMap<>();
+        kieSession.setGlobal("filterMap", filterMap);
+        kieSession.setGlobal("param", "AlcoholCategory-"+alcoholCategory);
+        for (Beer beer:beerRepository.findAll()){
+            String alcCategory="Medium";
+            if (beer.getPercentageOfAlcohol()>7.0)
+                alcCategory="High";
+            if (beer.getPercentageOfAlcohol()<4.5)
+                alcCategory="Low";
+
+            kieSession.insert(new StringWrapper("BeerType-"+beer.getType().toString(),"Brewery-"+beer.getBrewery().getId().toString(),"Brewery"));
+            kieSession.insert(new StringWrapper("AlcoholCategory-"+alcCategory,"BeerType-"+beer.getType().toString(),"Category"));
+            kieSession.insert(new StringWrapper(beer.getId().toString(),"AlcoholCategory-"+alcCategory,"Beer"));
+        }
+
+        kieSession.fireAllRules();
+        return (HashMap<Integer, Integer>) kieSession.getGlobal("filterMap");
+    }
+
+    private HashMap<Integer,Integer> typeFilter(BeerType type){
+        KieSession kieSession = kieContainer.newKieSession("filterBeersKsession");
+        HashMap<Integer, Integer> filterMap = new HashMap<>();
+        kieSession.setGlobal("filterMap", filterMap);
+        kieSession.setGlobal("param", "BeerType-"+type.toString());
+        for (Beer beer:beerRepository.findAll()){
+            String alcCategory="Medium";
+            if (beer.getPercentageOfAlcohol()>7.0)
+                alcCategory="High";
+            if (beer.getPercentageOfAlcohol()<4.5)
+                alcCategory="Low";
+
+            kieSession.insert(new StringWrapper("AlcoholCategory-"+alcCategory,"Brewery-"+beer.getBrewery().getId().toString(),"Brewery"));
+            kieSession.insert(new StringWrapper("BeerType-"+beer.getType().toString(),"AlcoholCategory-"+alcCategory,"Category"));
+            kieSession.insert(new StringWrapper(beer.getId().toString(),"BeerType-"+beer.getType().toString(),"Beer"));
+        }
+
+        kieSession.fireAllRules();
+        return (HashMap<Integer, Integer>) kieSession.getGlobal("filterMap");
     }
 }

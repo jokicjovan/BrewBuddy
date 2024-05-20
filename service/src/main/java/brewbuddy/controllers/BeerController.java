@@ -2,12 +2,12 @@ package brewbuddy.controllers;
 
 import brewbuddy.dtos.BeerDTO;
 import brewbuddy.models.Beer;
+import brewbuddy.models.Brewery;
+import brewbuddy.models.enums.BeerType;
 import brewbuddy.services.interfaces.IBeerService;
+import brewbuddy.services.interfaces.IBreweryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,10 +17,11 @@ import java.util.stream.Collectors;
 public class BeerController {
 
     private final IBeerService beerService;
+    private final IBreweryService breweryService;
 
     @Autowired
-    public BeerController(IBeerService beerService) {
-        this.beerService = beerService;
+    public BeerController(IBeerService beerService,IBreweryService breweryService) {
+        this.beerService = beerService; this.breweryService=breweryService;
     }
 
     @RequestMapping("/")
@@ -36,6 +37,16 @@ public class BeerController {
     @RequestMapping(path = "recommend/{userId}", method = RequestMethod.GET)
     public List<BeerDTO> recommend(@PathVariable Integer userId){
         List<BeerDTO> beers = beerService.recommend(userId).stream()
+                .map(BeerDTO::convertToDTO)
+                .collect(Collectors.toList());
+        return beers;
+    }
+
+    @RequestMapping(path = "filter", method = RequestMethod.GET)
+    public List<BeerDTO> filter(@RequestParam Integer breweryId,@RequestParam String beerType,@RequestParam String alcoholCategory){
+        Brewery brewery=breweryService.get(breweryId);
+        BeerType type = BeerType.valueOf(beerType);
+        List<BeerDTO> beers = beerService.filterBeers(type,brewery,alcoholCategory).stream()
                 .map(BeerDTO::convertToDTO)
                 .collect(Collectors.toList());
         return beers;

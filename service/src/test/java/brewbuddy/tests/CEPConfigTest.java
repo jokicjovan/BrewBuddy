@@ -223,21 +223,31 @@ public class CEPConfigTest {
         KieServices ks = KieServices.Factory.get();
         KieContainer kContainer = ks.getKieClasspathContainer();
         KieSession ksession = kContainer.newKieSession("filterBeersKsession");
+        HashMap<Integer, Integer> filterMap = new HashMap<>();
+        ksession.setGlobal("filterMap", filterMap);
+        ksession.setGlobal("breweryId", "1a");
+        ksession.setGlobal("category", "BeerType-");
+        ksession.setGlobal("alcoholCategory", "AlcoholCategory-");
 
-        StringWrapper s1 = new StringWrapper("1a", "1","Category");
-        StringWrapper s2 = new StringWrapper("1b", "1","Category");
-        StringWrapper s3 = new StringWrapper("1c", "1","Category");
-        StringWrapper s4 = new StringWrapper("1aa", "1a","Brewery");
-        StringWrapper s5 = new StringWrapper("1ab", "1a","Brewery");
-        StringWrapper s6 = new StringWrapper("1ac", "1a","Brewery");
-        StringWrapper s7 = new StringWrapper("1aac", "1aa","Beer");
+
+        StringWrapper s1 = new StringWrapper("IPA;Z", "IPA","Category");
+        StringWrapper s2 = new StringWrapper("DPA;Z", "DPA","Category");
+        StringWrapper s3 = new StringWrapper("PILSNER;M", "PILSNER","Category");
+        StringWrapper s4 = new StringWrapper("IPA;Z;LOW", "IPA;Z","Brewery");
+        StringWrapper s5 = new StringWrapper("PILSNER;M;LOW", "PILSNER;M","Brewery");
+//        StringWrapper s6 = new StringWrapper("1ac", "IPA;Z","Brewery");
+//        StringWrapper s7 = new StringWrapper("1bc", "1b","Brewery");
+        StringWrapper s8 = new StringWrapper("1", "IPA;Z;LOW","Beer");
+        StringWrapper s9 = new StringWrapper("2", "PILSNER;M;LOW","Beer");
         ksession.insert(s1);
         ksession.insert(s2);
         ksession.insert(s3);
         ksession.insert(s4);
         ksession.insert(s5);
-        ksession.insert(s6);
-        ksession.insert(s7);
+//        ksession.insert(s6);
+//        ksession.insert(s7);
+        ksession.insert(s8);
+        ksession.insert(s9);
 
         int count = ksession.fireAllRules();
         System.out.println("Rules fired: " + count);

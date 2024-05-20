@@ -4,19 +4,26 @@ import brewbuddy.models.Beer;
 import brewbuddy.models.StringWrapper;
 import brewbuddy.models.enums.BeerType;
 
+global java.util.HashMap<Integer, Integer> filterMap;
+global String param;
+
 
 query belongsTo(String x, String y,String wantedclass)
     StringWrapper(x, y,wantedclass;)
     or
-    (StringWrapper(z, y;) and belongsTo(x, z,wantedclass;))
+    (StringWrapper(z, y;) and belongsTo(x, z, wantedclass;))
 end
 
-rule "backward"
+rule "Brewery Filter"
 when
-    belongsTo($x,"1a","Beer";)
+    belongsTo($beerId,param,"Beer";)
 then
-    System.out.println($x);
+    filterMap.put(Integer.parseInt($beerId), ((Integer)filterMap.getOrDefault($beerId, 0)) + 1);
 end
+
+
+
+
 
 
 
