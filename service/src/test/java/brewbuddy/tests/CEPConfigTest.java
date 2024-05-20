@@ -99,7 +99,6 @@ public class CEPConfigTest {
         user2.setId(2);
 
 
-
         Beer beer1 = new Beer();
         beer1.setId(1);
         beer1.setType(BeerType.IPA);
@@ -122,24 +121,30 @@ public class CEPConfigTest {
 
         Brewery brewery1 = new Brewery();
         brewery1.setId(1);
-        ArrayList<Beer> b1beers=new ArrayList<>();
-        b1beers.add(beer1);b1beers.add(beer2);
+        ArrayList<Beer> b1beers = new ArrayList<>();
+        b1beers.add(beer1);
+        b1beers.add(beer2);
         brewery1.setBeers(b1beers);
         Brewery brewery2 = new Brewery();
         brewery2.setId(2);
-        ArrayList<Beer> b2beers=new ArrayList<>();
-        b2beers.add(beer4);b2beers.add(beer3);
+        ArrayList<Beer> b2beers = new ArrayList<>();
+        b2beers.add(beer4);
+        b2beers.add(beer3);
         brewery2.setBeers(b2beers);
 
-        UserBeerLogger ub1=new UserBeerLogger();
-        ub1.setId(1); ub1.setBeer(beer1);ub1.setUser(user);
+        UserBeerLogger ub1 = new UserBeerLogger();
+        ub1.setId(1);
+        ub1.setBeer(beer1);
+        ub1.setUser(user);
 
-        UserBeerLogger ub2=new UserBeerLogger();
-        ub2.setId(2); ub2.setBeer(beer3);ub2.setUser(user2);
+        UserBeerLogger ub2 = new UserBeerLogger();
+        ub2.setId(2);
+        ub2.setBeer(beer3);
+        ub2.setUser(user2);
 
-        Festival f= new Festival();
+        Festival f = new Festival();
         f.setId(1);
-        ArrayList<Brewery> breweries=new ArrayList<>();
+        ArrayList<Brewery> breweries = new ArrayList<>();
         breweries.add(brewery2);
         f.setBreweries(breweries);
 
@@ -153,19 +158,17 @@ public class CEPConfigTest {
 
         int count = ksession.fireAllRules();
         System.out.println(count);
-        coupons = (ArrayList<FestivalCoupon>)  ksession.getGlobal("coupons");
+        coupons = (ArrayList<FestivalCoupon>) ksession.getGlobal("coupons");
         System.out.println(coupons.size());
 
     }
 
 
     @Test
-    public void test3(){
+    public void test3() {
         KieServices ks = KieServices.Factory.get();
         KieContainer kContainer = ks.getKieClasspathContainer();
         KieSession ksession = kContainer.newKieSession("filterBeersKsession");
-
-
 
 
         Brewery brewery1 = new Brewery();
@@ -210,7 +213,34 @@ public class CEPConfigTest {
         ksession.insert(beer2);
         ksession.insert(beer3);
         ksession.insert(beer4);
-        int count=ksession.fireAllRules();
+        int count = ksession.fireAllRules();
         System.out.println(count);
+    }
+
+    @Test
+    public void test4() {
+
+        KieServices ks = KieServices.Factory.get();
+        KieContainer kContainer = ks.getKieClasspathContainer();
+        KieSession ksession = kContainer.newKieSession("filterBeersKsession");
+
+        StringWrapper s1 = new StringWrapper("1a", "1","Category");
+        StringWrapper s2 = new StringWrapper("1b", "1","Category");
+        StringWrapper s3 = new StringWrapper("1c", "1","Category");
+        StringWrapper s4 = new StringWrapper("1aa", "1a","Brewery");
+        StringWrapper s5 = new StringWrapper("1ab", "1a","Brewery");
+        StringWrapper s6 = new StringWrapper("1ac", "1a","Brewery");
+        StringWrapper s7 = new StringWrapper("1aac", "1aa","Beer");
+        ksession.insert(s1);
+        ksession.insert(s2);
+        ksession.insert(s3);
+        ksession.insert(s4);
+        ksession.insert(s5);
+        ksession.insert(s6);
+        ksession.insert(s7);
+
+        int count = ksession.fireAllRules();
+        System.out.println("Rules fired: " + count);
+
     }
 }

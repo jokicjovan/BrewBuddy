@@ -1,80 +1,23 @@
 package rules.filter;
 import brewbuddy.models.Brewery;
 import brewbuddy.models.Beer;
+import brewbuddy.models.StringWrapper;
 import brewbuddy.models.enums.BeerType;
 
 
-query filterAll(Brewery b, BeerType beerType, Double percentage, Double beerIbu)
-    $beer : Beer(
-        brewery == b,
-        type == beerType,
-        (percentageOfAlcohol < percentage + 1.5 && percentageOfAlcohol > percentage - 1.5),
-        (beerIbu == null || (ibu < beerIbu + 1.5 && ibu > beerIbu - 1.5))
-    )
-    or filterThreeConditions(b, beerType, percentage, beerIbu;)
+query belongsTo(String x, String y,String wantedclass)
+    StringWrapper(x, y,wantedclass;)
+    or
+    (StringWrapper(z, y;) and belongsTo(x, z,wantedclass;))
 end
 
-query filterThreeConditions(Brewery b, BeerType beerType, Double percentage, Double beerIbu)
-    $beer : Beer(
-        brewery == b,
-        type == beerType,
-        (percentageOfAlcohol < percentage + 1.5 && percentageOfAlcohol > percentage - 1.5)
-    )
-    or $beer : Beer(
-        brewery == b,
-        type == beerType,
-        (beerIbu == null || (ibu < beerIbu + 1.5 && ibu > beerIbu - 1.5))
-    )
-    or $beer : Beer(
-        brewery == b,
-        (percentageOfAlcohol < percentage + 1.5 && percentageOfAlcohol > percentage - 1.5),
-        (beerIbu == null || (ibu < beerIbu + 1.5 && ibu > beerIbu - 1.5))
-    )
-    or filterTwoConditions(b, beerType, percentage, beerIbu;)
-end
-
-query filterTwoConditions(Brewery b, BeerType beerType, Double percentage, Double beerIbu)
-    $beer : Beer(
-        brewery == b,
-        type == beerType
-    )
-    or $beer : Beer(
-        brewery == b,
-        (percentageOfAlcohol < percentage + 1.5 && percentageOfAlcohol > percentage - 1.5)
-    )
-    or $beer : Beer(
-        type == beerType,
-        (percentageOfAlcohol < percentage + 1.5 && percentageOfAlcohol > percentage - 1.5)
-    )
-    or $beer : Beer(
-        brewery == b,
-        (beerIbu == null || (ibu < beerIbu + 1.5 && ibu > beerIbu - 1.5))
-    )
-    or $beer : Beer(
-        type == beerType,
-        (beerIbu == null || (ibu < beerIbu + 1.5 && ibu > beerIbu - 1.5))
-    )
-    or $beer : Beer(
-        (percentageOfAlcohol < percentage + 1.5 && percentageOfAlcohol > percentage - 1.5),
-        (beerIbu == null || (ibu < beerIbu + 1.5 && ibu > beerIbu - 1.5))
-    )
-end
-
-
-
-
-rule "Filter Beers"
+rule "backward"
 when
-    $b: Brewery()
-    $beerType: BeerType()
-    $percentage: Double()
+    belongsTo($x,"1a","Beer";)
 then
-    org.kie.api.runtime.rule.QueryResults results = kcontext.getKieRuntime().getQueryResults("filterAll", $b, $beerType, $percentage, null);
-    for (org.kie.api.runtime.rule.QueryResultsRow row : results) {
-        //Beer beer = (Beer) row.get("$beer");
-        //System.out.println(beer);
-    }
+    System.out.println($x);
 end
+
 
 
 
