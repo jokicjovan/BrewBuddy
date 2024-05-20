@@ -34,21 +34,19 @@ public class BeerController {
         return beerService.get(id);
     }
 
-    @RequestMapping(path = "recommend/{userId}", method = RequestMethod.GET)
-    public List<BeerDTO> recommend(@PathVariable Integer userId){
-        List<BeerDTO> beers = beerService.recommend(userId).stream()
+    @RequestMapping(path = "/recommend", method = RequestMethod.GET)
+    public List<BeerDTO> recommend(@RequestParam Integer userId){
+        return beerService.recommend(userId).stream()
                 .map(BeerDTO::convertToDTO)
                 .collect(Collectors.toList());
-        return beers;
     }
 
-    @RequestMapping(path = "filter", method = RequestMethod.GET)
+    @RequestMapping(path = "/filter", method = RequestMethod.GET)
     public List<BeerDTO> filter(@RequestParam Integer breweryId,@RequestParam String beerType,@RequestParam String alcoholCategory){
         Brewery brewery=breweryService.get(breweryId);
         BeerType type = BeerType.valueOf(beerType);
-        List<BeerDTO> beers = beerService.filterBeers(type,brewery,alcoholCategory).stream()
+        return beerService.filterBeers(type,brewery,alcoholCategory).stream()
                 .map(BeerDTO::convertToDTO)
                 .collect(Collectors.toList());
-        return beers;
     }
 }
