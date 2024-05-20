@@ -1,9 +1,11 @@
 package brewbuddy.controllers;
 
+import brewbuddy.dtos.BeerDTO;
 import brewbuddy.dtos.CreateFestivalDTO;
 import brewbuddy.dtos.FestivalDetailedDTO;
 import brewbuddy.models.Brewery;
 import brewbuddy.models.Festival;
+import brewbuddy.models.enums.BeerType;
 import brewbuddy.services.interfaces.IBreweryService;
 import brewbuddy.services.interfaces.ICityService;
 import brewbuddy.services.interfaces.IFestivalService;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/festival")
@@ -50,5 +53,12 @@ public class FestivalController {
         }
         newFestival.setBreweries(breweries);
         return FestivalDetailedDTO.convertToDTO(festivalService.insert(newFestival));
+    }
+
+    @RequestMapping(path = "/recommend", method = RequestMethod.GET)
+    public List<FestivalDetailedDTO> recommend(@RequestParam Integer userId){
+        return festivalService.recommend(userId).stream()
+                .map(FestivalDetailedDTO::convertToDTO)
+                .collect(Collectors.toList());
     }
 }

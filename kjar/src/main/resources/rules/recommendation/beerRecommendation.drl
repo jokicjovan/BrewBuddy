@@ -1,5 +1,4 @@
 package rules.recommendation;
-
 dialect  "mvel"
 
 import brewbuddy.models.Beer;

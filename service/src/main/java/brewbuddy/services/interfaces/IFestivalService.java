@@ -10,4 +10,6 @@ public interface IFestivalService {
     List<Festival> getAll();
 
     Festival insert(Festival festival);
+
+    List<Festival> recommend(Integer userId);
 }
