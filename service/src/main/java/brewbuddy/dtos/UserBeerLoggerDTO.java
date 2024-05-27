@@ -1,11 +1,10 @@
 package brewbuddy.dtos;
 
-import brewbuddy.models.UserBeerLogger;
+import brewbuddy.events.UserBeerLogger;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -13,15 +12,15 @@ import java.util.Date;
 @NoArgsConstructor
 public class UserBeerLoggerDTO {
     private Integer Id;
-    private UserSimpleDTO userSimpleDTO;
-    private BeerDTO beerDTO;
+    private UserSimpleDTO user;
+    private BeerDTO beer;
     private Date timestamp;
 
     public static UserBeerLoggerDTO convertToDTO(UserBeerLogger userBeerLogger) {
         UserBeerLoggerDTO dto = new UserBeerLoggerDTO();
         dto.setId(userBeerLogger.getId());
-        dto.setBeerDTO(BeerDTO.convertToDTO(userBeerLogger.getBeer()));
-        dto.setUserSimpleDTO(UserSimpleDTO.convertToDTO(userBeerLogger.getUser()));
+        dto.setBeer(BeerDTO.convertToDTO(userBeerLogger.getBeer()));
+        dto.setUser(UserSimpleDTO.convertToDTO(userBeerLogger.getUser()));
         dto.setTimestamp(userBeerLogger.getTimestamp());
         return dto;
     }

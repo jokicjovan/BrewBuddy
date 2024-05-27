@@ -1,5 +1,7 @@
-package brewbuddy.models;
+package brewbuddy.events;
 
+import brewbuddy.models.Beer;
+import brewbuddy.models.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,7 +9,6 @@ import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity

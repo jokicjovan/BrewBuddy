@@ -1,6 +1,7 @@
 package brewbuddy.services;
 
-import brewbuddy.dtos.UserBeerLoggerDTO;
+import brewbuddy.events.Rating;
+import brewbuddy.events.UserBeerLogger;
 import brewbuddy.exceptions.NotFoundException;
 import brewbuddy.models.*;
 import brewbuddy.models.enums.BeerType;
@@ -14,7 +15,6 @@ import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,7 +27,8 @@ public class BeerService implements IBeerService {
     private final IUserService userService;
 
     @Autowired
-    public BeerService(KieContainer kieContainer, BeerRepository beerRepository, RatingRepository ratingRepository, UserBeerLoggerRepository userBeerLoggerRepository, IUserService userService) {
+    public BeerService(KieContainer kieContainer, BeerRepository beerRepository, RatingRepository ratingRepository,
+                       UserBeerLoggerRepository userBeerLoggerRepository, IUserService userService) {
         this.beerRepository = beerRepository;
         this.kieContainer = kieContainer;
         this.ratingRepository = ratingRepository;
@@ -56,8 +57,29 @@ public class BeerService implements IBeerService {
     }
 
     @Override
+    public Rating rate(User user, Beer beer, Integer rate, String comment){
+        Rating rating = new Rating();
+        rating.setRate(rate);
+        rating.setComment(comment);
+        rating.setUser(user);
+        rating.setBeer(beer);
+        rating.setTimestamp(new Date());
+        return ratingRepository.save(rating);
+    }
+
+    @Override
+    public UserBeerLogger logBeer(User user, Beer beer){
+        UserBeerLogger logger = new UserBeerLogger();
+        logger.setUser(user);
+        logger.setBeer(beer);
+        logger.setTimestamp(new Date());
+        return userBeerLoggerRepository.save(logger);
+    }
+
+
+    @Override
     public List<Beer> recommend(User user){
-        // recommend by rates
+        // forwards
         KieSession kieSession = kieContainer.newKieSession("beerKsession");
         kieSession.getAgenda().getAgendaGroup("beerRecommendation").setFocus();
         kieSession.insert(user);
@@ -71,7 +93,7 @@ public class BeerService implements IBeerService {
         kieSession.setGlobal("recommendationMap", recommendationMap);
         kieSession.fireAllRules();
 
-        // recommend by logger
+        // cep
         kieSession.getAgenda().getAgendaGroup("beerCep").setFocus();
         kieSession.insert(user);
         for(UserBeerLogger usl: userBeerLoggerRepository.findAll()){
@@ -178,15 +200,5 @@ public class BeerService implements IBeerService {
 
         kieSession.fireAllRules();
         return (HashMap<Integer, Integer>) kieSession.getGlobal("filterMap");
-    }
-
-    @Override
-    public UserBeerLogger logBeer(User user, Beer beer){
-        UserBeerLogger logger = new UserBeerLogger();
-        logger.setBeer(beer);
-        logger.setUser(user);
-        logger.setTimestamp(new Date());
-        userBeerLoggerRepository.save(logger);
-        return logger;
     }
 }

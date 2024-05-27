@@ -11,7 +11,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EntityScan(basePackages = {"brewbuddy.models"})
+@EntityScan(basePackages = {"brewbuddy.models", "brewbuddy.events"})
 @EnableJpaRepositories(basePackages = {"brewbuddy.repositories"})
 @ComponentScan(basePackages = {"brewbuddy.services", "brewbuddy.controllers", "brewbuddy.exceptions",
 		"brewbuddy.configurations"})

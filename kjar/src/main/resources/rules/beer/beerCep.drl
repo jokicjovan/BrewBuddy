@@ -2,19 +2,33 @@ package rules.beer;
 dialect  "mvel"
 
 import brewbuddy.models.Beer;
-import brewbuddy.models.UserBeerLogger;
 import brewbuddy.models.User;
+import brewbuddy.events.UserBeerLogger;
+import brewbuddy.events.Rating;
 
 global java.util.HashMap<Beer, Integer> recommendationMap;
 
-rule "recommend by logger"
+rule "recommend by last 5 days"
 agenda-group "beerCep"
     when
         $user: User()
         $beer: Beer()
         Number(intValue > 4) from accumulate (
-            UserBeerLogger(user.getId() == $user.getId(), $beer == beer)
+            UserBeerLogger(user == $user, $beer.brewery == beer.brewery)
             over window: time(5d), count($beer)
+        )
+    then
+        recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);
+end
+
+rule "recommend by last 30 days"
+agenda-group "beerCep"
+    when
+        $user: User()
+        $beer: Beer()
+        Number(intValue > 1) from accumulate (
+            $hrb: Rating(rate > 3, $beer.brewery == beer.brewery)
+            over window: time(30d), count($hrb)
         )
     then
         recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);

@@ -34,8 +34,8 @@ INSERT INTO Festivals_Breweries(festival_id, brewery_id) VALUES (2, 2);
 -- Coupons
 INSERT INTO Coupons(valid_until, discount_percentage, type, user_id) VALUES('2024-10-10', 10, 'APPLICATION', 1);
 INSERT INTO Coupons(valid_until, discount_percentage, type, user_id) VALUES('2024-1-1', 80, 'APPLICATION', 1);
--- INSERT INTO Coupons(valid_until, discount_percentage, type, user_id, festival_id) VALUES('2024-10-1', 20, 'FESTIVAL', 1, 1);
+INSERT INTO Coupons(valid_until, discount_percentage, type, user_id, festival_id) VALUES('2024-10-1', 20, 'FESTIVAL', 1, 1);
 INSERT INTO Coupons(valid_until, discount_percentage, type, user_id, brewery_id) VALUES('2024-10-1', 30, 'BREWERY', 1, 3);
 
 -- Ratings
-INSERT INTO Ratings(rating, comment, user_id, beer_id) VALUES(5, 'nice', 1, 1);
+INSERT INTO Ratings(rate, comment, user_id, beer_id, timestamp) VALUES(5, 'nice', 1, 1, '2024-10-10');

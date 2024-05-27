@@ -1,5 +1,7 @@
 package brewbuddy.tests;
 
+import brewbuddy.events.Rating;
+import brewbuddy.events.UserBeerLogger;
 import brewbuddy.models.*;
 import brewbuddy.models.enums.BeerType;
 import org.junit.Ignore;

@@ -4,8 +4,8 @@ dialect  "mvel"
 import brewbuddy.models.Beer;
 import brewbuddy.models.Brewery;
 import brewbuddy.models.User;
-import brewbuddy.models.Rating;
 import brewbuddy.models.enums.BeerType;
+import brewbuddy.events.Rating;
 
 global java.util.HashMap<Beer, Integer> recommendationMap;
 
@@ -20,7 +20,7 @@ salience 100
 no-loop
     when
         $user: User()
-        $r: Rating(rating>=4,user==$user)
+        $r: Rating(rate>=4,user==$user)
     then
         insert(new HighRatedBeers($r.getBeer()));
 end

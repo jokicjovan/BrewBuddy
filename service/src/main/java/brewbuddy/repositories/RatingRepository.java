@@ -1,6 +1,6 @@
 package brewbuddy.repositories;
 
-import brewbuddy.models.Rating;
+import brewbuddy.events.Rating;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RatingRepository extends JpaRepository<Rating,Integer> {

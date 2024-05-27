@@ -5,13 +5,14 @@ import brewbuddy.models.Beer;
 import brewbuddy.models.Brewery;
 import brewbuddy.models.User;
 import brewbuddy.models.Festival;
-import brewbuddy.models.UserBeerLogger;
 import brewbuddy.models.FestivalCoupon;
+import brewbuddy.models.enums.CouponType;
+import brewbuddy.events.UserBeerLogger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Comparator;
 import java.util.Collections
-import brewbuddy.models.enums.CouponType;
 
 
 declare FestivalBeerLogger
