@@ -1,4 +1,6 @@
-package rules.filter;
+package rules.beer;
+dialect  "mvel"
+
 import brewbuddy.models.Brewery;
 import brewbuddy.models.Beer;
 import brewbuddy.models.StringWrapper;
@@ -15,6 +17,7 @@ query belongsTo(String x, String y,String wantedclass)
 end
 
 rule "Brewery Filter"
+agenda-group "beerFilter"
 when
     belongsTo($beerId,param,"Beer";)
 then

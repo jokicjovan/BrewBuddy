@@ -1,4 +1,4 @@
-package rules.recommendation;
+package rules.beer;
 dialect  "mvel"
 
 import brewbuddy.models.Beer;
@@ -15,6 +15,7 @@ end
 
 
 rule "Insert High Rated Beers Wrapped"
+agenda-group "beerRecommendation"
 salience 100
 no-loop
     when
@@ -25,6 +26,7 @@ no-loop
 end
 
 rule "Insert Types"
+agenda-group "beerRecommendation"
 salience 99
 no-loop
     when
@@ -34,6 +36,7 @@ no-loop
 end
 
 rule "Filter All Beers by Type"
+agenda-group "beerRecommendation"
 salience 98
 no-loop
     when
@@ -44,6 +47,7 @@ no-loop
 end
 
 rule "Insert Breweries"
+agenda-group "beerRecommendation"
 salience 97
 no-loop
     when
@@ -53,6 +57,7 @@ no-loop
 end
 
 rule "Filter All Beers by Brewery"
+agenda-group "beerRecommendation"
 salience 96
 no-loop
     when
@@ -63,6 +68,7 @@ no-loop
 end
 
 rule "Filter All Beers by Alcohol Percentage"
+agenda-group "beerRecommendation"
 salience 95
 no-loop
     when

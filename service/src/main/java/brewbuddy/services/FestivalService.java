@@ -55,9 +55,9 @@ public class FestivalService implements IFestivalService {
 
     @Override
     public Festival insert(Festival festival) {
-
         Festival newFestival = festivalRepository.save(festival);
-        KieSession kieSession = kieContainer.newKieSession("couponKsession");
+        KieSession kieSession = kieContainer.newKieSession("festivalKsession");
+        kieSession.getAgenda().getAgendaGroup("festivalCoupons").setFocus();
         ArrayList<FestivalCoupon> coupons = new ArrayList<>();
         kieSession.setGlobal("coupons", coupons);
         kieSession.insert(newFestival);
@@ -67,14 +67,17 @@ public class FestivalService implements IFestivalService {
         for (FestivalCoupon coupon : coupons) {
             couponService.insert(coupon);
         }
+        kieSession.fireAllRules();
         return newFestival;
     }
 
     @Override
     public List<Festival> recommend(Integer userId) {
-        User user= userService.get(userId);
+        User user = userService.get(userId);
 
-        KieSession kieSession = kieContainer.newKieSession("recommendationKsession");
+        KieSession kieSession = kieContainer.newKieSession("festivalKsession");
+        kieSession.getAgenda().getAgendaGroup("festivalRecommendation").setFocus();
+
         for (Beer beer : beerService.recommend(user.getId())) {
             kieSession.insert(new StringWrapper("Brewery-" + beer.getBrewery().getId().toString(), "Beer-" + beer.getId().toString(), "Beer"));
             for (Festival festival : festivalRepository.getFestivalsByBreweries(beer.getBrewery())){

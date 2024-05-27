@@ -7,8 +7,6 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.QueryResultsRow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,11 +14,12 @@ import java.util.HashMap;
 @Ignore
 public class CEPConfigTest {
     @Test
-    public void test() {
+    public void beerRecommendation() {
 
         KieServices ks = KieServices.Factory.get();
         KieContainer kContainer = ks.getKieClasspathContainer();
-        KieSession ksession = kContainer.newKieSession("recommendationKsession");
+        KieSession ksession = kContainer.newKieSession("beerKsession");
+        ksession.getAgenda().getAgendaGroup("beerRecommendation").setFocus();
 
         HashMap<Beer, Integer> recommendationMap = new HashMap<Beer, Integer>();
         ksession.setGlobal("recommendationMap", recommendationMap);
@@ -83,11 +82,12 @@ public class CEPConfigTest {
     }
 
     @Test
-    public void test2() {
+    public void festivalCoupon() {
 
         KieServices ks = KieServices.Factory.get();
         KieContainer kContainer = ks.getKieClasspathContainer();
-        KieSession ksession = kContainer.newKieSession("couponKsession");
+        KieSession ksession = kContainer.newKieSession("festivalKsession");
+        ksession.getAgenda().getAgendaGroup("festivalCoupons").setFocus();
 
         ArrayList<FestivalCoupon> coupons = new ArrayList<>();
         ksession.setGlobal("coupons", coupons);
@@ -160,97 +160,6 @@ public class CEPConfigTest {
         System.out.println(count);
         coupons = (ArrayList<FestivalCoupon>) ksession.getGlobal("coupons");
         System.out.println(coupons.size());
-
-    }
-
-
-    @Test
-    public void test3() {
-        KieServices ks = KieServices.Factory.get();
-        KieContainer kContainer = ks.getKieClasspathContainer();
-        KieSession ksession = kContainer.newKieSession("filterBeersKsession");
-
-
-        Brewery brewery1 = new Brewery();
-        brewery1.setId(1);
-        Brewery brewery2 = new Brewery();
-        brewery2.setId(2);
-
-        ksession.insert(brewery1);
-        ksession.insert(BeerType.IPA);
-        ksession.insert(8.0);
-        ksession.insert(20.0);
-
-        Beer beer1 = new Beer();
-        beer1.setId(1);
-        beer1.setType(BeerType.IPA);
-        beer1.setBrewery(brewery1);
-        beer1.setPercentageOfAlcohol(8.0);
-        beer1.setIbu(20.0);
-
-        Beer beer2 = new Beer();
-        beer2.setId(2);
-        beer2.setType(BeerType.IPA);
-        beer2.setBrewery(brewery1);
-        beer2.setPercentageOfAlcohol(5.0);
-        beer2.setIbu(30.0);
-
-        Beer beer3 = new Beer();
-        beer3.setId(3);
-        beer3.setType(BeerType.IPA);
-        beer3.setBrewery(brewery2);
-        beer3.setPercentageOfAlcohol(8.5);
-        beer3.setIbu(80.0);
-
-        Beer beer4 = new Beer();
-        beer4.setId(4);
-        beer4.setType(BeerType.ALE);
-        beer4.setBrewery(brewery2);
-        beer4.setPercentageOfAlcohol(4.0);
-        beer4.setIbu(99.0);
-
-        ksession.insert(beer1);
-        ksession.insert(beer2);
-        ksession.insert(beer3);
-        ksession.insert(beer4);
-        int count = ksession.fireAllRules();
-        System.out.println(count);
-    }
-
-    @Test
-    public void test4() {
-
-        KieServices ks = KieServices.Factory.get();
-        KieContainer kContainer = ks.getKieClasspathContainer();
-        KieSession ksession = kContainer.newKieSession("filterBeersKsession");
-        HashMap<Integer, Integer> filterMap = new HashMap<>();
-        ksession.setGlobal("filterMap", filterMap);
-        ksession.setGlobal("breweryId", "1a");
-        ksession.setGlobal("category", "BeerType-");
-        ksession.setGlobal("alcoholCategory", "AlcoholCategory-");
-
-
-        StringWrapper s1 = new StringWrapper("IPA;Z", "IPA","Category");
-        StringWrapper s2 = new StringWrapper("DPA;Z", "DPA","Category");
-        StringWrapper s3 = new StringWrapper("PILSNER;M", "PILSNER","Category");
-        StringWrapper s4 = new StringWrapper("IPA;Z;LOW", "IPA;Z","Brewery");
-        StringWrapper s5 = new StringWrapper("PILSNER;M;LOW", "PILSNER;M","Brewery");
-//        StringWrapper s6 = new StringWrapper("1ac", "IPA;Z","Brewery");
-//        StringWrapper s7 = new StringWrapper("1bc", "1b","Brewery");
-        StringWrapper s8 = new StringWrapper("1", "IPA;Z;LOW","Beer");
-        StringWrapper s9 = new StringWrapper("2", "PILSNER;M;LOW","Beer");
-        ksession.insert(s1);
-        ksession.insert(s2);
-        ksession.insert(s3);
-        ksession.insert(s4);
-        ksession.insert(s5);
-//        ksession.insert(s6);
-//        ksession.insert(s7);
-        ksession.insert(s8);
-        ksession.insert(s9);
-
-        int count = ksession.fireAllRules();
-        System.out.println("Rules fired: " + count);
 
     }
 }

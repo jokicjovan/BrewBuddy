@@ -1,4 +1,4 @@
-package rules.recommendation;
+package rules.festival;
 dialect  "mvel"
 
 import brewbuddy.models.StringWrapper;
@@ -14,6 +14,7 @@ end
 
 
 rule "festivalRecommendation"
+agenda-group "festivalRecommendation"
     when
         belongsTo($festivalId,$x,"Festival";)
     then

@@ -1,4 +1,5 @@
-package rules.coupon;
+package rules.template;
+dialect  "mvel"
 
 import brewbuddy.models.Beer;
 import brewbuddy.models.Brewery;
@@ -25,6 +26,7 @@ end
 global java.util.ArrayList<FestivalCoupon> coupons;
 
 rule "Filter Beers By Festival"
+agenda-group "festivalCoupons"
 salience 100
 no-loop
     when
@@ -39,6 +41,7 @@ end
 
 
 rule "Filter Logger By Festival Beers"
+agenda-group "festivalCoupons"
 salience 99
 no-loop
     when
@@ -50,6 +53,7 @@ end
 
 
 rule "Accumulate Drunk Beers By Users"
+agenda-group "festivalCoupons"
 salience 98
 no-loop
     when
@@ -64,6 +68,7 @@ no-loop
 end
 
 rule "Sort By Drunken Beers"
+agenda-group "festivalCoupons"
 salience 97
 no-loop
     when

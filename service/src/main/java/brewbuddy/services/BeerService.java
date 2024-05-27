@@ -54,7 +54,8 @@ public class BeerService implements IBeerService {
     public List<Beer> recommend(Integer userId){
         User user= userService.get(userId);
 
-        KieSession kieSession = kieContainer.newKieSession("recommendationKsession");
+        KieSession kieSession = kieContainer.newKieSession("beerKsession");
+        kieSession.getAgenda().getAgendaGroup("beerRecommendation").setFocus();
         for(Rating r : ratingRepository.findAll()){
             kieSession.insert(r);
         }
@@ -103,7 +104,8 @@ public class BeerService implements IBeerService {
     }
 
     private HashMap<Integer,Integer> breweryFilter(Brewery brewery){
-        KieSession kieSession = kieContainer.newKieSession("filterBeersKsession");
+        KieSession kieSession = kieContainer.newKieSession("beerKsession");
+        kieSession.getAgenda().getAgendaGroup("beerFilter").setFocus();
         HashMap<Integer, Integer> filterMap = new HashMap<>();
         kieSession.setGlobal("filterMap", filterMap);
         kieSession.setGlobal("param", "Brewery-"+brewery.getId().toString());
@@ -123,7 +125,8 @@ public class BeerService implements IBeerService {
         return (HashMap<Integer, Integer>) kieSession.getGlobal("filterMap");
     }
     private HashMap<Integer,Integer> alcoholFilter(String alcoholCategory){
-        KieSession kieSession = kieContainer.newKieSession("filterBeersKsession");
+        KieSession kieSession = kieContainer.newKieSession("beerKsession");
+        kieSession.getAgenda().getAgendaGroup("beerFilter").setFocus();
         HashMap<Integer, Integer> filterMap = new HashMap<>();
         kieSession.setGlobal("filterMap", filterMap);
         kieSession.setGlobal("param", "AlcoholCategory-"+alcoholCategory);
@@ -144,7 +147,8 @@ public class BeerService implements IBeerService {
     }
 
     private HashMap<Integer,Integer> typeFilter(BeerType type){
-        KieSession kieSession = kieContainer.newKieSession("filterBeersKsession");
+        KieSession kieSession = kieContainer.newKieSession("beerKsession");
+        kieSession.getAgenda().getAgendaGroup("beerFilter").setFocus();
         HashMap<Integer, Integer> filterMap = new HashMap<>();
         kieSession.setGlobal("filterMap", filterMap);
         kieSession.setGlobal("param", "BeerType-"+type.toString());
