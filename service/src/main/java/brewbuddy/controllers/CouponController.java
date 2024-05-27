@@ -16,12 +16,10 @@ public class CouponController {
 
     private final ICouponService couponService;
 
+    @Autowired
     public CouponController(ICouponService couponService) {
         this.couponService = couponService;
     }
-
-    @Autowired
-
 
     @RequestMapping("/")
     public List<Coupon> getAll(){

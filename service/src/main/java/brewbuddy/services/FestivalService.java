@@ -72,13 +72,11 @@ public class FestivalService implements IFestivalService {
     }
 
     @Override
-    public List<Festival> recommend(Integer userId) {
-        User user = userService.get(userId);
-
+    public List<Festival> recommend(User user) {
         KieSession kieSession = kieContainer.newKieSession("festivalKsession");
         kieSession.getAgenda().getAgendaGroup("festivalRecommendation").setFocus();
 
-        for (Beer beer : beerService.recommend(user.getId())) {
+        for (Beer beer : beerService.recommend(user)) {
             kieSession.insert(new StringWrapper("Brewery-" + beer.getBrewery().getId().toString(), "Beer-" + beer.getId().toString(), "Beer"));
             for (Festival festival : festivalRepository.getFestivalsByBreweries(beer.getBrewery())){
                 kieSession.insert(new StringWrapper(festival.getId().toString(), "Brewery-" + beer.getBrewery().getId().toString(), "Festival"));

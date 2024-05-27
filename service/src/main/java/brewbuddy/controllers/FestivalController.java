@@ -5,10 +5,12 @@ import brewbuddy.dtos.CreateFestivalDTO;
 import brewbuddy.dtos.FestivalDetailedDTO;
 import brewbuddy.models.Brewery;
 import brewbuddy.models.Festival;
+import brewbuddy.models.User;
 import brewbuddy.models.enums.BeerType;
 import brewbuddy.services.interfaces.IBreweryService;
 import brewbuddy.services.interfaces.ICityService;
 import brewbuddy.services.interfaces.IFestivalService;
+import brewbuddy.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,18 +21,21 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/festival")
 public class FestivalController {
-
+    private final IUserService userService;
     private final IFestivalService festivalService;
     private final ICityService cityService;
 
     private final IBreweryService breweryService;
 
     @Autowired
-    public FestivalController(IFestivalService festivalService,ICityService cityService, IBreweryService breweryService) {
+    public FestivalController(IFestivalService festivalService,ICityService cityService, IBreweryService breweryService,
+                              IUserService userService) {
         this.festivalService = festivalService;
         this.breweryService=breweryService;
         this.cityService=cityService;
+        this.userService = userService;
     }
+
     @RequestMapping("/")
     public List<Festival> getAll(){
         return festivalService.getAll();
@@ -57,7 +62,8 @@ public class FestivalController {
 
     @RequestMapping(path = "/recommend", method = RequestMethod.GET)
     public List<FestivalDetailedDTO> recommend(@RequestParam Integer userId){
-        return festivalService.recommend(userId).stream()
+        User user = userService.get(userId);
+        return festivalService.recommend(user).stream()
                 .map(FestivalDetailedDTO::convertToDTO)
                 .collect(Collectors.toList());
     }

@@ -3,6 +3,7 @@ package brewbuddy.services;
 import brewbuddy.exceptions.NotFoundException;
 import brewbuddy.models.*;
 import brewbuddy.models.enums.BeerType;
+import brewbuddy.repositories.UserBeerLoggerRepository;
 import brewbuddy.services.interfaces.IBeerService;
 import brewbuddy.repositories.BeerRepository;
 import brewbuddy.repositories.RatingRepository;
@@ -12,6 +13,7 @@ import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,14 +21,16 @@ import java.util.stream.Collectors;
 public class BeerService implements IBeerService {
     private final BeerRepository beerRepository;
     private final RatingRepository ratingRepository;
+    private final UserBeerLoggerRepository userBeerLoggerRepository;
     private final KieContainer kieContainer;
     private final IUserService userService;
 
     @Autowired
-    public BeerService(KieContainer kieContainer, BeerRepository beerRepository,RatingRepository ratingRepository,IUserService userService) {
+    public BeerService(KieContainer kieContainer, BeerRepository beerRepository, RatingRepository ratingRepository, UserBeerLoggerRepository userBeerLoggerRepository, IUserService userService) {
         this.beerRepository = beerRepository;
         this.kieContainer = kieContainer;
         this.ratingRepository = ratingRepository;
+        this.userBeerLoggerRepository = userBeerLoggerRepository;
         this.userService=userService;
     }
 
@@ -51,9 +55,7 @@ public class BeerService implements IBeerService {
     }
 
     @Override
-    public List<Beer> recommend(Integer userId){
-        User user= userService.get(userId);
-
+    public List<Beer> recommend(User user){
         KieSession kieSession = kieContainer.newKieSession("beerKsession");
         kieSession.getAgenda().getAgendaGroup("beerRecommendation").setFocus();
         for(Rating r : ratingRepository.findAll()){
@@ -166,5 +168,15 @@ public class BeerService implements IBeerService {
 
         kieSession.fireAllRules();
         return (HashMap<Integer, Integer>) kieSession.getGlobal("filterMap");
+    }
+
+    @Override
+    public UserBeerLogger logBeer(User user, Beer beer){
+        UserBeerLogger logger = new UserBeerLogger();
+        logger.setBeer(beer);
+        logger.setUser(user);
+        logger.setTimestamp(LocalDateTime.now());
+        userBeerLoggerRepository.save(logger);
+        return logger;
     }
 }

@@ -1,6 +1,7 @@
 package brewbuddy.services.interfaces;
 
 import brewbuddy.models.Festival;
+import brewbuddy.models.User;
 
 import java.util.List;
 
@@ -11,5 +12,5 @@ public interface IFestivalService {
 
     Festival insert(Festival festival);
 
-    List<Festival> recommend(Integer userId);
+    List<Festival> recommend(User user);
 }

@@ -3,6 +3,8 @@ package brewbuddy.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.kie.api.definition.type.Role;
+import org.kie.api.definition.type.Timestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,6 +14,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(name="UsersBeersLogger")
+@Role(Role.Type.EVENT)
+@Timestamp("timestamp")
 public class UserBeerLogger {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
