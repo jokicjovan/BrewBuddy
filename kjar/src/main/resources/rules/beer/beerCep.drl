@@ -7,14 +7,15 @@ import brewbuddy.models.User;
 
 global java.util.HashMap<Beer, Integer> recommendationMap;
 
-rule "beerCep"
+rule "recommend by logger"
+agenda-group "beerCep"
     when
         $user: User()
+        $beer: Beer()
         Number(intValue > 4) from accumulate (
-            $log: UserBeerLogger(user.getId() == $user.getId())
-            over window: time(5d), sum($log.getId())
+            UserBeerLogger(user.getId() == $user.getId(), $beer == beer)
+            over window: time(5d), count($beer)
         )
     then
-        System.out.println("ASD");
         recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);
 end

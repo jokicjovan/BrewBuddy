@@ -8,6 +8,7 @@ import org.kie.api.definition.type.Timestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @NoArgsConstructor
@@ -30,5 +31,5 @@ public class UserBeerLogger {
     private Beer beer;
 
     @Column(name = "timestamp",nullable = false)
-    private LocalDateTime timestamp;
+    private Date timestamp;
 }

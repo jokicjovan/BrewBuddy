@@ -1,5 +1,6 @@
 package brewbuddy.services;
 
+import brewbuddy.dtos.UserBeerLoggerDTO;
 import brewbuddy.exceptions.NotFoundException;
 import brewbuddy.models.*;
 import brewbuddy.models.enums.BeerType;
@@ -56,17 +57,26 @@ public class BeerService implements IBeerService {
 
     @Override
     public List<Beer> recommend(User user){
+        // recommend by rates
         KieSession kieSession = kieContainer.newKieSession("beerKsession");
         kieSession.getAgenda().getAgendaGroup("beerRecommendation").setFocus();
+        kieSession.insert(user);
         for(Rating r : ratingRepository.findAll()){
             kieSession.insert(r);
         }
         for(Beer b: beerRepository.findAll()){
             kieSession.insert(b);
         }
-        kieSession.insert(user);
         HashMap<Beer, Integer> recommendationMap = new HashMap<>();
         kieSession.setGlobal("recommendationMap", recommendationMap);
+        kieSession.fireAllRules();
+
+        // recommend by logger
+        kieSession.getAgenda().getAgendaGroup("beerCep").setFocus();
+        kieSession.insert(user);
+        for(UserBeerLogger usl: userBeerLoggerRepository.findAll()){
+            kieSession.insert(usl);
+        }
         kieSession.fireAllRules();
 
         recommendationMap = (HashMap<Beer, Integer>) kieSession.getGlobal("recommendationMap");
@@ -175,7 +185,7 @@ public class BeerService implements IBeerService {
         UserBeerLogger logger = new UserBeerLogger();
         logger.setBeer(beer);
         logger.setUser(user);
-        logger.setTimestamp(LocalDateTime.now());
+        logger.setTimestamp(new Date());
         userBeerLoggerRepository.save(logger);
         return logger;
     }

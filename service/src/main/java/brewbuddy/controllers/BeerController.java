@@ -1,6 +1,7 @@
 package brewbuddy.controllers;
 
 import brewbuddy.dtos.BeerDTO;
+import brewbuddy.dtos.UserBeerLoggerDTO;
 import brewbuddy.models.Beer;
 import brewbuddy.models.Brewery;
 import brewbuddy.models.User;
@@ -57,9 +58,9 @@ public class BeerController {
     }
 
     @RequestMapping(path = "/log", method = RequestMethod.POST)
-    public UserBeerLogger filter(@RequestParam Integer userId, @RequestParam Integer beerId){
+    public UserBeerLoggerDTO filter(@RequestParam Integer userId, @RequestParam Integer beerId){
         User user = userService.get(userId);
         Beer beer = beerService.get(beerId);
-        return beerService.logBeer(user, beer);
+        return UserBeerLoggerDTO.convertToDTO(beerService.logBeer(user, beer));
     }
 }
