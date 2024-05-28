@@ -1,4 +1,4 @@
-package brewbuddy.models.enums;
+package brewbuddy.enums;
 
 public enum CouponType {
     APPLICATION,

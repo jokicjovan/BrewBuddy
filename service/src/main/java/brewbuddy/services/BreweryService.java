@@ -4,7 +4,6 @@ import brewbuddy.exceptions.NotFoundException;
 import brewbuddy.models.Brewery;
 import brewbuddy.services.interfaces.IBreweryService;
 import brewbuddy.repositories.BreweryRepository;
-import org.kie.api.runtime.KieContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +13,10 @@ import java.util.Optional;
 @Service
 public class BreweryService implements IBreweryService {
     private final BreweryRepository breweryRepository;
-    private final KieContainer kieContainer;
 
     @Autowired
-    public BreweryService(KieContainer kieContainer, BreweryRepository breweryRepository) {
+    public BreweryService(BreweryRepository breweryRepository) {
         this.breweryRepository = breweryRepository;
-        this.kieContainer = kieContainer;
     }
 
     @Override

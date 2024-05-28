@@ -3,7 +3,7 @@ package brewbuddy.tests;
 import brewbuddy.events.Rating;
 import brewbuddy.events.UserBeerLogger;
 import brewbuddy.models.*;
-import brewbuddy.models.enums.BeerType;
+import brewbuddy.enums.BeerType;
 import org.drools.template.DataProvider;
 import org.drools.template.DataProviderCompiler;
 import org.drools.template.objects.ArrayDataProvider;

@@ -7,17 +7,15 @@ import brewbuddy.dtos.UserBeerLoggerDTO;
 import brewbuddy.models.Beer;
 import brewbuddy.models.Brewery;
 import brewbuddy.models.User;
-import brewbuddy.models.enums.BeerType;
+import brewbuddy.enums.BeerType;
 import brewbuddy.services.interfaces.IBeerService;
 import brewbuddy.services.interfaces.IBreweryService;
 import brewbuddy.services.interfaces.IUserService;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 import java.util.stream.Collectors;

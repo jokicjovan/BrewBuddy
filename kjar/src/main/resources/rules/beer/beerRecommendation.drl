@@ -4,7 +4,7 @@ dialect  "mvel"
 import brewbuddy.models.Beer;
 import brewbuddy.models.Brewery;
 import brewbuddy.models.User;
-import brewbuddy.models.enums.BeerType;
+import brewbuddy.enums.BeerType;
 import brewbuddy.events.Rating;
 
 global java.util.HashMap<Beer, Integer> recommendationMap;

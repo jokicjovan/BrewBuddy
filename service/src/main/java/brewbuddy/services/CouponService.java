@@ -2,7 +2,7 @@ package brewbuddy.services;
 
 import brewbuddy.exceptions.NotFoundException;
 import brewbuddy.models.*;
-import brewbuddy.models.enums.CouponType;
+import brewbuddy.enums.CouponType;
 import brewbuddy.repositories.CouponCriteriaRepository;
 import brewbuddy.repositories.UserBeerLoggerRepository;
 import brewbuddy.services.interfaces.IBeerService;

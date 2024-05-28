@@ -2,34 +2,94 @@ package rules.beer;
 dialect  "mvel"
 
 import brewbuddy.models.Beer;
+import brewbuddy.models.Brewery;
 import brewbuddy.models.User;
+import brewbuddy.enums.BeerType;
 import brewbuddy.events.UserBeerLogger;
-import brewbuddy.events.Rating;
+import brewbuddy.events.Rating
+import brewbuddy.events.Alarm
+import java.util.Map
+import java.util.Date
 
 global java.util.HashMap<Beer, Integer> recommendationMap;
+global java.util.HashMap<Brewery, Beer> mostPopularBeersByBreweryMap;
 
-rule "recommend by last 5 days"
+rule "recommend by last 5 days logs from breweries"
 agenda-group "beerCep"
     when
         $user: User()
-        $beer: Beer()
-        Number(intValue > 4) from accumulate (
-            UserBeerLogger(user == $user, $beer.brewery == beer.brewery)
-            over window: time(5d), count($beer)
+        $brewery: Brewery()
+        Number(intValue > 1) from accumulate (
+            $ubl : UserBeerLogger(user == $user, beer.brewery == $brewery)
+            over window: time(5d), count($ubl)
         )
     then
-        recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);
+        Beer beer = (Beer) mostPopularBeersByBreweryMap.get($brewery);
+        recommendationMap.put(beer, recommendationMap.getOrDefault(beer, 0) + 1);
 end
 
-rule "recommend by last 30 days"
+rule "recommend by last 30 days high rates from breweries"
 agenda-group "beerCep"
     when
         $user: User()
-        $beer: Beer()
-        Number(intValue > 1) from accumulate (
-            $hrb: Rating(rate > 3, $beer.brewery == beer.brewery)
-            over window: time(30d), count($hrb)
+        $brewery: Brewery()
+        Number(intValue > 3) from accumulate (
+            $r: Rating(user == $user, rate >= 3, beer.brewery == $brewery)
+            over window: time(30d), count($r)
         )
     then
-        recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);
+        Beer beer = (Beer) mostPopularBeersByBreweryMap.get($brewery);
+        recommendationMap.put(beer, recommendationMap.getOrDefault(beer, 0) + 1);
+end
+
+rule "recommend by last 30 days low rates from breweries"
+agenda-group "beerCep"
+    when
+        $user: User()
+        $brewery: Brewery()
+        Number(intValue > 5) from accumulate (
+            $r: Rating(user == $user, rate < 3, beer.brewery == $brewery)
+            over window: time(30d), count($r)
+        )
+    then
+        for (Beer beer : recommendationMap.keySet()) {
+            if (beer.getBrewery().getId().equals($brewery.getId())) {
+                Integer currentValue = recommendationMap.get(beer);
+                recommendationMap.put(beer, currentValue - 1);
+            }
+        }
+end
+
+rule "recommend by last 30 days low rates from types"
+agenda-group "beerCep"
+    when
+        $user: User()
+        $type: BeerType()
+        Number(intValue > 5) from accumulate (
+            $r: Rating(user == $user, rate < 3, beer.type == $type)
+            over window: time(30d), count($r)
+        )
+    then
+        for (Beer beer : recommendationMap.keySet()) {
+            if (beer.getType().equals($type)) {
+                Integer currentValue = recommendationMap.get(beer);
+                recommendationMap.put(beer, currentValue - 1);
+            }
+        }
+end
+
+
+rule "beer alarm"
+agenda-group "beerCep"
+    when
+        $user: User()
+        Number(intValue > 5) from accumulate (
+            $ubl: UserBeerLogger(user == $user)
+            over window: time(6h), count($ubl)
+        )
+    then
+        Alarm alarm = new Alarm();
+        alarm.setUser($user);
+        alarm.setTimestamp(new Date());
+        insert(alarm)
 end

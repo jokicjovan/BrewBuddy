@@ -1,7 +1,7 @@
 package brewbuddy.models;
 
 
-import brewbuddy.models.enums.BeerType;
+import brewbuddy.enums.BeerType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

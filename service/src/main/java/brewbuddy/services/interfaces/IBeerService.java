@@ -5,8 +5,9 @@ import brewbuddy.models.Beer;
 import brewbuddy.models.Brewery;
 import brewbuddy.models.User;
 import brewbuddy.events.UserBeerLogger;
-import brewbuddy.models.enums.BeerType;
+import brewbuddy.enums.BeerType;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface IBeerService {
@@ -19,6 +20,8 @@ public interface IBeerService {
     List<Beer> recommend(User user);
 
     List<Beer> filterBeers(BeerType type, Brewery brewery, String alcoholCategory);
+
+    HashMap<Brewery, Beer> getMostPopularBeerByBrewery(List<Brewery> breweries);
 
     Rating rate(User user, Beer beer, Integer rate, String comment);
 

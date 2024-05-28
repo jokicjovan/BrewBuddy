@@ -1,12 +1,10 @@
 package brewbuddy.controllers;
 
-import brewbuddy.dtos.BeerDTO;
 import brewbuddy.dtos.CreateFestivalDTO;
 import brewbuddy.dtos.FestivalDetailedDTO;
 import brewbuddy.models.Brewery;
 import brewbuddy.models.Festival;
 import brewbuddy.models.User;
-import brewbuddy.models.enums.BeerType;
 import brewbuddy.services.interfaces.IBreweryService;
 import brewbuddy.services.interfaces.ICityService;
 import brewbuddy.services.interfaces.IFestivalService;

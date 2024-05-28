@@ -1,9 +1,7 @@
 package brewbuddy.dtos;
 
 import brewbuddy.models.Beer;
-import brewbuddy.models.Brewery;
-import brewbuddy.models.enums.BeerType;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import brewbuddy.enums.BeerType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
