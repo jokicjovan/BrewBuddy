@@ -1,6 +1,6 @@
 package brewbuddy.services.interfaces;
 
-import brewbuddy.models.Coupon;
+import brewbuddy.models.*;
 
 import java.util.List;
 
@@ -10,4 +10,10 @@ public interface ICouponService {
     List<Coupon> getAll();
 
     Coupon insert(Coupon coupon);
+
+    List<FestivalCoupon> createFestivalCoupon(Festival festival);
+
+    List<BreweryCoupon> createBreweryCoupon(Brewery brewery);
+
+    List<ApplicationCoupon> createAppCoupon();
 }

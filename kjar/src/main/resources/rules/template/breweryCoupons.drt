@@ -1,0 +1,101 @@
+template header
+minBeers
+percentage
+expireIn
+range
+
+package rules.templateCoupon;
+import brewbuddy.models.Beer;
+import brewbuddy.models.Brewery;
+import brewbuddy.models.User;
+import brewbuddy.models.UserBeerLogger;
+import brewbuddy.models.BreweryCoupon;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Comparator;
+import java.util.Collections
+import brewbuddy.models.enums.CouponType;
+import java.util.Date
+import java.time.LocalDate
+import java.time.ZoneId;
+
+declare BreweryBeerLogger
+    @role(event)
+    @timestamp(timestamp)
+    id : Integer
+    timestamp : Date
+    beer : Beer
+    user : User
+end
+
+declare UserBeersAccumulated
+    user:User
+    drunkBeers:Integer
+end
+
+global java.util.ArrayList<BreweryCoupon> coupons;
+template "brewery-coupons"
+
+rule "Filter Beers By Brewery"
+salience 100
+no-loop
+    when
+        $brewery: Brewery()
+    then
+        for (Beer beer: $brewery.getBeers()){
+            insert(beer);
+        }
+end
+
+
+rule "Filter Logger By Brewery Beers"
+salience 99
+no-loop
+    when
+        $breweryBeer:Beer()
+        $userBeers:UserBeerLogger( beer==$breweryBeer)
+    then
+        insert(new BreweryBeerLogger($userBeers.getId(),$userBeers.getTimestamp(),$userBeers.getBeer(),$userBeers.getUser()));
+end
+
+
+rule "Accumulate Drunk Beers By Users"
+salience 98
+no-loop
+    when
+        $user:User()
+        $drunkBeers: Number() from accumulate(BreweryBeerLogger($user==$breweryBeerLogger.getUser())
+                                              over window: time(@{range}d),count(1))
+    then
+       if($drunkBeers.intValue()>=@{minBeers}){
+           UserBeersAccumulated accumulatedValues=new UserBeersAccumulated();
+           accumulatedValues.setUser($user);
+           accumulatedValues.setDrunkBeers($drunkBeers.intValue());
+           insert(accumulatedValues);
+       }
+end
+
+rule "Sort By Drunken Beers"
+salience 97
+no-loop
+    when
+        $brewery:Brewery()
+        $usersBeers:List( size > 0 ) from collect( UserBeersAccumulated() )
+    then
+        Collections.sort($usersBeers, new Comparator<UserBeersAccumulated>() {
+                public int compare(UserBeersAccumulated p1, UserBeersAccumulated p2) {
+                    return Integer.compare(p1.getDrunkBeers(), p2.getDrunkBeers())*-1;
+                }
+        });
+        for( int i=0;i<$usersBeers.size();i++){
+            BreweryCoupon coupon=new BreweryCoupon();
+                            coupon.setUser(((UserBeersAccumulated)$usersBeers.get(i)).getUser());
+                            coupon.setType(CouponType.BREWERY);
+                            coupon.setValidUntil(Date.from(LocalDate.now().plusDays(@{expireIn}).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                            coupon.setBrewery($brewery);
+            coupon.setDiscountPercentage(@{percentage});
+            coupons.add(coupon);
+        }
+end
+
+end template

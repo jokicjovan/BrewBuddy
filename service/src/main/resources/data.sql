@@ -39,3 +39,7 @@ INSERT INTO Coupons(valid_until, discount_percentage, type, user_id, brewery_id)
 
 -- Ratings
 INSERT INTO Ratings(rate, comment, user_id, beer_id, timestamp) VALUES(5, 'nice', 1, 1, '2024-10-10');
+
+INSERT INTO Coupon_Criterias(id,type,min_beers,percentage,expire_in,days_range) VALUES (1,'FESTIVAL',2,50,10,30);
+INSERT INTO Coupon_Criterias(id,type,min_beers,percentage,expire_in,days_range) VALUES (2,'BREWERY',2,50,10,30);
+INSERT INTO Coupon_Criterias(id,type,min_beers,percentage,expire_in,days_range) VALUES (3,'APPLICATION',2,50,10,30);

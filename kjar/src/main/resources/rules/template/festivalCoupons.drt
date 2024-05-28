@@ -1,6 +1,10 @@
-package rules.template;
-dialect  "mvel"
+template header
+minBeers
+percentage
+expireIn
+range
 
+package rules.templateCoupon;
 import brewbuddy.models.Beer;
 import brewbuddy.models.Brewery;
 import brewbuddy.models.User;
@@ -14,9 +18,19 @@ import java.util.List;
 import java.util.Comparator;
 import java.util.Collections
 
+import brewbuddy.models.enums.CouponType;
+import java.util.Date
+import java.time.LocalDate
+import java.time.ZoneId;
+
 
 declare FestivalBeerLogger
-    $festivalBeerLogger:UserBeerLogger
+    @role(event)
+    @timestamp(timestamp)
+    id : Integer
+    timestamp : Date
+    beer : Beer
+    user : User
 end
 
 declare UserBeersAccumulated
@@ -25,14 +39,15 @@ declare UserBeersAccumulated
 end
 
 global java.util.ArrayList<FestivalCoupon> coupons;
+template "festival-coupons"
 
 rule "Filter Beers By Festival"
-agenda-group "festivalCoupons"
 salience 100
 no-loop
     when
         Festival($breweries: breweries)
     then
+
         for (Brewery brewery: (ArrayList<Brewery>)$breweries ){
             for (Beer beer: brewery.getBeers()){
                 insert(beer);
@@ -42,34 +57,34 @@ end
 
 
 rule "Filter Logger By Festival Beers"
-agenda-group "festivalCoupons"
 salience 99
 no-loop
     when
         $festivalBeer:Beer()
         $userBeers:UserBeerLogger( beer==$festivalBeer)
     then
-        insert(new FestivalBeerLogger($userBeers));
+        insert(new FestivalBeerLogger($userBeers.getId(),$userBeers.getTimestamp(),$userBeers.getBeer(),$userBeers.getUser()));
 end
 
 
 rule "Accumulate Drunk Beers By Users"
-agenda-group "festivalCoupons"
 salience 98
 no-loop
     when
         $user:User()
-        $drunkBeers: Number() from accumulate(FestivalBeerLogger($user==$festivalBeerLogger.getUser()),
-                                              count(1))
+        $drunkBeers: Number() from accumulate(FestivalBeerLogger($user==user)
+                                              over window: time(@{range}d),count(1))
     then
-       UserBeersAccumulated accumulatedValues=new UserBeersAccumulated();
-       accumulatedValues.setUser($user);
-       accumulatedValues.setDrunkBeers($drunkBeers.intValue());
-       insert(accumulatedValues);
+       System.out.println($user.getId()+":"+$drunkBeers);
+       if($drunkBeers.intValue()>=@{minBeers}){
+           UserBeersAccumulated accumulatedValues=new UserBeersAccumulated();
+           accumulatedValues.setUser($user);
+           accumulatedValues.setDrunkBeers($drunkBeers.intValue());
+           insert(accumulatedValues);
+       }
 end
 
 rule "Sort By Drunken Beers"
-agenda-group "festivalCoupons"
 salience 97
 no-loop
     when
@@ -85,9 +100,10 @@ no-loop
             FestivalCoupon coupon=new FestivalCoupon();
                             coupon.setUser(((UserBeersAccumulated)$usersBeers.get(i)).getUser());
                             coupon.setType(CouponType.FESTIVAL);
+                            coupon.setValidUntil(Date.from(LocalDate.now().plusDays(@{expireIn}).atStartOfDay(ZoneId.systemDefault()).toInstant()));
                             coupon.setFestival($festival);
             if (i<1){
-                coupon.setDiscountPercentage(100);
+                coupon.setDiscountPercentage(@{percentage});
             }
             if (i>=1 && i<5){
                 coupon.setDiscountPercentage(50);
@@ -96,6 +112,4 @@ no-loop
         }
 end
 
-
-
-
+end template

@@ -5,7 +5,7 @@
     <kbase name="festivalKbase" eventProcessingMode="stream" packages="rules.festival">
         <ksession name="festivalKsession" clockType="pseudo" type="stateful"/>
     </kbase>
-    <kbase name="templateKbase" eventProcessingMode="stream" packages="rules.template">
-        <ksession name="templateKsession" clockType="pseudo" type="stateful"/>
+    <kbase name="templateCouponKbase" eventProcessingMode="stream" packages="rules.templateCoupon">
+        <ksession name="templateCouponKsession" clockType="pseudo" type="stateful"/>
     </kbase>
 </kmodule>
