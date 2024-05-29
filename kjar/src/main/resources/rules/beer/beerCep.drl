@@ -14,7 +14,20 @@ import java.util.Date
 global java.util.HashMap<Beer, Integer> recommendationMap;
 global java.util.HashMap<Brewery, Beer> mostPopularBeersByBreweryMap;
 
-rule "recommend by last 5 days logs from breweries"
+declare HighAlcoholLover
+    isLover:Boolean
+end
+declare LowAlcoholLover
+    isLover:Boolean
+end
+declare LowIBULover
+    isLover:Boolean
+end
+declare HighIBULover
+    isLover:Boolean
+end
+
+rule "recommend by logs and breweries in last 5 days"
 agenda-group "beerCep"
     when
         $user: User()
@@ -28,7 +41,7 @@ agenda-group "beerCep"
         recommendationMap.put(beer, recommendationMap.getOrDefault(beer, 0) + 1);
 end
 
-rule "recommend by last 30 days high rates from breweries"
+rule "recommend by high rates and breweries in last 30 days"
 agenda-group "beerCep"
     when
         $user: User()
@@ -42,7 +55,7 @@ agenda-group "beerCep"
         recommendationMap.put(beer, recommendationMap.getOrDefault(beer, 0) + 1);
 end
 
-rule "recommend by last 30 days low rates from breweries"
+rule "recommend by low rates and breweries in last 30 days"
 agenda-group "beerCep"
     when
         $user: User()
@@ -60,7 +73,7 @@ agenda-group "beerCep"
         }
 end
 
-rule "recommend by last 30 days low rates from types"
+rule "recommend by low rates and types in last 30 days"
 agenda-group "beerCep"
     when
         $user: User()
@@ -92,4 +105,99 @@ agenda-group "beerCep"
         alarm.setUser($user);
         alarm.setTimestamp(new Date());
         insert(alarm)
+end
+
+
+
+rule "recommend by high alcohol percentage in last 7d - accumulate"
+agenda-group "beerCep"
+salience 100
+    when
+        $user: User()
+        Number(intValue > 1) from accumulate (
+            Rating(user == $user, beer.getPercentageOfAlcohol()>7.0)
+            over window: time(7d), count(1)
+        )
+    then
+        insert(new HighAlcoholLover(true));
+end
+
+
+rule "recommend by low alcohol percentage in last 7d - accumulate"
+agenda-group "beerCep"
+salience 100
+    when
+        $user: User()
+        Number(intValue > 1) from accumulate (
+            Rating(user == $user, beer.getPercentageOfAlcohol()<4.5)
+            over window: time(7d), count(1)
+        )
+    then
+        insert(new LowAlcoholLover(true));
+end
+
+rule "recommend by high IBU in last 7d - accumulate"
+agenda-group "beerCep"
+salience 100
+    when
+        $user: User()
+        Number(intValue > 1) from accumulate (
+            Rating(user == $user, beer.getIbu()>50.0)
+            over window: time(7d), count(1)
+        )
+    then
+        insert(new HighIBULover(true));
+end
+
+rule "recommend by low IBU in last 7d - accumulate"
+agenda-group "beerCep"
+salience 100
+    when
+        $user: User()
+        Number(intValue > 1) from accumulate (
+            Rating(user == $user, beer.getIbu()<50.0)
+            over window: time(7d), count(1)
+        )
+    then
+        insert(new LowIBULover(true));
+end
+
+rule "recommend by high alcohol percentage in last 7d - filter"
+agenda-group "beerCep"
+salience 99
+    when
+        HighAlcoholLover(isLover==true)
+        $beer:Beer(percentageOfAlcohol>7.0)
+    then
+        recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);
+end
+
+rule "recommend by low alcohol percentage in last 7d - filter"
+agenda-group "beerCep"
+salience 99
+    when
+        LowAlcoholLover(isLover==true)
+        $beer:Beer(percentageOfAlcohol<4.5)
+    then
+        recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);
+end
+
+rule "recommend by high IBU in last 7d - filter"
+agenda-group "beerCep"
+salience 99
+    when
+        HighIBULover(isLover==true)
+        $beer:Beer(ibu>50.0)
+    then
+        recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);
+end
+
+rule "recommend by low IBU in last 7d - filter"
+agenda-group "beerCep"
+salience 99
+    when
+        LowIBULover(isLover==true)
+        $beer:Beer(ibu<50.0)
+    then
+        recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);
 end
