@@ -12,6 +12,8 @@ import brewbuddy.services.interfaces.IBeerService;
 import brewbuddy.services.interfaces.IBreweryService;
 import brewbuddy.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotEmpty;
@@ -45,8 +47,10 @@ public class BeerController {
     }
 
     @RequestMapping(path = "/recommend", method = RequestMethod.GET)
-    public List<BeerDTO> recommend(@RequestParam @NotNull @PositiveOrZero Integer userId){
-        User user = userService.get(userId);
+    public List<BeerDTO> recommend(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        User user = userService.get(currentUser.getId());
         return beerService.recommend(user).stream()
                 .map(BeerDTO::convertToDTO)
                 .collect(Collectors.toList());
@@ -64,18 +68,22 @@ public class BeerController {
     }
 
     @RequestMapping(path = "/rate", method = RequestMethod.POST)
-    public RatingDTO filter(@RequestParam @NotNull @PositiveOrZero Integer userId,
-                            @RequestParam @NotNull @PositiveOrZero Integer beerId,
-                            @RequestBody RateDTO rateDto){
-        User user = userService.get(userId);
+    public RatingDTO rate(@RequestParam @NotNull @PositiveOrZero Integer beerId,
+                          @RequestBody RateDTO rateDto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+
+        User user = userService.get(currentUser.getId());
         Beer beer = beerService.get(beerId);
         return RatingDTO.convertToDTO(beerService.rate(user, beer, rateDto.getRate(), rateDto.getComment()));
     }
 
     @RequestMapping(path = "/log", method = RequestMethod.POST)
-    public UserBeerLoggerDTO filter(@RequestParam @NotNull @PositiveOrZero Integer userId,
-                                    @RequestParam @NotNull @PositiveOrZero Integer beerId){
-        User user = userService.get(userId);
+    public UserBeerLoggerDTO filter(@RequestParam @NotNull @PositiveOrZero Integer beerId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+
+        User user = userService.get(currentUser.getId());
         Beer beer = beerService.get(beerId);
         return UserBeerLoggerDTO.convertToDTO(beerService.logBeer(user, beer));
     }
@@ -84,6 +92,7 @@ public class BeerController {
     public List<BeerType> mostLovedBeerTypes(){
         return beerService.mostLovedCategories();
     }
+
     @RequestMapping("/popular")
     public List<BeerDTO> mostPopularBeers(){
         return beerService.mostPopularBeers().stream()

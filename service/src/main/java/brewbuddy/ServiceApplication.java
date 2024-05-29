@@ -14,7 +14,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan(basePackages = {"brewbuddy.models", "brewbuddy.events"})
 @EnableJpaRepositories(basePackages = {"brewbuddy.repositories"})
 @ComponentScan(basePackages = {"brewbuddy.services", "brewbuddy.controllers", "brewbuddy.exceptions",
-		"brewbuddy.configurations"})
+        "brewbuddy.configs"})
 public class ServiceApplication  {
 	
 	private static Logger log = LoggerFactory.getLogger(ServiceApplication.class);

@@ -68,7 +68,7 @@ agenda-group "beerCep"
         for (Beer beer : recommendationMap.keySet()) {
             if (beer.getBrewery().getId().equals($brewery.getId())) {
                 Integer currentValue = recommendationMap.get(beer);
-                recommendationMap.put(beer, currentValue - 1);
+                recommendationMap.put(beer, currentValue - 100);
             }
         }
 end
@@ -86,7 +86,7 @@ agenda-group "beerCep"
         for (Beer beer : recommendationMap.keySet()) {
             if (beer.getType().equals($type)) {
                 Integer currentValue = recommendationMap.get(beer);
-                recommendationMap.put(beer, currentValue - 1);
+                recommendationMap.put(beer, currentValue - 100);
             }
         }
 end

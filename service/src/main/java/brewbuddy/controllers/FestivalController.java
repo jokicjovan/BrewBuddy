@@ -10,6 +10,8 @@ import brewbuddy.services.interfaces.ICityService;
 import brewbuddy.services.interfaces.IFestivalService;
 import brewbuddy.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -59,8 +61,11 @@ public class FestivalController {
     }
 
     @RequestMapping(path = "/recommend", method = RequestMethod.GET)
-    public List<FestivalDetailedDTO> recommend(@RequestParam Integer userId){
-        User user = userService.get(userId);
+    public List<FestivalDetailedDTO> recommend(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+
+        User user = userService.get(currentUser.getId());
         return festivalService.recommend(user).stream()
                 .map(FestivalDetailedDTO::convertToDTO)
                 .collect(Collectors.toList());

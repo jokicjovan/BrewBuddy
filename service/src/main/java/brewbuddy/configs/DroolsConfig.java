@@ -1,4 +1,4 @@
-package brewbuddy.configurations;
+package brewbuddy.configs;
 
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieScanner;

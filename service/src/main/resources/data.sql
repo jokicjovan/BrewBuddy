@@ -3,13 +3,20 @@ INSERT INTO Cities(id, name, postal_code) VALUES (1, 'Novi Sad', '21000');
 INSERT INTO Cities(id, name, postal_code) VALUES (2, 'Beograd', '11000');
 INSERT INTO Cities(id, name, postal_code) VALUES (3, 'Sremska Mitrovica', '22000');
 
+-- Roles
+INSERT INTO ROLES (id, name) VALUES(1, 'ROLE_ADMIN');
+INSERT INTO ROLES (id, name) VALUES(2, 'ROLE_USER');
+
 -- Users
-INSERT INTO Users(id, name, surname, birth_date, is_admin) VALUES (1, 'Vukasin', 'Bogdanovic', '2001-12-7', false);
-INSERT INTO Users(id, name, surname, birth_date, is_admin) VALUES (2, 'Jovan', 'Jokic', '2001-3-9', true);
+INSERT INTO Users(id, name, surname, birth_date, is_account_non_expired, is_account_non_locked) VALUES (1, 'Vukasin', 'Bogdanovic', '2001-12-7', true, true);
+INSERT INTO Users(id, name, surname, birth_date, is_account_non_expired, is_account_non_locked) VALUES (2, 'Jovan', 'Jokic', '2001-3-9', true, true);
 
 -- Credentials
-INSERT INTO Credentials(email, password, user_id) VALUES ('vukasin@example.com', 'vukasin', 1);
-INSERT INTO Credentials(email, password, user_id) VALUES ('jovan@example.com', 'jovan', 2);
+INSERT INTO Credentials(email, password, user_id, is_credentials_non_expired, is_enabled) VALUES ('vukasin@example.com', '$2a$12$uBftIaKM3BrgSaXFQNtDPeVHbyW6MuJNgVjLACB/hVElB6xKkyssS', 1, true, true);
+INSERT INTO Credentials(email, password, user_id, is_credentials_non_expired, is_enabled) VALUES ('jovan@example.com', '$2a$12$HgYP3ud5pL7OXkDMhT1tmeUdDZBBXC9ZcBxnG/rixVEG.jPd.OTfq', 2, true, true);
+
+INSERT INTO users_roles (credential_id, role_id) VALUES (1, 2);
+INSERT INTO users_roles (credential_id, role_id) VALUES (2, 1);
 
 -- Breweries
 INSERT INTO Breweries(id, name, city_id) VALUES (1, '3Bir', 1);

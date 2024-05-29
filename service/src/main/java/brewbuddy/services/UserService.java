@@ -23,16 +23,13 @@ import java.util.*;
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
-    private final CredentialRepository credentialRepository;
-
     private final UserBeerLoggerRepository userBeerLoggerRepository;
     private final KieContainer kieContainer;
 
     @Autowired
-    public UserService(KieContainer kieContainer,UserBeerLoggerRepository userBeerLoggerRepository, UserRepository userRepository, CredentialRepository credentialRepository) {
+    public UserService(KieContainer kieContainer,UserBeerLoggerRepository userBeerLoggerRepository, UserRepository userRepository) {
         this.userRepository = userRepository;
         this.kieContainer = kieContainer;
-        this.credentialRepository = credentialRepository;
         this.userBeerLoggerRepository=userBeerLoggerRepository;
     }
 
