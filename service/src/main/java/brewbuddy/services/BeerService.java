@@ -12,6 +12,8 @@ import brewbuddy.repositories.BeerRepository;
 import brewbuddy.repositories.RatingRepository;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -228,5 +230,59 @@ public class BeerService implements IBeerService {
 
         kieSession.fireAllRules();
         return (HashMap<Integer, Integer>) kieSession.getGlobal("filterMap");
+    }
+
+    @Override
+    public List<Beer> mostPopularBeers(){
+        KieSession kieSession = kieContainer.newKieSession("beerKsession");
+        for (Beer beer:beerRepository.findAll()){
+            kieSession.insert(beer);
+        }
+        for (UserBeerLogger logger:userBeerLoggerRepository.findAll()){
+            kieSession.insert(logger);
+        }
+        QueryResults results = kieSession.getQueryResults("Most Popular Beers");
+
+        Map<Beer, Integer> beerCountMap = new HashMap<>();
+        for (QueryResultsRow row : results) {
+            Beer resultBeer = (Beer) row.get("$beer");
+            Integer count = ((Long) row.get("$count")).intValue();
+            beerCountMap.put(resultBeer, count);
+        }
+        List<Map.Entry<Beer, Integer>> sortedEntries = new ArrayList<>(beerCountMap.entrySet());
+        Collections.sort(sortedEntries, Map.Entry.comparingByValue(Comparator.reverseOrder()));
+
+        List<Beer> sortedResultList = new ArrayList<>();
+        for (Map.Entry<Beer, Integer> entry : sortedEntries) {
+            sortedResultList.add(entry.getKey());
+        }
+        return sortedResultList;
+    }
+
+    @Override
+    public List<BeerType> mostLovedCategories(){
+        KieSession kieSession = kieContainer.newKieSession("beerKsession");
+        for (BeerType type:BeerType.values()){
+            kieSession.insert(type);
+        }
+        for (Rating rating:ratingRepository.findAll()){
+            kieSession.insert(rating);
+        }
+        QueryResults results = kieSession.getQueryResults("Most Popular Beer Categories");
+
+        Map<BeerType, Double> beerTypeCountMap = new HashMap<>();
+        for (QueryResultsRow row : results) {
+            BeerType resultBeerType = (BeerType) row.get("$beerType");
+            Double count = (Double) row.get("$avgRating");
+            beerTypeCountMap.put(resultBeerType, count);
+        }
+        List<Map.Entry<BeerType, Double>> sortedEntries = new ArrayList<>(beerTypeCountMap.entrySet());
+        Collections.sort(sortedEntries, Map.Entry.comparingByValue(Comparator.reverseOrder()));
+
+        List<BeerType> sortedResultList = new ArrayList<>();
+        for (Map.Entry<BeerType, Double> entry : sortedEntries) {
+            sortedResultList.add(entry.getKey());
+        }
+        return sortedResultList;
     }
 }

@@ -10,4 +10,6 @@ public interface IUserService {
     List<User> getAll();
 
     User insert(User user);
+
+    List<User> mostPopularUsers();
 }

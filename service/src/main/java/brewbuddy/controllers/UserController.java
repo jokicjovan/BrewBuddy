@@ -29,4 +29,9 @@ public class UserController {
 	public User getById(@PathVariable Integer id){
 		return userService.get(id);
 	}
+
+	@RequestMapping("/popular")
+	public List<User> getMostPopularUsers(){
+		return userService.mostPopularUsers();
+	}
 }

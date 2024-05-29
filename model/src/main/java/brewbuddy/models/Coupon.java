@@ -26,7 +26,7 @@ public class Coupon {
 
     @Column(name = "discount_percentage", nullable = false)
     @Range(min = 1, max = 100)
-    private Integer discountPercentage;
+    private Double discountPercentage;
 
     @Column(name = "type", nullable = false, insertable = false, updatable = false)
     @Enumerated(EnumType.STRING)

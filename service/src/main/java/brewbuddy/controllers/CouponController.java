@@ -38,7 +38,7 @@ public class CouponController {
         return couponService.get(id);
     }
 
-    @RequestMapping(value = "festival/{id}",method = RequestMethod.POST)
+    @RequestMapping(value = "/festival/{id}",method = RequestMethod.POST)
     public List<FestivalCoupon> generateFestivalCoupons(@PathVariable Integer id){
         Festival festival=festivalService.get(id);
         return couponService.createFestivalCoupon(festival);
@@ -50,7 +50,7 @@ public class CouponController {
         return couponService.createBreweryCoupon(brewery);
     }
 
-    @RequestMapping(value = "application",method = RequestMethod.POST)
+    @RequestMapping(value = "/application",method = RequestMethod.POST)
     public List<ApplicationCoupon> generateAppCoupons(){
         return couponService.createAppCoupon();
     }

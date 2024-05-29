@@ -47,8 +47,9 @@ no-loop
     when
         Festival($breweries: breweries)
     then
-
-        for (Brewery brewery: (ArrayList<Brewery>)$breweries ){
+        ArrayList<Brewery> breweries=new ArrayList<Brewery>();
+        breweries.addAll($breweries);
+        for (Brewery brewery: breweries ){
             for (Beer beer: brewery.getBeers()){
                 insert(beer);
             }
@@ -67,7 +68,7 @@ no-loop
 end
 
 
-rule "Accumulate Drunk Beers By Users"
+rule "Accumulate DrunkAA Beers By Users"
 salience 98
 no-loop
     when
@@ -75,7 +76,6 @@ no-loop
         $drunkBeers: Number() from accumulate(FestivalBeerLogger($user==user)
                                               over window: time(@{range}d),count(1))
     then
-       System.out.println($user.getId()+":"+$drunkBeers);
        if($drunkBeers.intValue()>=@{minBeers}){
            UserBeersAccumulated accumulatedValues=new UserBeersAccumulated();
            accumulatedValues.setUser($user);
@@ -106,7 +106,7 @@ no-loop
                 coupon.setDiscountPercentage(@{percentage});
             }
             if (i>=1 && i<5){
-                coupon.setDiscountPercentage(50);
+                coupon.setDiscountPercentage(@{percentage}/2);
             }
                 coupons.add(coupon);
         }

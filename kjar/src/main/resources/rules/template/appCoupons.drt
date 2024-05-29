@@ -8,7 +8,7 @@ package rules.templateCoupon;
 import brewbuddy.models.Beer;
 import brewbuddy.models.Brewery;
 import brewbuddy.models.User;
-import brewbuddy.models.UserBeerLogger;
+import brewbuddy.events.UserBeerLogger;
 import brewbuddy.models.ApplicationCoupon;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +53,7 @@ salience 98
 no-loop
     when
         $user:User()
-        $drunkBeers: Number() from accumulate(AppBeerLogger($user==$appBeerLogger.getUser())
+        $drunkBeers: Number() from accumulate(AppBeerLogger($user==user)
                                               over window: time(@{range}d),count(1))
     then
        if($drunkBeers.intValue()>=@{minBeers}){

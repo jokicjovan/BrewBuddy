@@ -26,4 +26,8 @@ public interface IBeerService {
     Rating rate(User user, Beer beer, Integer rate, String comment);
 
     UserBeerLogger logBeer(User user, Beer beer);
+
+    List<Beer> mostPopularBeers();
+
+    List<BeerType> mostLovedCategories();
 }

@@ -12,8 +12,11 @@ import brewbuddy.services.interfaces.IUserService;
 import org.drools.template.DataProvider;
 import org.drools.template.DataProviderCompiler;
 import org.drools.template.objects.ArrayDataProvider;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -84,7 +87,6 @@ public class CouponService implements ICouponService {
 
         ArrayList<FestivalCoupon> coupons = new ArrayList<>();
         ksession.setGlobal("coupons", coupons);
-
         ksession.insert(festival);
         ksession.insert(userService.getAll());
         ksession.insert(userService.getAll());
@@ -118,7 +120,6 @@ public class CouponService implements ICouponService {
         ksession.setGlobal("coupons", coupons);
 
         ksession.insert(brewery);
-        ksession.insert(userService.getAll());
         ksession.insert(userService.getAll());
         ksession.insert(userBeerLoggerRepository.findAll());
 
@@ -179,6 +180,12 @@ public class CouponService implements ICouponService {
             throw new IllegalStateException("Compilation errors were found. Check the logs.");
         }
 
-        return kieHelper.build().newKieSession();
+        return kieHelper.build(createStreamModeKieBaseConfiguration()).newKieSession();
+    }
+    private KieBaseConfiguration createStreamModeKieBaseConfiguration() {
+        KieServices kieServices = KieServices.Factory.get();
+        KieBaseConfiguration config = kieServices.newKieBaseConfiguration();
+        config.setOption(EventProcessingOption.STREAM);
+        return config;
     }
 }

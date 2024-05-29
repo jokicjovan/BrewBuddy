@@ -79,4 +79,15 @@ public class BeerController {
         Beer beer = beerService.get(beerId);
         return UserBeerLoggerDTO.convertToDTO(beerService.logBeer(user, beer));
     }
+
+    @RequestMapping("/beerType/popular")
+    public List<BeerType> mostLovedBeerTypes(){
+        return beerService.mostLovedCategories();
+    }
+    @RequestMapping("/popular")
+    public List<BeerDTO> mostPopularBeers(){
+        return beerService.mostPopularBeers().stream()
+                .map(BeerDTO::convertToDTO)
+                .collect(Collectors.toList());
+    }
 }
