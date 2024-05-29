@@ -22,7 +22,7 @@ public class CouponCriteria {
     private CouponType type;
 
     @Column(name = "min_beers", nullable = false)
-    private CouponType minBeers;
+    private Integer minBeers;
     @Column(name = "percentage", nullable = false)
     private Double percentage;
 

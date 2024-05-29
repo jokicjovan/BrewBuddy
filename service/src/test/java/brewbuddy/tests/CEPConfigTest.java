@@ -17,6 +17,8 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.internal.utils.KieHelper;
 
 import java.io.InputStream;
@@ -102,7 +104,7 @@ public class CEPConfigTest {
 
         InputStream template = CEPConfigTest.class.getResourceAsStream("/rules/template/festivalCoupons.drt");
         DataProvider dataProvider = new ArrayDataProvider(new String[][]{
-                new String[]{"1", "20", "10", "10"}
+                new String[]{"1", "20.0", "10", "10"}
         });
 
         DataProviderCompiler converter = new DataProviderCompiler();
@@ -273,6 +275,238 @@ public class CEPConfigTest {
         System.out.println(coupons.size());
 
     }
+
+    @Test
+    public void beerRecommendationAlcoholPercentage() {
+
+        KieServices ks = KieServices.Factory.get();
+        KieContainer kContainer = ks.getKieClasspathContainer();
+        KieSession ksession = kContainer.newKieSession("beerKsession");
+        ksession.getAgenda().getAgendaGroup("beerCepAlcohol&IBU").setFocus();
+
+        HashMap<Beer, Integer> recommendationMap = new HashMap<Beer, Integer>();
+        ksession.setGlobal("recommendationMap", recommendationMap);
+
+        User user = new User();
+        user.setId(1);
+
+        Brewery brewery1 = new Brewery();
+        brewery1.setId(1);
+        Brewery brewery2 = new Brewery();
+        brewery2.setId(2);
+
+        Beer beer1 = new Beer();
+        beer1.setId(1);
+        beer1.setType(BeerType.IPA);
+        beer1.setBrewery(brewery1);
+        beer1.setPercentageOfAlcohol(8.0);
+        beer1.setIbu(10.0);
+
+        Beer beer2 = new Beer();
+        beer2.setId(2);
+        beer2.setType(BeerType.IPA);
+        beer2.setBrewery(brewery1);
+        beer2.setPercentageOfAlcohol(4.0);
+        beer2.setIbu(10.0);
+
+        Beer beer3 = new Beer();
+        beer3.setId(3);
+        beer3.setType(BeerType.IPA);
+        beer3.setBrewery(brewery2);
+        beer3.setPercentageOfAlcohol(8.5);
+        beer3.setIbu(80.0);
+
+        Beer beer4 = new Beer();
+        beer4.setId(4);
+        beer4.setType(BeerType.ALE);
+        beer4.setBrewery(brewery2);
+        beer4.setPercentageOfAlcohol(4.0);
+        beer4.setIbu(80.0);
+
+        Rating rating1 = new Rating();
+        rating1.setId(1);
+        rating1.setBeer(beer1);
+        rating1.setUser(user);
+        rating1.setRate(5);
+        rating1.setTimestamp(new Date());
+
+        Rating rating2 = new Rating();
+        rating2.setId(2);
+        rating2.setBeer(beer2);
+        rating2.setUser(user);
+        rating2.setRate(5);
+        rating2.setTimestamp(new Date());
+
+        Rating rating3 = new Rating();
+        rating3.setId(3);
+        rating3.setBeer(beer3);
+        rating3.setUser(user);
+        rating3.setRate(5);
+        rating3.setTimestamp(new Date());
+
+
+        Rating rating4 = new Rating();
+        rating4.setId(3);
+        rating4.setBeer(beer4);
+        rating4.setUser(user);
+        rating4.setRate(5);
+        rating4.setTimestamp(new Date());
+
+        ksession.insert(rating1);
+        ksession.insert(rating2);
+        ksession.insert(rating3);
+        ksession.insert(rating4);
+        ksession.insert(beer1);
+        ksession.insert(beer2);
+        ksession.insert(beer3);
+        ksession.insert(beer4);
+        ksession.insert(user);
+
+        int count = ksession.fireAllRules();
+        System.out.println(count);
+        recommendationMap = (HashMap<Beer, Integer>) ksession.getGlobal("recommendationMap");
+        System.out.println(recommendationMap);
+    }
+
+    @Test
+    public void queries() {
+
+        KieServices ks = KieServices.Factory.get();
+        KieContainer kContainer = ks.getKieClasspathContainer();
+        KieSession ksession = kContainer.newKieSession("beerKsession");
+
+
+        User user = new User();
+        user.setId(1);
+
+        Brewery brewery1 = new Brewery();
+        brewery1.setId(1);
+        Brewery brewery2 = new Brewery();
+        brewery2.setId(2);
+
+        Beer beer1 = new Beer();
+        beer1.setId(1);
+        beer1.setType(BeerType.IPA);
+        beer1.setBrewery(brewery1);
+        beer1.setPercentageOfAlcohol(8.0);
+        beer1.setIbu(10.0);
+        beer1.setBrewery(brewery1);
+
+        Beer beer2 = new Beer();
+        beer2.setId(2);
+        beer2.setType(BeerType.IPA);
+        beer2.setBrewery(brewery1);
+        beer2.setPercentageOfAlcohol(4.0);
+        beer2.setIbu(10.0);
+        beer2.setBrewery(brewery1);
+
+        Beer beer3 = new Beer();
+        beer3.setId(3);
+        beer3.setType(BeerType.IPA);
+        beer3.setBrewery(brewery2);
+        beer3.setPercentageOfAlcohol(8.5);
+        beer3.setIbu(80.0);
+        beer3.setBrewery(brewery1);
+
+        Beer beer4 = new Beer();
+        beer4.setId(4);
+        beer4.setType(BeerType.ALE);
+        beer4.setBrewery(brewery2);
+        beer4.setPercentageOfAlcohol(4.0);
+        beer4.setIbu(80.0);
+        beer4.setBrewery(brewery2);
+
+        Rating rating1 = new Rating();
+        rating1.setId(1);
+        rating1.setBeer(beer1);
+        rating1.setUser(user);
+        rating1.setRate(5);
+        rating1.setTimestamp(new Date());
+
+        Rating rating2 = new Rating();
+        rating2.setId(2);
+        rating2.setBeer(beer2);
+        rating2.setUser(user);
+        rating2.setRate(5);
+        rating2.setTimestamp(new Date());
+
+        Rating rating3 = new Rating();
+        rating3.setId(3);
+        rating3.setBeer(beer3);
+        rating3.setUser(user);
+        rating3.setRate(2);
+        rating3.setTimestamp(new Date());
+
+
+        Rating rating4 = new Rating();
+        rating4.setId(3);
+        rating4.setBeer(beer4);
+        rating4.setUser(user);
+        rating4.setRate(5);
+        rating4.setTimestamp(new Date());
+
+        UserBeerLogger ub1=new UserBeerLogger();
+        ub1.setBeer(beer4);
+        ub1.setId(1);
+        ub1.setUser(user);
+        ub1.setTimestamp(new Date());
+
+        ksession.insert(rating1);
+        ksession.insert(rating2);
+        ksession.insert(rating3);
+        ksession.insert(rating4);
+        ksession.insert(beer1);
+        ksession.insert(beer2);
+        ksession.insert(beer3);
+        ksession.insert(beer4);
+        ksession.insert(user);
+        ksession.insert(ub1);
+        ksession.insert(brewery1);
+        ksession.insert(brewery2);
+        ksession.insert(BeerType.IPA);
+        ksession.insert(BeerType.ALE);
+
+        QueryResults results = ksession.getQueryResults("Most Popular Beers");
+
+        // Process the results
+        System.out.println("Most Popular Beers:");
+        for (QueryResultsRow row : results) {
+            String resultBeer = ((Beer) row.get("$beer")).getId().toString();
+            Integer averageRating = ((Long) row.get("$count")).intValue();
+            System.out.println(resultBeer + ": " + averageRating);
+        }
+
+        results = ksession.getQueryResults("Most Popular Breweries");
+
+        // Process the results
+        System.out.println("Most Popular Breweries:");
+        for (QueryResultsRow row : results) {
+            String resultBeer = ((Brewery) row.get("$brewery")).getId().toString();
+            Integer averageRating = ((Long) row.get("$count")).intValue();
+            System.out.println(resultBeer + ": " + averageRating);
+        }
+
+        results = ksession.getQueryResults("Most Popular Beer Categories");
+
+        // Process the results
+        System.out.println("Most Popular Beer Categories:");
+        for (QueryResultsRow row : results) {
+            String resultBeer = ((BeerType) row.get("$beerType")).toString();
+            Double averageRating = (Double) row.get("$avgRating");
+            System.out.println(resultBeer + ": " + averageRating);
+        }
+
+        results = ksession.getQueryResults("Most Active Users");
+
+        // Process the results
+        System.out.println("Most Active Users:");
+        for (QueryResultsRow row : results) {
+            String resultBeer = ((User)row.get("$user")).toString();
+            Integer averageRating = ((Long) row.get("$count")).intValue();
+            System.out.println(resultBeer + ": " + averageRating);
+        }
+    }
+
     private KieSession createKieSessionFromDRL(String drl){
         KieHelper kieHelper = new KieHelper();
         kieHelper.addContent(drl, ResourceType.DRL);

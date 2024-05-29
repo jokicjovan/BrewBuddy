@@ -28,7 +28,7 @@ public class Festival {
     @JoinColumn(name="city_id", nullable=false)
     private City city;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "festivals_breweries",
             joinColumns = @JoinColumn(name = "festival_id"),

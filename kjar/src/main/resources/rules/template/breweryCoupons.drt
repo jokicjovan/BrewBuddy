@@ -8,7 +8,7 @@ package rules.templateCoupon;
 import brewbuddy.models.Beer;
 import brewbuddy.models.Brewery;
 import brewbuddy.models.User;
-import brewbuddy.models.UserBeerLogger;
+import brewbuddy.events.UserBeerLogger;
 import brewbuddy.models.BreweryCoupon;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,9 +53,9 @@ salience 99
 no-loop
     when
         $breweryBeer:Beer()
-        $userBeers:UserBeerLogger( beer==$breweryBeer)
+        $beerHistory:UserBeerLogger(beer==$breweryBeer)
     then
-        insert(new BreweryBeerLogger($userBeers.getId(),$userBeers.getTimestamp(),$userBeers.getBeer(),$userBeers.getUser()));
+        insert(new BreweryBeerLogger($beerHistory.getId(),$beerHistory.getTimestamp(),$beerHistory.getBeer(),$beerHistory.getUser()));
 end
 
 
@@ -64,7 +64,7 @@ salience 98
 no-loop
     when
         $user:User()
-        $drunkBeers: Number() from accumulate(BreweryBeerLogger($user==$breweryBeerLogger.getUser())
+        $drunkBeers: Number() from accumulate(BreweryBeerLogger($user==user)
                                               over window: time(@{range}d),count(1))
     then
        if($drunkBeers.intValue()>=@{minBeers}){

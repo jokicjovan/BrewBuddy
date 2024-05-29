@@ -10,4 +10,6 @@ public interface IBreweryService {
     List<Brewery> getAll();
 
     Brewery insert(Brewery brewery);
+
+    List<Brewery> mostPopularBreweries();
 }

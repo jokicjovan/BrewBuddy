@@ -1,0 +1,46 @@
+package rules.beer;
+dialect  "mvel"
+
+import brewbuddy.models.Beer;
+import brewbuddy.models.Brewery;
+import brewbuddy.models.User;
+import brewbuddy.models.enums.BeerType;
+import brewbuddy.events.UserBeerLogger;
+import brewbuddy.events.Rating;
+
+import java.text.SimpleDateFormat;
+
+global java.util.HashMap<Beer, Integer> recommendationMap;
+
+query "Most Popular Beers"
+    $beer: Beer()
+    $count: Number() from accumulate (
+        UserBeerLogger(beer == $beer),
+        count(1)
+    )
+end
+
+query "Most Popular Breweries"
+    $brewery: Brewery()
+    $count: Number() from accumulate (
+        UserBeerLogger(beer.getBrewery() == $brewery),
+        count(1)
+    )
+end
+
+query "Most Popular Beer Categories"
+
+    $beerType: BeerType()
+    $avgRating:Double() from accumulate (
+        Rating(beer.getType() == $beerType,$rate:rate),
+        average($rate)
+    )
+end
+
+query "Most Active Users"
+    $user: User()
+    $count: Number() from accumulate (
+        UserBeerLogger(user==$user),
+        count(1)
+    )
+end
