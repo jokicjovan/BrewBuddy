@@ -6,6 +6,7 @@ import brewbuddy.dtos.RatingDTO;
 import brewbuddy.dtos.UserBeerLoggerDTO;
 import brewbuddy.models.Beer;
 import brewbuddy.models.Brewery;
+import brewbuddy.models.Credential;
 import brewbuddy.models.User;
 import brewbuddy.enums.BeerType;
 import brewbuddy.services.interfaces.IBeerService;
@@ -49,7 +50,8 @@ public class BeerController {
     @RequestMapping(path = "/recommend", method = RequestMethod.GET)
     public List<BeerDTO> recommend(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
+        User currentUser = ((Credential) authentication.getPrincipal()).getUser();
+
         User user = userService.get(currentUser.getId());
         return beerService.recommend(user).stream()
                 .map(BeerDTO::convertToDTO)
@@ -71,7 +73,7 @@ public class BeerController {
     public RatingDTO rate(@RequestParam @NotNull @PositiveOrZero Integer beerId,
                           @RequestBody RateDTO rateDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
+        User currentUser = ((Credential) authentication.getPrincipal()).getUser();
 
         User user = userService.get(currentUser.getId());
         Beer beer = beerService.get(beerId);
@@ -81,7 +83,7 @@ public class BeerController {
     @RequestMapping(path = "/log", method = RequestMethod.POST)
     public UserBeerLoggerDTO filter(@RequestParam @NotNull @PositiveOrZero Integer beerId){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
+        User currentUser = ((Credential) authentication.getPrincipal()).getUser();
 
         User user = userService.get(currentUser.getId());
         Beer beer = beerService.get(beerId);

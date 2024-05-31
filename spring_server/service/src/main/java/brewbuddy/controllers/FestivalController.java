@@ -3,6 +3,7 @@ package brewbuddy.controllers;
 import brewbuddy.dtos.CreateFestivalDTO;
 import brewbuddy.dtos.FestivalDetailedDTO;
 import brewbuddy.models.Brewery;
+import brewbuddy.models.Credential;
 import brewbuddy.models.Festival;
 import brewbuddy.models.User;
 import brewbuddy.services.interfaces.IBreweryService;
@@ -63,7 +64,7 @@ public class FestivalController {
     @RequestMapping(path = "/recommend", method = RequestMethod.GET)
     public List<FestivalDetailedDTO> recommend(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
+        User currentUser = ((Credential) authentication.getPrincipal()).getUser();
 
         User user = userService.get(currentUser.getId());
         return festivalService.recommend(user).stream()
