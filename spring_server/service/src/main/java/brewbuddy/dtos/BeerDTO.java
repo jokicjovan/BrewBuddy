@@ -16,6 +16,7 @@ public class BeerDTO {
     private Double price;
     private BeerType type;
     private BrewerySimpleDTO brewery;
+    private String imageName;
 
     public static BeerDTO convertToDTO(Beer beer) {
         BeerDTO dto = new BeerDTO();
@@ -26,6 +27,7 @@ public class BeerDTO {
         dto.setPrice(beer.getPrice());
         dto.setType(beer.getType());
         dto.setBrewery(BrewerySimpleDTO.convertToDTO(beer.getBrewery()));
+        dto.setImageName(beer.getImageName());
         return dto;
     }
 }

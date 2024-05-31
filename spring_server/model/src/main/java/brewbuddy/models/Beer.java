@@ -24,7 +24,6 @@ public class Beer {
     @Column(name = "name", nullable = false)
     private String name;
 
-
     @Position(2)
     @Column(name = "percentage_of_alcohol", nullable = false)
     private Double percentageOfAlcohol;
@@ -44,8 +43,11 @@ public class Beer {
 
     @Position(0)
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="brewery_id", nullable=false)
+    @JoinColumn(name="brewery_id", nullable = false)
     private Brewery brewery;
+
+    @Column(name = "image_name")
+    private String imageName;
 
     @Override
     public String toString() {

@@ -27,6 +27,9 @@ public class Brewery {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "brewery", cascade = CascadeType.ALL)
     private List<Beer> beers;
 
+    @Column(name = "image_name")
+    private String imageName;
+
     @Override
     public String toString() {
         return "Brewery{" +
