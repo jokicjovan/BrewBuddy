@@ -1,7 +1,7 @@
 package brewbuddy.controllers;
 
 import brewbuddy.dtos.CreateFestivalDTO;
-import brewbuddy.dtos.FestivalDetailedDTO;
+import brewbuddy.dtos.FestivalDTO;
 import brewbuddy.models.Brewery;
 import brewbuddy.models.Credential;
 import brewbuddy.models.Festival;
@@ -48,7 +48,7 @@ public class FestivalController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public FestivalDetailedDTO insert(@RequestBody CreateFestivalDTO festival){
+    public FestivalDTO insert(@RequestBody CreateFestivalDTO festival){
         Festival newFestival=new Festival();
         newFestival.setName(festival.getName());
         newFestival.setEventDate(festival.getEventDate());
@@ -58,17 +58,17 @@ public class FestivalController {
             breweries.add(breweryService.get(i));
         }
         newFestival.setBreweries(breweries);
-        return FestivalDetailedDTO.convertToDTO(festivalService.insert(newFestival));
+        return FestivalDTO.convertToDetailedDTO(festivalService.insert(newFestival));
     }
 
     @RequestMapping(path = "/recommend", method = RequestMethod.GET)
-    public List<FestivalDetailedDTO> recommend(){
+    public List<FestivalDTO> recommend(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = ((Credential) authentication.getPrincipal()).getUser();
 
         User user = userService.get(currentUser.getId());
         return festivalService.recommend(user).stream()
-                .map(FestivalDetailedDTO::convertToDTO)
+                .map(FestivalDTO::convertToDetailedDTO)
                 .collect(Collectors.toList());
     }
 }

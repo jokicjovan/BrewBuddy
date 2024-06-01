@@ -12,7 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class UserBeerLoggerDTO {
     private Integer Id;
-    private UserSimpleDTO user;
+    private UserDTO user;
     private BeerDTO beer;
     private Date timestamp;
 
@@ -20,7 +20,7 @@ public class UserBeerLoggerDTO {
         UserBeerLoggerDTO dto = new UserBeerLoggerDTO();
         dto.setId(userBeerLogger.getId());
         dto.setBeer(BeerDTO.convertToDTO(userBeerLogger.getBeer()));
-        dto.setUser(UserSimpleDTO.convertToDTO(userBeerLogger.getUser()));
+        dto.setUser(UserDTO.convertToSimpleDTO(userBeerLogger.getUser()));
         dto.setTimestamp(userBeerLogger.getTimestamp());
         return dto;
     }

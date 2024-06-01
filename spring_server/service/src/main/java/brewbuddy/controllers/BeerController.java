@@ -1,7 +1,7 @@
 package brewbuddy.controllers;
 
 import brewbuddy.dtos.BeerDTO;
-import brewbuddy.dtos.RateDTO;
+import brewbuddy.dtos.CreateRatingDTO;
 import brewbuddy.dtos.RatingDTO;
 import brewbuddy.dtos.UserBeerLoggerDTO;
 import brewbuddy.models.Beer;
@@ -71,13 +71,13 @@ public class BeerController {
 
     @RequestMapping(path = "/rate", method = RequestMethod.POST)
     public RatingDTO rate(@RequestParam @NotNull @PositiveOrZero Integer beerId,
-                          @RequestBody RateDTO rateDto){
+                          @RequestBody CreateRatingDTO createRatingDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = ((Credential) authentication.getPrincipal()).getUser();
 
         User user = userService.get(currentUser.getId());
         Beer beer = beerService.get(beerId);
-        return RatingDTO.convertToDTO(beerService.rate(user, beer, rateDto.getRate(), rateDto.getComment()));
+        return RatingDTO.convertToDTO(beerService.rate(user, beer, createRatingDto.getRate(), createRatingDto.getComment()));
     }
 
     @RequestMapping(path = "/log", method = RequestMethod.POST)

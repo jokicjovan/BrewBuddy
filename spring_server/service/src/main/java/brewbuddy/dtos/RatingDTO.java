@@ -13,7 +13,7 @@ import java.util.Date;
 public class RatingDTO {
     private Integer rating;
     private String comment;
-    private UserSimpleDTO user;
+    private UserDTO user;
     private BeerDTO beer;
     private Date timestamp;
     private Integer id;
@@ -22,7 +22,7 @@ public class RatingDTO {
         RatingDTO dto = new RatingDTO();
         dto.setId(rating.getId());
         dto.setComment(rating.getComment());
-        dto.setUser(UserSimpleDTO.convertToDTO(rating.getUser()));
+        dto.setUser(UserDTO.convertToSimpleDTO(rating.getUser()));
         dto.setBeer(BeerDTO.convertToDTO(rating.getBeer()));
         dto.setTimestamp(rating.getTimestamp());
         dto.setRating(rating.getRate());

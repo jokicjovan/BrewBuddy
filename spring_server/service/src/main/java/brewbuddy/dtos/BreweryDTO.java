@@ -9,14 +9,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class BrewerySimpleDTO {
+public class BreweryDTO {
     private Integer id;
     private String name;
     private City city;
     private String imageName;
 
-    public static BrewerySimpleDTO convertToDTO(Brewery brewery) {
-        BrewerySimpleDTO dto = new BrewerySimpleDTO();
+    public static BreweryDTO convertToSimpleDTO(Brewery brewery) {
+        BreweryDTO dto = new BreweryDTO();
         dto.setId(brewery.getId());
         dto.setName(brewery.getName());
         dto.setCity(brewery.getCity());

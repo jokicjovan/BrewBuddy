@@ -4,15 +4,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-
 @Getter
 @Setter
 @NoArgsConstructor
-public class RegisterUserDTO {
+public class LoginDTO {
     private String email;
     private String password;
-    private String name;
-    private String surname;
-    private Date birthDate;
 }

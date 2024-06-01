@@ -13,25 +13,21 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FestivalDetailedDTO {
+public class FestivalDTO {
     private Integer id;
-
     private String name;
-
     private Date eventDate;
-
     private City city;
+    private List<BreweryDTO> breweries;
 
-    private List<BrewerySimpleDTO> breweries;
-
-    public static FestivalDetailedDTO convertToDTO(Festival festival) {
-        FestivalDetailedDTO dto = new FestivalDetailedDTO();
+    public static FestivalDTO convertToDetailedDTO(Festival festival) {
+        FestivalDTO dto = new FestivalDTO();
         dto.setId(festival.getId());
         dto.setName(festival.getName());
         dto.setCity(festival.getCity());
         dto.setEventDate(festival.getEventDate());
         dto.setBreweries(festival.getBreweries().stream()
-                .map(BrewerySimpleDTO::convertToDTO)
+                .map(BreweryDTO::convertToSimpleDTO)
                 .collect(Collectors.toList()));
         return dto;
     }

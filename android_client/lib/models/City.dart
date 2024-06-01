@@ -1,5 +1,3 @@
-
-
 class City {
   final int id;
   final String name;

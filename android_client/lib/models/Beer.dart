@@ -1,7 +1,4 @@
-
-
-
-import 'package:android_client/models/BrewerySimple.dart';
+import 'Brewery.dart';
 
 class Beer {
   final int id;
@@ -11,7 +8,7 @@ class Beer {
   final double price;
   final String type;
   final String imageName;
-  final BrewerySimple brewery;
+  final Brewery brewery;
 
   Beer(this.id, this.name, this.percentageOfAlcohol, this.ibu, this.price,
       this.type, this.imageName, this.brewery);

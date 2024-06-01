@@ -1,4 +1,5 @@
-import 'package:BrewBuddy/pages/HomePage.dart';
+import 'package:BrewBuddy/pages/CouponPage.dart';
+import 'package:BrewBuddy/pages/LoginPage.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -8,27 +9,29 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'BrewBuddy',
-
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Poppins',
         scaffoldBackgroundColor: const Color.fromRGBO(0, 0, 0, 1.0),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.black,
-          onPrimary: const Color.fromRGBO(245, 195, 0, 1.0),
-          onSecondary: const Color.fromRGBO(1, 1, 1, 1.0),
-
-
-          // ···
+        colorScheme: const ColorScheme(
+          primary: Color.fromRGBO(245, 195, 0, 1.0),
+          onPrimary: Colors.black,
+          secondary: Colors.black,
+          onSecondary: Color.fromRGBO(245, 195, 0, 1.0),
+          surface: Colors.black,
+          onSurface: Colors.white70,
+          error: Colors.red,
+          onError: Colors.white,
           brightness: Brightness.dark,
         ),
+        cardColor: const Color.fromRGBO(151, 151, 151, 0.22),
         useMaterial3: true,
       ),
-      home: const HomePage(title: 'Home'),
+      home: const CouponPage(),
     );
   }
 }

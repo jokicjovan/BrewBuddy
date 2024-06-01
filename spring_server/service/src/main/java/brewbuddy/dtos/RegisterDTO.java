@@ -5,14 +5,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class CreateFestivalDTO {
+public class RegisterDTO {
+    private String email;
+    private String password;
     private String name;
-    private Date eventDate;
-    private Integer cityId;
-    private List<Integer> breweryIds;
+    private String surname;
+    private Date birthDate;
 }

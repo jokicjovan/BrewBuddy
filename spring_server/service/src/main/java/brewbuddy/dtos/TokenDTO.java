@@ -4,10 +4,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-public class LoginUserDTO {
-    private String email;
-    private String password;
+public class TokenDTO {
+    private String token;
+    private long expiresIn;
 }

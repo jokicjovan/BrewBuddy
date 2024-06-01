@@ -1,6 +1,5 @@
 package brewbuddy.dtos;
 
-import brewbuddy.models.Beer;
 import brewbuddy.models.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,14 +10,14 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserSimpleDTO {
+public class UserDTO {
     private String name;
     private String surname;
     private Date birthDate;
     private Integer id;
 
-    public static UserSimpleDTO convertToDTO(User user) {
-        UserSimpleDTO dto = new UserSimpleDTO();
+    public static UserDTO convertToSimpleDTO(User user) {
+        UserDTO dto = new UserDTO();
         dto.setId(user.getId());
         dto.setName(user.getName());
         dto.setSurname(user.getSurname());

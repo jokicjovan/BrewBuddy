@@ -1,13 +1,11 @@
-
-
 import 'City.dart';
 
-class BrewerySimple{
+class Brewery{
 
   final int id;
   final String name;
   final String imageName;
   final City city;
 
-  BrewerySimple(this.id, this.name, this.imageName,this.city);
+  Brewery(this.id, this.name, this.imageName,this.city);
 }

@@ -1,8 +1,8 @@
 package brewbuddy.controllers;
 
-import brewbuddy.dtos.LoginResponseDTO;
-import brewbuddy.dtos.LoginUserDTO;
-import brewbuddy.dtos.RegisterUserDTO;
+import brewbuddy.dtos.TokenDTO;
+import brewbuddy.dtos.LoginDTO;
+import brewbuddy.dtos.RegisterDTO;
 import brewbuddy.models.Credential;
 import brewbuddy.models.User;
 import brewbuddy.services.AuthenticationService;
@@ -29,24 +29,24 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody RegisterUserDTO registerUserDTO) {
+    public ResponseEntity<User> register(@RequestBody RegisterDTO registerDTO) {
         User user = new User();
-        user.setName(registerUserDTO.getName());
-        user.setSurname(registerUserDTO.getSurname());
-        user.setBirthDate(registerUserDTO.getBirthDate());
+        user.setName(registerDTO.getName());
+        user.setSurname(registerDTO.getSurname());
+        user.setBirthDate(registerDTO.getBirthDate());
         Credential credential = new Credential();
-        credential.setEmail(registerUserDTO.getEmail());
-        credential.setPassword(passwordEncoder.encode(registerUserDTO.getPassword()));
+        credential.setEmail(registerDTO.getEmail());
+        credential.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
         User registeredUser = authenticationService.register(user, credential);
 
         return ResponseEntity.ok(registeredUser);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginUserDTO loginUserDTO) {
-        Credential userCredential = authenticationService.authenticate(loginUserDTO.getEmail(), loginUserDTO.getPassword());
+    public ResponseEntity<TokenDTO> login(@RequestBody LoginDTO loginDTO) {
+        Credential userCredential = authenticationService.authenticate(loginDTO.getEmail(), loginDTO.getPassword());
         String jwtToken = jwtService.generateToken(userCredential);
-        LoginResponseDTO loginResponse = new LoginResponseDTO();
+        TokenDTO loginResponse = new TokenDTO();
         loginResponse.setToken(jwtToken);
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
         return ResponseEntity.ok(loginResponse);

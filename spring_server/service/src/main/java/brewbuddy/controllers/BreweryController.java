@@ -1,8 +1,6 @@
 package brewbuddy.controllers;
 
-import brewbuddy.dtos.BeerDTO;
-import brewbuddy.dtos.BrewerySimpleDTO;
-import brewbuddy.models.Beer;
+import brewbuddy.dtos.BreweryDTO;
 import brewbuddy.models.Brewery;
 import brewbuddy.services.interfaces.IBreweryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +32,9 @@ public class BreweryController {
         return breweryService.get(id);
     }
     @RequestMapping("/popular")
-    public List<BrewerySimpleDTO> getPopular(){
+    public List<BreweryDTO> getPopular(){
         return breweryService.mostPopularBreweries().stream()
-                .map(BrewerySimpleDTO::convertToDTO)
+                .map(BreweryDTO::convertToSimpleDTO)
                 .collect(Collectors.toList());
     }
 }
