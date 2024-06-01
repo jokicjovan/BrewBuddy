@@ -8,8 +8,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="kjar" />
-        <module name="model" />
         <module name="service" />
+        <module name="model" />
       </profile>
     </annotationProcessing>
   </component>
