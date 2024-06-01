@@ -1,50 +1,110 @@
+import 'package:BrewBuddy/pages/CouponPage.dart';
+import 'package:BrewBuddy/pages/DashboardPage.dart';
+import 'package:BrewBuddy/pages/SearchPage.dart';
+import 'package:BrewBuddy/pages/TrendingPage.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
-  final String title;
-
   @override
-  State<HomePage> createState() => HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
 class HomePageState extends State<HomePage> {
-  int _counter = 0;
+  int _currentIndex = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  final List<Widget> _tabs = [
+    DashboardPage(),
+    SearchPage(),
+    TrendingPage(),
+    CouponPage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.onSecondary,
-        title: Text(widget.title),
-
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.onPrimary,
+          title: const Text("BrewBuddy"),
+          titleTextStyle: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w700,
+            color: Theme.of(context).colorScheme.onSecondary,
+          ),
+          centerTitle: true,
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
-    );
+        body: _tabs[_currentIndex],
+        floatingActionButton: FloatingActionButton.large(
+          onPressed: () {},
+          shape: const CircleBorder(),
+          child: ImageIcon(
+            const AssetImage('assets/beers-icon.png'),
+            color: Theme.of(context).colorScheme.onPrimary,
+            size: 50,
+          ),
+          tooltip: "Drink",
+          backgroundColor: Theme.of(context).colorScheme.onSecondary,
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: BottomAppBar(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          height: 80,
+          color: Colors.transparent,
+          notchMargin: 5,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              IconButton(
+                icon: Icon(
+                  Icons.home_rounded,
+                  color: _currentIndex == 0 ? Theme.of(context).colorScheme.onSecondary : Colors.white,
+                  size: 35,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _currentIndex = 0;
+                  });
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.search_rounded,
+                  color: _currentIndex == 1 ? Theme.of(context).colorScheme.onSecondary : Colors.white,
+                  size: 35,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _currentIndex = 1;
+                  });
+                },
+              ),
+              const SizedBox(width: 50,),
+              IconButton(
+                icon: Icon(
+                  Icons.local_fire_department_rounded,
+                  color: _currentIndex == 2 ?Theme.of(context).colorScheme.onSecondary : Colors.white,
+                  size: 35,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _currentIndex = 2;
+                  });
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.local_activity_rounded,
+                  color: _currentIndex == 3 ? Theme.of(context).colorScheme.onSecondary : Colors.white,
+                  size: 35,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _currentIndex = 3;
+                  });
+                },
+              ),
+            ],
+          ),
+        ));
   }
 }
