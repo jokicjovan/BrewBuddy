@@ -13,11 +13,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'BrewBuddy',
+
       theme: ThemeData(
+        fontFamily: 'Poppins',
+        scaffoldBackgroundColor: const Color.fromRGBO(0, 0, 0, 1.0),
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.black,
           onPrimary: const Color.fromRGBO(245, 195, 0, 1.0),
           onSecondary: const Color.fromRGBO(1, 1, 1, 1.0),
+
 
           // ···
           brightness: Brightness.dark,

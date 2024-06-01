@@ -21,8 +21,10 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.onPrimary,
+        backgroundColor: Theme.of(context).colorScheme.onSecondary,
         title: Text(widget.title),
+
+        centerTitle: true,
       ),
       body: Center(
         child: Column(
