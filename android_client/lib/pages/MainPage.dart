@@ -3,6 +3,7 @@ import 'package:BrewBuddy/pages/CouponPage.dart';
 import 'package:BrewBuddy/pages/DashboardPage.dart';
 import 'package:BrewBuddy/pages/SearchPage.dart';
 import 'package:BrewBuddy/pages/PopularPage.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 

@@ -53,7 +53,7 @@ class Beer {
             city: City(id: 1, name: "Novi Sad", postalCode: "22000"))));
     beers.add(Beer(
         id: 1,
-        name: "JuiceIPA",
+        name: "Heineken",
         percentageOfAlcohol: 6.0,
         ibu: 60,
         price: 0,
@@ -66,7 +66,7 @@ class Beer {
             city: City(id: 1, name: "Novi Sad", postalCode: "22000"))));
     beers.add(Beer(
         id: 1,
-        name: "JuiceIPA",
+        name: "Bira",
         percentageOfAlcohol: 6.0,
         ibu: 60,
         price: 0,
