@@ -1,16 +1,12 @@
 import 'package:BrewBuddy/models/Beer.dart';
-import 'package:BrewBuddy/models/Brewery.dart';
-import 'package:BrewBuddy/models/Festival.dart';
 import 'package:BrewBuddy/pages/BreweryPage.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
-import '../widgets/RibbedVerticalDivider.dart';
 
 class BeerPage extends StatefulWidget {
   final int beerId;
 
-  const BeerPage({required this.beerId, Key? key}) : super(key: key);
+  const BeerPage({required this.beerId, super.key});
   @override
   BeerPageState createState() => BeerPageState();
 }
@@ -71,7 +67,7 @@ class BeerPageState extends State<BeerPage> {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => BreweryPage(breweryId: beer.brewery.id,)));
                 },
                 child:
-                Container(
+                SizedBox(
                   width: 130,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -91,14 +87,14 @@ class BeerPageState extends State<BeerPage> {
                     ],
                   ),
                 )),
-                Container(
+                const SizedBox(
                   height: 150,
-                  child: const VerticalDivider(
+                  child: VerticalDivider(
                     color: Color.fromRGBO(151, 151, 151, 0.8),
                     thickness: 1.2,
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: 130,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -141,7 +137,7 @@ class BeerPageState extends State<BeerPage> {
                                 color: Colors.white,
                                 fontSize: 20,
                               ),),
-                              Text(beer.percentageOfAlcohol.toString()+"%",
+                              Text("${beer.percentageOfAlcohol}%",
                               style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 color: Colors.white,
@@ -177,7 +173,7 @@ class BeerPageState extends State<BeerPage> {
             const SizedBox(
               height: 10,
             ),
-            Container(
+            SizedBox(
               height: 220,
               child: ListView.separated(
                 itemBuilder: (context, index) {
@@ -229,7 +225,7 @@ class BeerPageState extends State<BeerPage> {
                         ),
                       ),
                       Text(
-                        beers[index].percentageOfAlcohol.toString() + "%",
+                        "${beers[index].percentageOfAlcohol}%",
                         style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           color: Colors.white,

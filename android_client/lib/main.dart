@@ -1,6 +1,4 @@
-import 'package:BrewBuddy/pages/CouponPage.dart';
-import 'package:BrewBuddy/pages/HomePage.dart';
-import 'package:BrewBuddy/pages/LoginPage.dart';
+import 'package:BrewBuddy/pages/MainPage.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -32,7 +30,7 @@ class MyApp extends StatelessWidget {
         cardColor: const Color.fromRGBO(151, 151, 151, 0.22),
         useMaterial3: true,
       ),
-      home: HomePage(),
+      home: const MainPage(),
     );
   }
 }

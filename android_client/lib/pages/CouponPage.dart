@@ -37,6 +37,16 @@ class CouponPageState extends State<CouponPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.onPrimary,
+        title: const Text("BrewBuddy"),
+        titleTextStyle: TextStyle(
+          fontSize: 25,
+          fontWeight: FontWeight.w700,
+          color: Theme.of(context).colorScheme.onSecondary,
+        ),
+        centerTitle: true,
+      ),
       body: ListView.builder(
         itemCount: userCoupons.length,
         itemBuilder: (context, index) {

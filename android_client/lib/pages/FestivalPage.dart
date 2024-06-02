@@ -11,7 +11,7 @@ import 'BreweryPage.dart';
 class FestivalPage extends StatefulWidget {
   final int festivalId;
 
-  const FestivalPage({required this.festivalId, Key? key}) : super(key: key);
+  const FestivalPage({required this.festivalId, super.key});
   @override
   FestivalPageState createState() => FestivalPageState();
 }
@@ -112,7 +112,7 @@ class FestivalPageState extends State<FestivalPage> {
                 const SizedBox(
                   height: 10,
                 ),
-                Container(
+                SizedBox(
                   height: 220,
                   child: ListView.separated(
                     itemBuilder: (context, index) {
@@ -149,7 +149,7 @@ class FestivalPageState extends State<FestivalPage> {
                   height: 10,
                 ),
 
-                Container(
+                SizedBox(
                   height: 220,
                   child: ListView.separated(
                     itemBuilder: (context, index) {
@@ -200,7 +200,7 @@ class FestivalPageState extends State<FestivalPage> {
                         ),
                       ),
                       Text(
-                        beers[index].percentageOfAlcohol.toString() + "%",
+                        "${beers[index].percentageOfAlcohol}%",
                         style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           color: Colors.white,

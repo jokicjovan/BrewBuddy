@@ -1,10 +1,9 @@
 import 'package:BrewBuddy/models/Beer.dart';
-import 'package:BrewBuddy/models/Brewery.dart';
-import 'package:BrewBuddy/models/Festival.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class SearchPage extends StatefulWidget {
+  const SearchPage({super.key});
+
   @override
   SearchPageState createState() => SearchPageState();
 }

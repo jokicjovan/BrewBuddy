@@ -7,12 +7,12 @@ class RibbedVerticalDivider extends StatelessWidget {
   final double gapLength;
 
   const RibbedVerticalDivider({
-    Key? key,
+    super.key,
     required this.color,
     this.thickness = 1.2,
     this.dashLength = 6.0,
     this.gapLength = 5.0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

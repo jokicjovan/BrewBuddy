@@ -1,8 +1,6 @@
 import 'package:BrewBuddy/models/Beer.dart';
 import 'package:BrewBuddy/models/Brewery.dart';
-import 'package:BrewBuddy/models/Festival.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import 'BeerPage.dart';
 
@@ -10,7 +8,7 @@ import 'BeerPage.dart';
 class BreweryPage extends StatefulWidget {
   final int breweryId;
 
-  const BreweryPage({required this.breweryId, Key? key}) : super(key: key);
+  const BreweryPage({required this.breweryId, super.key});
   @override
   BreweryPageState createState() => BreweryPageState();
 }
@@ -107,7 +105,7 @@ class BreweryPageState extends State<BreweryPage> {
                 const SizedBox(
                   height: 10,
                 ),
-                Container(
+                SizedBox(
                   height: 220,
                   child: ListView.separated(
                     itemBuilder: (context, index) {
@@ -158,7 +156,7 @@ class BreweryPageState extends State<BreweryPage> {
                     ),
                   ),
                   Text(
-                    beers[index].percentageOfAlcohol.toString() + "%",
+                    "${beers[index].percentageOfAlcohol}%",
                     style: const TextStyle(
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
