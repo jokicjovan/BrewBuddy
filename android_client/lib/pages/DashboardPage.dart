@@ -4,6 +4,8 @@ import 'package:BrewBuddy/models/Festival.dart';
 import 'package:BrewBuddy/pages/BeerPage.dart';
 import 'package:BrewBuddy/pages/BreweryPage.dart';
 import 'package:BrewBuddy/pages/FestivalPage.dart';
+import 'package:BrewBuddy/pages/ItemListPage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -43,11 +45,11 @@ class DashboardPageState extends State<DashboardPage> {
           child: Column(
         children: [
           buildWarningCard(context),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              SizedBox(width: 30),
-              Expanded(
+              const SizedBox(width: 30),
+              const Expanded(
                   child: Text(
                 "Beers",
                 style: TextStyle(
@@ -56,14 +58,19 @@ class DashboardPageState extends State<DashboardPage> {
                   fontSize: 25,
                 ),
               )),
-              Text(
-                "See more...",
-                style: TextStyle(
-                  fontWeight: FontWeight.w200,
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
+              GestureDetector(
+                      onTap: (){
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ItemListPage(widgets: List.generate(beers.length, (index)=>buildBeerCard(index, context)),)));
+                      },
+                      child:const Text(
+                    "See more...",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w200,
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+
+                  )),
             ],
           ),
           const SizedBox(

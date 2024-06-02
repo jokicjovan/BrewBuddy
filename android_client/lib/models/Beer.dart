@@ -51,6 +51,32 @@ class Beer {
             name: "3BIR",
             imageName: "",
             city: City(id: 1, name: "Novi Sad", postalCode: "22000"))));
+    beers.add(Beer(
+        id: 1,
+        name: "JuiceIPA",
+        percentageOfAlcohol: 6.0,
+        ibu: 60,
+        price: 0,
+        type: "IPA",
+        imageName: "",
+        brewery: Brewery(
+            id: 1,
+            name: "3BIR",
+            imageName: "",
+            city: City(id: 1, name: "Novi Sad", postalCode: "22000"))));
+    beers.add(Beer(
+        id: 1,
+        name: "JuiceIPA",
+        percentageOfAlcohol: 6.0,
+        ibu: 60,
+        price: 0,
+        type: "IPA",
+        imageName: "",
+        brewery: Brewery(
+            id: 1,
+            name: "3BIR",
+            imageName: "",
+            city: City(id: 1, name: "Novi Sad", postalCode: "22000"))));
     return beers;
   }
 }

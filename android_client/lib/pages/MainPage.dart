@@ -2,6 +2,7 @@ import 'package:BrewBuddy/pages/CouponPage.dart';
 import 'package:BrewBuddy/pages/DashboardPage.dart';
 import 'package:BrewBuddy/pages/SearchPage.dart';
 import 'package:BrewBuddy/pages/PopularPage.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatefulWidget {
@@ -37,7 +38,28 @@ class MainPageState extends State<MainPage> {
         }).toList(),
       ),
       floatingActionButton: FloatingActionButton.large(
-        onPressed: () {},
+        onPressed: () => showDialog<String>(
+            context: context,
+
+            builder: (BuildContext context) => Dialog(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    const SizedBox(height: 15),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Close'),
+                    ),
+                  ],
+                ),
+              ),
+            )),
         shape: const CircleBorder(),
         tooltip: "Drink",
         backgroundColor: Theme.of(context).colorScheme.onSecondary,
