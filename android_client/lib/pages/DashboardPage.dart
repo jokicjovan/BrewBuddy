@@ -1,6 +1,9 @@
 import 'package:BrewBuddy/models/Beer.dart';
 import 'package:BrewBuddy/models/Brewery.dart';
 import 'package:BrewBuddy/models/Festival.dart';
+import 'package:BrewBuddy/pages/BeerPage.dart';
+import 'package:BrewBuddy/pages/BreweryPage.dart';
+import 'package:BrewBuddy/pages/FestivalPage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -30,7 +33,6 @@ class DashboardPageState extends State<DashboardPage>{
               const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-
                   SizedBox(width: 30),
                   Expanded(
                       child: Text(
@@ -151,8 +153,13 @@ class DashboardPageState extends State<DashboardPage>{
           ));
   }
 
-  Container buildBeerCard(int index, BuildContext context) {
-    return Container(
+  GestureDetector buildBeerCard(int index, BuildContext context) {
+    return GestureDetector(
+        onTap: (){
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => BeerPage(beerId: beers[index].id,)));
+        },
+        child:
+        Container(
       width: 150,
       decoration: BoxDecoration(
         color: const Color.fromRGBO(151, 151, 151, 0.22),
@@ -217,10 +224,14 @@ class DashboardPageState extends State<DashboardPage>{
           ),
         ],
       ),
-    );
+    ));
   }
-  Container buildBreweryCard(int index, BuildContext context) {
-    return Container(
+  GestureDetector buildBreweryCard(int index, BuildContext context) {
+    return GestureDetector(
+        onTap: (){
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => BreweryPage(breweryId: breweries[index].id,)));
+    },
+    child:Container(
       width: 150,
       decoration: BoxDecoration(
         color: const Color.fromRGBO(151, 151, 151, 0.22),
@@ -269,7 +280,7 @@ class DashboardPageState extends State<DashboardPage>{
           ),
         ],
       ),
-    );
+    ));
   }
   Container buildWarningCard(BuildContext context) {
     return Container(
@@ -315,8 +326,12 @@ class DashboardPageState extends State<DashboardPage>{
       ),
     );
   }
-  Container buildFestivalCard(int index, BuildContext context) {
-    return Container(
+  GestureDetector buildFestivalCard(int index, BuildContext context) {
+    return GestureDetector(
+        onTap: (){
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => FestivalPage(festivalId: festivals[index].id,)));
+    },
+    child:Container(
       width: 150,
       decoration: BoxDecoration(
         color: const Color.fromRGBO(151, 151, 151, 0.22),
@@ -384,6 +399,6 @@ class DashboardPageState extends State<DashboardPage>{
           ),
         ],
       ),
-    );
+    ));
   }
 }

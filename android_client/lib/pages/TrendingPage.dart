@@ -1,8 +1,12 @@
 import 'package:BrewBuddy/models/Beer.dart';
 import 'package:BrewBuddy/models/Brewery.dart';
 import 'package:BrewBuddy/models/Festival.dart';
+import 'package:BrewBuddy/pages/BreweryPage.dart';
+import 'package:BrewBuddy/pages/FestivalPage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import 'BeerPage.dart';
 
 class TrendingPage extends StatefulWidget {
   @override
@@ -149,8 +153,12 @@ class TrendingPageState extends State<TrendingPage> {
     ));
   }
 
-  Container buildBeerCard(int index, BuildContext context) {
-    return Container(
+  GestureDetector buildBeerCard(int index, BuildContext context) {
+    return GestureDetector(
+        onTap: (){
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => BeerPage(beerId: beers[index].id,)));
+    },
+    child:Container(
       width: 150,
       decoration: BoxDecoration(
         color: const Color.fromRGBO(151, 151, 151, 0.22),
@@ -172,35 +180,39 @@ class TrendingPageState extends State<TrendingPage> {
               fontSize: 22,
             ),
           ),
-          index<3?
-          Image.asset(
-            index==0?"assets/gold-medal.png":
-            index==1?"assets/silver-medal.png":
-            "assets/bronze-medal.png",
-            width: 50,
-            height: 50,
-            fit: BoxFit.cover,
-          ):
-              Container(
-
-                height: 50,
-                child: Text(
-                  (index+1).toString()+".",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                    fontSize: 25,
+          index < 3
+              ? Image.asset(
+                  index == 0
+                      ? "assets/gold-medal.png"
+                      : index == 1
+                          ? "assets/silver-medal.png"
+                          : "assets/bronze-medal.png",
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                )
+              : Container(
+                  height: 50,
+                  child: Text(
+                    (index + 1).toString() + ".",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                      fontSize: 25,
+                    ),
                   ),
                 ),
-              )
-          ,
         ],
       ),
-    );
+    ));
   }
 
-  Container buildBreweryCard(int index, BuildContext context) {
-    return Container(
+  GestureDetector buildBreweryCard(int index, BuildContext context) {
+    return GestureDetector(
+        onTap: (){
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => BreweryPage(breweryId: breweries[index].id,)));
+    },
+    child:Container(
       width: 150,
       decoration: BoxDecoration(
         color: const Color.fromRGBO(151, 151, 151, 0.22),
@@ -214,132 +226,144 @@ class TrendingPageState extends State<TrendingPage> {
             width: 120,
             height: 120,
           ),
-              Text(
-                breweries[index].name,
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  color: Theme.of(context).colorScheme.onSecondary,
-                  fontSize: 22,
-                ),
-              ),
-          index<3?
-          Image.asset(
-            index==0?"assets/gold-medal.png":
-            index==1?"assets/silver-medal.png":
-            "assets/bronze-medal.png",
-            width: 50,
-            height: 50,
-            fit: BoxFit.cover,
-          ):
-          Container(
-
-            height: 50,
-            child: Text(
-              (index+1).toString()+".",
-              style: const TextStyle(
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-                fontSize: 25,
-              ),
+          Text(
+            breweries[index].name,
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              color: Theme.of(context).colorScheme.onSecondary,
+              fontSize: 22,
             ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Container buildFestivalCard(int index, BuildContext context) {
-    return Container(
-      width: 150,
-      decoration: BoxDecoration(
-        color: const Color.fromRGBO(151, 151, 151, 0.22),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-            child: Row(
-              children: [
-                index<3?
-                Image.asset(
-                  index==0?"assets/gold-medal.png":
-                  index==1?"assets/silver-medal.png":
-                  "assets/bronze-medal.png",
+          ),
+          index < 3
+              ? Image.asset(
+                  index == 0
+                      ? "assets/gold-medal.png"
+                      : index == 1
+                          ? "assets/silver-medal.png"
+                          : "assets/bronze-medal.png",
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
-                ):
-                Container(
-                  width: 50,
+                )
+              : Container(
                   height: 50,
-                  child: Center(
-                    child: Text(
-                      (index+1).toString()+".",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                        fontSize: 25,
-                      ),
+                  child: Text(
+                    (index + 1).toString() + ".",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                      fontSize: 25,
                     ),
                   ),
-                ),
-                Expanded(
-                    child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      festivals[index].name,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: Theme.of(context).colorScheme.onSecondary,
-                        fontSize: 22,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.location_on_rounded,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          festivals[index].city.name,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                )),
-                Column(
-                  children: [
-                    Text(festivals[index].eventDate.day.toString(),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          fontSize: 22,
-                        )),
-                    Text(DateFormat.MMM().format(festivals[index].eventDate),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                          fontSize: 18,
-                        )),
-                  ],
                 )
-              ],
-            ),
-          ),
         ],
       ),
-    );
+    ));
+  }
+
+  GestureDetector buildFestivalCard(int index, BuildContext context) {
+    return GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => FestivalPage(
+                    festivalId: festivals[index].id,
+                  )));
+        },
+        child: Container(
+          width: 150,
+          decoration: BoxDecoration(
+            color: const Color.fromRGBO(151, 151, 151, 0.22),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+                child: Row(
+                  children: [
+                    index < 3
+                        ? Image.asset(
+                            index == 0
+                                ? "assets/gold-medal.png"
+                                : index == 1
+                                    ? "assets/silver-medal.png"
+                                    : "assets/bronze-medal.png",
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                          )
+                        : Container(
+                            width: 50,
+                            height: 50,
+                            child: Center(
+                              child: Text(
+                                (index + 1).toString() + ".",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                  fontSize: 25,
+                                ),
+                              ),
+                            ),
+                          ),
+                    Expanded(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          festivals[index].name,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: Theme.of(context).colorScheme.onSecondary,
+                            fontSize: 22,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on_rounded,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              festivals[index].city.name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )),
+                    Column(
+                      children: [
+                        Text(festivals[index].eventDate.day.toString(),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                              fontSize: 22,
+                            )),
+                        Text(
+                            DateFormat.MMM().format(festivals[index].eventDate),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                              fontSize: 18,
+                            )),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ));
   }
 }
