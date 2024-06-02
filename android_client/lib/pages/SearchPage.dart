@@ -15,24 +15,54 @@ class SearchPageState extends State<SearchPage> {
   List<Brewery> breweries = [];
   List<String> types = [];
   List<String> alcoholLevels = [];
-  Beer? selectedBeer;
+
   Brewery? selectedBrewery;
   String? selectedType;
   String? selectedLevel;
 
+  List<Beer> filteredBeers = [];
+  String query = '';
+  TextEditingController _controller = TextEditingController();
+  bool showFilters = false;
+
   @override
   void initState() {
     super.initState();
-    festchData();
+    fetchData();
   }
 
-  void festchData() {
+  void fetchData() {
     setState(() {
       beers = Beer.getBeers();
       breweries = Brewery.getBreweries();
-      types = ["IPA", "PILSNER"];
-      alcoholLevels = ["LOW", "HIGH"];
+      types = ["ALE", "IPA", "PILSNER"];
+      alcoholLevels = ["LOW", "MEDIUM", "HIGH"];
+      filteredBeers = beers;
     });
+  }
+
+  void updateSearchQuery(String newQuery) {
+    setState(() {
+      query = newQuery;
+      filteredBeers = beers
+          .where(
+              (beer) => beer.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
+  void clearSearchQuery() {
+    setState(() {
+      query = '';
+      _controller.clear();
+      filteredBeers = beers;
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -48,144 +78,162 @@ class SearchPageState extends State<SearchPage> {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              child: DropdownSearch<Beer>(
-                clearButtonProps: const ClearButtonProps(isVisible: true),
-                asyncItems: (String filter) => Future.value(beers).then((beers) =>
-                    beers.where((beer) => beer.name.contains(filter)).toList()),
-                itemAsString: (Beer u) => u.name,
-                popupProps: PopupProps.menu(
-                  showSearchBox: true,
-                  searchFieldProps: const TextFieldProps(
-                    decoration: InputDecoration(
-                      labelText: 'Search for a beer',
-                      hintText: 'Type the beer name',
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _controller,
+              decoration: InputDecoration(
+                labelText: 'Search for a beer',
+                hintText: 'Type the beer name',
+                border: OutlineInputBorder(),
+                suffixIcon: query.isNotEmpty
+                    ? IconButton(
+                  icon: Icon(Icons.clear),
+                  onPressed: clearSearchQuery,
+                )
+                    : null,
+              ),
+              onChanged: updateSearchQuery,
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                showFilters = !showFilters;
+              });
+            },
+            child: Text(showFilters ? 'Hide Filters' : 'Show Filters'),
+          ),
+          if (showFilters)
+            Expanded(
+              child: ListView(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DropdownSearch<Brewery>(
+                      clearButtonProps: const ClearButtonProps(isVisible: true),
+                      popupProps: PopupProps.menu(
+                        showSearchBox: true,
+                        searchFieldProps: const TextFieldProps(
+                          decoration: InputDecoration(
+                            labelText: 'Search for a brewery',
+                            hintText: 'Type the brewery name',
+                          ),
+                        ),
+                        itemBuilder: (context, brewery, isSelected) {
+                          return ListTile(
+                            title: Text(brewery.name),
+                          );
+                        },
+                      ),
+                      asyncItems: (String filter) => Future.value(breweries).then(
+                              (breweries) => breweries
+                              .where((brewery) => brewery.name.contains(filter))
+                              .toList()),
+                      itemAsString: (Brewery b) => b.name,
+                      dropdownDecoratorProps: const DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          labelText: "Select a brewery",
+                        ),
+                      ),
+                      onChanged: (Brewery? selectedBrewery) {
+                        setState(() {
+                          this.selectedBrewery = selectedBrewery;
+                        });
+                      },
                     ),
                   ),
-                  itemBuilder: (context, beer, isSelected) {
-                    return ListTile(
-                      title: Text(beer.name),
-                    );
-                  },
-                ),
-                dropdownDecoratorProps: const DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    labelText: "Search a beer",
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DropdownSearch<String>(
+                      clearButtonProps: const ClearButtonProps(isVisible: true),
+                      popupProps: PopupProps.menu(
+                        showSearchBox: true,
+                        searchFieldProps: const TextFieldProps(
+                          decoration: InputDecoration(
+                            labelText: 'Search for a type',
+                            hintText: 'Type the beer type',
+                          ),
+                        ),
+                        itemBuilder: (context, item, isSelected) {
+                          return ListTile(
+                            title: Text(item),
+                          );
+                        },
+                      ),
+                      asyncItems: (String filter) => Future.value(types).then(
+                              (types) => types
+                              .where((type) => type.contains(filter))
+                              .toList()),
+                      itemAsString: (String t) => t,
+                      dropdownDecoratorProps: const DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          labelText: "Select a type",
+                        ),
+                      ),
+                      onChanged: (String? selectedType) {
+                        setState(() {
+                          this.selectedType = selectedType;
+                        });
+                      },
+                    ),
                   ),
-                ),
-                onChanged: (Beer? selectedBeer) {
-                  setState(() {
-                    this.selectedBeer = selectedBeer;
-                  });
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DropdownSearch<String>(
+                      clearButtonProps: const ClearButtonProps(isVisible: true),
+                      popupProps: PopupProps.menu(
+                        showSearchBox: true,
+                        searchFieldProps: const TextFieldProps(
+                          decoration: InputDecoration(
+                            labelText: 'Search for an alcohol level',
+                            hintText: 'Type the alcohol level',
+                          ),
+                        ),
+                        itemBuilder: (context, item, isSelected) {
+                          return ListTile(
+                            title: Text(item),
+                          );
+                        },
+                      ),
+                      asyncItems: (String filter) => Future.value(alcoholLevels)
+                          .then((levels) => levels
+                          .where((level) => level.contains(filter))
+                          .toList()),
+                      itemAsString: (String t) => t,
+                      dropdownDecoratorProps: const DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          labelText: "Select an alcohol level",
+                        ),
+                      ),
+                      onChanged: (String? selectedLevel) {
+                        setState(() {
+                          this.selectedLevel = selectedLevel;
+                        });
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: filteredBeers.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(filteredBeers[index].name),
+                    onTap: () {
+                      // Handle the beer selection
+                      print('Selected beer: ${filteredBeers[index].name}');
+                    },
+                  );
                 },
               ),
             ),
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              child: DropdownSearch<Brewery>(
-                clearButtonProps: const ClearButtonProps(isVisible: true),
-                popupProps: PopupProps.menu(
-                  showSearchBox: true,
-                  searchFieldProps: const TextFieldProps(
-                    decoration: InputDecoration(
-                      labelText: 'Search for a brewery',
-                      hintText: 'Type the brewery name',
-                    ),
-                  ),
-                  itemBuilder: (context, brewery, isSelected) {
-                    return ListTile(
-                      title: Text(brewery.name),
-                    );
-                  },
-                ),
-                asyncItems: (String filter) => Future.value(breweries).then((breweries) =>
-                    breweries.where((brewery) => brewery.name.contains(filter)).toList()),
-                itemAsString: (Brewery b) => b.name,
-                dropdownDecoratorProps: const DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    labelText: "Select a brewery",
-                  ),
-                ),
-                onChanged: (Brewery? selectedBrewery) {
-                  setState(() {
-                    this.selectedBrewery = selectedBrewery;
-                  });
-                },
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              child: DropdownSearch<String>(
-                clearButtonProps: const ClearButtonProps(isVisible: true),
-                popupProps: PopupProps.menu(
-                  showSearchBox: true,
-                  searchFieldProps: const TextFieldProps(
-                    decoration: InputDecoration(
-                      labelText: 'Search for a type',
-                      hintText: 'Type the beer type',
-                    ),
-                  ),
-                  itemBuilder: (context, item, isSelected) {
-                    return ListTile(
-                      title: Text(item),
-                    );
-                  },
-                ),
-                asyncItems: (String filter) => Future.value(types).then((types) =>
-                    types.where((type) => type.contains(filter)).toList()),
-                itemAsString: (String t) => t,
-                dropdownDecoratorProps: const DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    labelText: "Select a type",
-                  ),
-                ),
-                onChanged: (String? selectedType) {
-                  setState(() {
-                    this.selectedType = selectedType;
-                  });
-                },
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              child: DropdownSearch<String>(
-                clearButtonProps: const ClearButtonProps(isVisible: true),
-                popupProps: PopupProps.menu(
-                  showSearchBox: true,
-                  searchFieldProps: const TextFieldProps(
-                    decoration: InputDecoration(
-                      labelText: 'Search for an alcohol level',
-                      hintText: 'Type the alcohol level',
-                    ),
-                  ),
-                  itemBuilder: (context, item, isSelected) {
-                    return ListTile(
-                      title: Text(item),
-                    );
-                  },
-                ),
-                asyncItems: (String filter) => Future.value(alcoholLevels).then((levels) =>
-                    levels.where((level) => level.contains(filter)).toList()),
-                itemAsString: (String t) => t,
-                dropdownDecoratorProps: const DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    labelText: "Select an alcohol level",
-                  ),
-                ),
-                onChanged: (String? selectedLevel) {
-                  setState(() {
-                    this.selectedLevel = selectedLevel;
-                  });
-                },
-              ),
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }
