@@ -18,6 +18,31 @@ class CouponPageState extends State<CouponPage> {
         id: 1,
         type: "APPLICATION",
         validUntil: DateTime.now(),
+        discountPercentage: 30.5),
+    Coupon(
+        id: 2,
+        type: "APPLICATION",
+        validUntil: DateTime.now(),
+        discountPercentage: 30.5),
+    Coupon(
+        id: 3,
+        type: "APPLICATION",
+        validUntil: DateTime.now(),
+        discountPercentage: 30.5),
+    Coupon(
+        id: 4,
+        type: "APPLICATION",
+        validUntil: DateTime.now(),
+        discountPercentage: 30.5),
+    Coupon(
+        id: 5,
+        type: "APPLICATION",
+        validUntil: DateTime.now(),
+        discountPercentage: 30.5),
+    Coupon(
+        id: 6,
+        type: "APPLICATION",
+        validUntil: DateTime.now(),
         discountPercentage: 30.5)
   ];
 
@@ -48,6 +73,7 @@ class CouponPageState extends State<CouponPage> {
         centerTitle: true,
       ),
       body: ListView.builder(
+        padding: const EdgeInsets.only(bottom: 64.0),
         itemCount: userCoupons.length,
         itemBuilder: (context, index) {
           return _buildCard(context, userCoupons[index]);
@@ -140,7 +166,6 @@ class CouponPageState extends State<CouponPage> {
               ),
             ],
           ),
-        )
-    );
+        ));
   }
 }

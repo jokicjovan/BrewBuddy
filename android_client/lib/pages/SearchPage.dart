@@ -28,7 +28,7 @@ class SearchPageState extends State<SearchPage>{
                 showSearchBox: true,
                 disabledItemFn: (String s) => s.startsWith('I'),
               ),
-              items: ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
+              items: const ["Brazil", "Italia (Disabled)", "Tunisia", 'Canada'],
               dropdownDecoratorProps: const DropDownDecoratorProps(
                 dropdownSearchDecoration: InputDecoration(
                   labelText: "Menu mode",

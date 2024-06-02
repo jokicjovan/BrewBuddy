@@ -1,15 +1,10 @@
-import 'package:BrewBuddy/models/Beer.dart';
-import 'package:BrewBuddy/models/Brewery.dart';
-import 'package:BrewBuddy/models/Festival.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
-import 'BeerPage.dart';
 
 class ItemListPage extends StatefulWidget {
   final List<Widget> widgets;
 
-  const ItemListPage({required this.widgets, Key? key}) : super(key: key);
+  const ItemListPage({required this.widgets, super.key});
 
   @override
   ItemListPageState createState() => ItemListPageState();

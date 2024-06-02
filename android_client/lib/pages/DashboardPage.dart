@@ -5,7 +5,6 @@ import 'package:BrewBuddy/pages/BeerPage.dart';
 import 'package:BrewBuddy/pages/BreweryPage.dart';
 import 'package:BrewBuddy/pages/FestivalPage.dart';
 import 'package:BrewBuddy/pages/ItemListPage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -42,134 +41,140 @@ class DashboardPageState extends State<DashboardPage> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-          child: Column(
-        children: [
-          buildWarningCard(context),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              const SizedBox(width: 30),
-              const Expanded(
-                  child: Text(
-                "Beers",
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                  fontSize: 25,
-                ),
-              )),
-              GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ItemListPage(widgets: List.generate(beers.length, (index)=>buildBeerCard(index, context)),)));
-                      },
-                      child:const Text(
-                    "See more...",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w200,
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-
-                  )),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          SizedBox(
-            height: 220,
-            child: ListView.separated(
-              itemBuilder: (context, index) {
-                return buildBeerCard(index, context);
-              },
-              separatorBuilder: (context, index) => const SizedBox(
-                width: 25,
-              ),
-              itemCount: beers.length,
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.only(left: 20, right: 20),
+          child: Padding(
+        padding: const EdgeInsets.only(bottom: 64.0),
+        child: Column(
+          children: [
+            buildWarningCard(context),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                const SizedBox(width: 30),
+                const Expanded(
+                    child: Text(
+                  "Beers",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                    fontSize: 25,
+                  ),
+                )),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ItemListPage(
+                                widgets: List.generate(beers.length,
+                                    (index) => buildBeerCard(index, context)),
+                              )));
+                    },
+                    child: const Text(
+                      "See more...",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w200,
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    )),
+              ],
             ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              SizedBox(width: 30),
-              Expanded(
-                  child: Text(
-                "Breweries",
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                  fontSize: 25,
+            const SizedBox(
+              height: 10,
+            ),
+            SizedBox(
+              height: 220,
+              child: ListView.separated(
+                itemBuilder: (context, index) {
+                  return buildBeerCard(index, context);
+                },
+                separatorBuilder: (context, index) => const SizedBox(
+                  width: 25,
                 ),
-              )),
-              Text(
-                "See more...",
-                style: TextStyle(
-                  fontWeight: FontWeight.w200,
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
+                itemCount: beers.length,
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.only(left: 20, right: 20),
               ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          SizedBox(
-            height: 220,
-            child: ListView.separated(
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                SizedBox(width: 30),
+                Expanded(
+                    child: Text(
+                  "Breweries",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                    fontSize: 25,
+                  ),
+                )),
+                Text(
+                  "See more...",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w200,
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            SizedBox(
+              height: 220,
+              child: ListView.separated(
+                itemBuilder: (context, index) {
+                  return buildBreweryCard(index, context);
+                },
+                separatorBuilder: (context, index) => const SizedBox(
+                  width: 25,
+                ),
+                itemCount: breweries.length,
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.only(left: 20, right: 20),
+              ),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                SizedBox(width: 30),
+                Expanded(
+                    child: Text(
+                  "You should visit",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                    fontSize: 25,
+                  ),
+                )),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            ListView.separated(
+              shrinkWrap: true,
+              // Makes the ListView take only the necessary height
+              physics: const NeverScrollableScrollPhysics(),
+              // Disables scrolling of this ListView
               itemBuilder: (context, index) {
-                return buildBreweryCard(index, context);
+                return buildFestivalCard(index, context);
               },
               separatorBuilder: (context, index) => const SizedBox(
-                width: 25,
+                height: 15,
               ),
               itemCount: breweries.length,
-              scrollDirection: Axis.horizontal,
+              scrollDirection: Axis.vertical,
               padding: const EdgeInsets.only(left: 20, right: 20),
             ),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              SizedBox(width: 30),
-              Expanded(
-                  child: Text(
-                "You should visit",
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                  fontSize: 25,
-                ),
-              )),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          ListView.separated(
-            shrinkWrap: true,
-            // Makes the ListView take only the necessary height
-            physics: const NeverScrollableScrollPhysics(),
-            // Disables scrolling of this ListView
-            itemBuilder: (context, index) {
-              return buildFestivalCard(index, context);
-            },
-            separatorBuilder: (context, index) => const SizedBox(
-              height: 15,
-            ),
-            itemCount: breweries.length,
-            scrollDirection: Axis.vertical,
-            padding: const EdgeInsets.only(left: 20, right: 20),
-          ),
-        ],
+          ],
+        ),
       )),
     );
   }
