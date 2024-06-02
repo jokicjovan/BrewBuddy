@@ -1,8 +1,10 @@
+import 'package:BrewBuddy/models/Beer.dart';
 import 'package:BrewBuddy/pages/CouponPage.dart';
 import 'package:BrewBuddy/pages/DashboardPage.dart';
 import 'package:BrewBuddy/pages/SearchPage.dart';
 import 'package:BrewBuddy/pages/PopularPage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -24,6 +26,7 @@ class MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: IndexedStack(
         index: _currentIndex,
         children: _tabs.map((Widget tab) {
@@ -41,23 +44,7 @@ class MainPageState extends State<MainPage> {
             context: context,
 
             builder: (BuildContext context) => Dialog(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    const SizedBox(height: 15),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Close'),
-                    ),
-                  ],
-                ),
-              ),
+              child: buildDrinkDialog(context),
             )),
         shape: const CircleBorder(),
         tooltip: "Drink",
@@ -87,6 +74,116 @@ class MainPageState extends State<MainPage> {
         ),
       ),
     );
+  }
+
+  Padding buildDrinkDialog(BuildContext context) {
+    return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                height:150 ,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: DropdownSearch<Beer>(
+
+                        popupProps: const PopupProps.dialog(
+                          showSearchBox: true,
+                        ),
+                        asyncItems: (String filter) => Future.value(Beer.getBeers()).then((beers) =>
+                          beers.where((beer) => beer.name.contains(filter)).toList()),
+                        itemAsString: (Beer u) => u.name,
+                        onChanged: (Beer? data) => print(data?.name),
+                        dropdownDecoratorProps: const DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "Select Beer",
+                            hintText: "Select beer to log",
+                          ),
+                        ),
+
+                      ),
+                    ),
+                    TextButton(onPressed: (){
+                      Navigator.pop(context);
+                      showDialog<String>(
+                          context: context,
+
+                          builder: (BuildContext context) => Dialog(
+                            child: buildRateDialog(context),
+                          ));
+                    },
+                      style: TextButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.onSecondary, // Set background color here
+                      )
+                      , child: const Text(
+                      "Drink!",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                        fontSize: 20,
+                      ),
+                    ),)
+                  ],
+                ),
+              ),
+            );
+  }
+  Padding buildRateDialog(BuildContext context) {
+    return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                height:250 ,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: RatingBar.builder(
+                        initialRating: 3,
+                        minRating: 1,
+                        direction: Axis.horizontal,
+                        allowHalfRating: false,
+                        itemCount: 5,
+                        itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        itemBuilder: (context, _) => Icon(
+                          Icons.star,
+                          color: Theme.of(context).colorScheme.onSecondary,
+                        ),
+                        onRatingUpdate: (rating) {
+                          print(rating);
+                        },
+                      )
+                    ),
+
+                    const TextField(
+                      maxLines: 3, // Makes the TextField a text area
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Enter your text here',
+                      ),
+                    ),
+                    SizedBox(height: 10,),
+                    TextButton(onPressed: (){
+                      Navigator.pop(context);
+                    },
+                      style: TextButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.onSecondary, // Set background color here
+                      )
+                      , child: const Text(
+                        "Rate",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                          fontSize: 20,
+                        ),
+                      ),),
+                  ],
+                ),
+              ),
+            );
   }
 
   Widget buildNavItem({

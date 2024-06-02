@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
           onError: Colors.white,
           brightness: Brightness.dark,
         ),
-        cardColor: const Color.fromRGBO(151, 151, 151, 0.22),
+        cardColor: const Color.fromRGBO(33,33,33, 1.0),
         useMaterial3: true,
       ),
       home: const MainPage(),
