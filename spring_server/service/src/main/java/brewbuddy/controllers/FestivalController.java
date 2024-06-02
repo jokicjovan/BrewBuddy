@@ -22,19 +22,16 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/festival")
 public class FestivalController {
-    private final IUserService userService;
     private final IFestivalService festivalService;
     private final ICityService cityService;
 
     private final IBreweryService breweryService;
 
     @Autowired
-    public FestivalController(IFestivalService festivalService,ICityService cityService, IBreweryService breweryService,
-                              IUserService userService) {
+    public FestivalController(IFestivalService festivalService,ICityService cityService, IBreweryService breweryService) {
         this.festivalService = festivalService;
         this.breweryService=breweryService;
         this.cityService=cityService;
-        this.userService = userService;
     }
 
     @RequestMapping("/")
@@ -59,16 +56,5 @@ public class FestivalController {
         }
         newFestival.setBreweries(breweries);
         return FestivalDTO.convertToDetailedDTO(festivalService.insert(newFestival));
-    }
-
-    @RequestMapping(path = "/recommend", method = RequestMethod.GET)
-    public List<FestivalDTO> recommend(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = ((Credential) authentication.getPrincipal()).getUser();
-
-        User user = userService.get(currentUser.getId());
-        return festivalService.recommend(user).stream()
-                .map(FestivalDTO::convertToDetailedDTO)
-                .collect(Collectors.toList());
     }
 }

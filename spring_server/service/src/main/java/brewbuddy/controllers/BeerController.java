@@ -47,17 +47,6 @@ public class BeerController {
         return beerService.get(id);
     }
 
-    @RequestMapping(path = "/recommend", method = RequestMethod.GET)
-    public List<BeerDTO> recommend(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = ((Credential) authentication.getPrincipal()).getUser();
-
-        User user = userService.get(currentUser.getId());
-        return beerService.recommend(user).stream()
-                .map(BeerDTO::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
     @RequestMapping(path = "/filter", method = RequestMethod.GET)
     public List<BeerDTO> filter(@RequestParam @NotNull @PositiveOrZero Integer breweryId,
                                 @RequestParam @NotNull @NotEmpty String beerType,

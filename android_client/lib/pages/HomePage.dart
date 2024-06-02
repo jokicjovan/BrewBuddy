@@ -36,13 +36,13 @@ class HomePageState extends State<HomePage> {
         floatingActionButton: FloatingActionButton.large(
           onPressed: () {},
           shape: const CircleBorder(),
+          tooltip: "Drink",
+          backgroundColor: Theme.of(context).colorScheme.onSecondary,
           child: ImageIcon(
             const AssetImage('assets/beers-icon.png'),
             color: Theme.of(context).colorScheme.onPrimary,
             size: 50,
           ),
-          tooltip: "Drink",
-          backgroundColor: Theme.of(context).colorScheme.onSecondary,
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomAppBar(
@@ -53,58 +53,60 @@ class HomePageState extends State<HomePage> {
           child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.home_rounded,
-                  color: _currentIndex == 0 ? Theme.of(context).colorScheme.onSecondary : Colors.white,
-                  size: 35,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _currentIndex = 0;
-                  });
-                },
+            children: [
+              buildNavItem(icon: Icons.home_rounded, label: "Home", index: 0),
+              buildNavItem(
+                  icon: Icons.search_rounded, label: "Search", index: 1),
+              const SizedBox(
+                width: 50,
               ),
-              IconButton(
-                icon: Icon(
-                  Icons.search_rounded,
-                  color: _currentIndex == 1 ? Theme.of(context).colorScheme.onSecondary : Colors.white,
-                  size: 35,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _currentIndex = 1;
-                  });
-                },
-              ),
-              const SizedBox(width: 50,),
-              IconButton(
-                icon: Icon(
-                  Icons.local_fire_department_rounded,
-                  color: _currentIndex == 2 ?Theme.of(context).colorScheme.onSecondary : Colors.white,
-                  size: 35,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _currentIndex = 2;
-                  });
-                },
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.local_activity_rounded,
-                  color: _currentIndex == 3 ? Theme.of(context).colorScheme.onSecondary : Colors.white,
-                  size: 35,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _currentIndex = 3;
-                  });
-                },
-              ),
+              buildNavItem(
+                  icon: Icons.local_fire_department_rounded,
+                  label: "Popular",
+                  index: 2),
+              buildNavItem(
+                  icon: Icons.local_activity_rounded,
+                  label: "Coupon",
+                  index: 3),
             ],
           ),
         ));
+  }
+
+  Widget buildNavItem({
+    required IconData icon,
+    required String label,
+    required int index,
+  }) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _currentIndex = index;
+        });
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            color: _currentIndex == index
+                ? Theme.of(context).colorScheme.onSecondary
+                : Colors.white,
+            size: 35,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 2.0),
+            child: Text(
+              label,
+              style: TextStyle(
+                color: _currentIndex == index
+                    ? Theme.of(context).colorScheme.onSecondary
+                    : Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

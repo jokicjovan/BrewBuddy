@@ -365,13 +365,13 @@ class DashboardPageState extends State<DashboardPage>{
                     )),
                 Column(
                   children: [
-                    Text(festivals[index].date.day.toString(),
+                    Text(festivals[index].eventDate.day.toString(),
                         style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
                           fontSize: 22,
                         )),
-                    Text(DateFormat.MMM().format(festivals[index].date),
+                    Text(DateFormat.MMM().format(festivals[index].eventDate),
                         style: const TextStyle(
                           fontWeight: FontWeight.w500,
                           color: Colors.white,

@@ -44,7 +44,7 @@ public class CouponController {
         return couponService.createFestivalCoupon(festival);
     }
 
-    @RequestMapping(value = "brewery/{id}",method = RequestMethod.POST)
+    @RequestMapping(value = "/brewery/{id}",method = RequestMethod.POST)
     public List<BreweryCoupon> generateBreweryCoupons(@PathVariable Integer id){
         Brewery brewery=breweryService.get(id);
         return couponService.createBreweryCoupon(brewery);

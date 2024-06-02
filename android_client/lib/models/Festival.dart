@@ -1,24 +1,40 @@
 import 'Brewery.dart';
 import 'City.dart';
 
-class Festival{
-
+class Festival {
   final int id;
   final String name;
   final City city;
-  final DateTime date;
+  final DateTime eventDate;
   final List<Brewery>? breweries;
 
-  Festival(this.id, this.name, this.city, this.breweries, this.date);
+  Festival({
+    required this.id,
+    required this.name,
+    required this.city,
+    required this.eventDate,
+    this.breweries,
+  });
+
+  factory Festival.fromJson(Map<String, dynamic> json) {
+    return Festival(
+      id: json['id'] as int,
+      name: json['name'] as String,
+      city: City.fromJson(json['city']),
+      eventDate: DateTime.parse(json['eventDate']),
+      breweries: (json['breweries'] as List<dynamic>?)
+          ?.map((breweryJson) => Brewery.fromJson(breweryJson))
+          .toList(),
+    );
+  }
 
   static List<Festival> getFestivals() {
     List<Festival> festivals = [];
-    festivals.add(Festival(1, "Beer Fest", City(1,"Novi Sad","21000"), [], DateTime(2024,12,12)));
-    festivals.add(Festival(1, "Beer Fest", City(1,"Novi Sad","21000"), [], DateTime(2024,12,12)));
-    festivals.add(Festival(1, "Beer Fest", City(1,"Novi Sad","21000"), [], DateTime(2024,12,12)));
-    festivals.add(Festival(1, "Beer Fest", City(1,"Novi Sad","21000"), [], DateTime(2024,12,12)));
-
+    festivals.add(Festival(
+        id: 1,
+        name: "Beer Fest",
+        city: City(id: 1, name: "Novi Sad", postalCode: "21000"),
+        eventDate: DateTime(2024, 12, 12)));
     return festivals;
   }
-
 }

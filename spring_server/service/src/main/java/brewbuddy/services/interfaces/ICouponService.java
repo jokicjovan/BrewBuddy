@@ -16,4 +16,6 @@ public interface ICouponService {
     List<BreweryCoupon> createBreweryCoupon(Brewery brewery);
 
     List<ApplicationCoupon> createAppCoupon();
+
+    List<Coupon> getUserCoupons(User user);
 }

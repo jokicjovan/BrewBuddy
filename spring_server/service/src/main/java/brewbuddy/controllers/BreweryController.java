@@ -31,6 +31,7 @@ public class BreweryController {
     public Brewery getById(@PathVariable Integer id){
         return breweryService.get(id);
     }
+
     @RequestMapping("/popular")
     public List<BreweryDTO> getPopular(){
         return breweryService.mostPopularBreweries().stream()

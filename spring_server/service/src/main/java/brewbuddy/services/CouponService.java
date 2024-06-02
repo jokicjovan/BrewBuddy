@@ -71,6 +71,12 @@ public class CouponService implements ICouponService {
     }
 
     @Override
+    public List<Coupon> getUserCoupons(User user) {
+        return couponRepository.findCouponsByUser(user);
+    }
+
+
+    @Override
     public List<FestivalCoupon> createFestivalCoupon(Festival festival) {
         InputStream template = CouponService.class.getResourceAsStream("/rules/template/festivalCoupons.drt");
         CouponCriteria criteria= couponCriteriaRepository.findCouponCriteriaByType(CouponType.FESTIVAL);
@@ -163,7 +169,6 @@ public class CouponService implements ICouponService {
         return coupons;
 
     }
-
 
     private KieSession createKieSessionFromDRL(String drl) {
         KieHelper kieHelper = new KieHelper();
