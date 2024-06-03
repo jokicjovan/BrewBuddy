@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:BrewBuddy/interceptors/AuthInterceptor.dart';
-import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:http_interceptor/http/intercepted_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -54,8 +53,13 @@ class AuthService {
 
     if (response.statusCode != 200) {
       await prefs.remove('token');
+      return false;
     }
-
     return true;
+  }
+
+  Future<void> logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
   }
 }

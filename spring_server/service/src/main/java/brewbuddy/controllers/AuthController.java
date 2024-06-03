@@ -41,7 +41,6 @@ public class AuthController {
         credential.setEmail(registerDTO.getEmail());
         credential.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
         User registeredUser = authenticationService.register(user, credential);
-
         return ResponseEntity.ok(registeredUser);
     }
 
@@ -63,6 +62,6 @@ public class AuthController {
         if (user != null){
             return ResponseEntity.ok("Token is valid");
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Token is invalid");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token is invalid");
     }
 }

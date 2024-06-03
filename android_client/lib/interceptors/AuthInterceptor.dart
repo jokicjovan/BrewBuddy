@@ -16,6 +16,10 @@ class AuthInterceptor implements InterceptorContract {
 
   @override
   Future<ResponseData> interceptResponse({required ResponseData data}) async {
+    if (data.statusCode == 401) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.remove('token');
+    }
     return data;
   }
 }

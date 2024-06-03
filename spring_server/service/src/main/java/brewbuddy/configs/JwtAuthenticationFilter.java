@@ -1,6 +1,9 @@
 package brewbuddy.configs;
 
 import brewbuddy.services.JwtService;
+import io.jsonwebtoken.ClaimJwtException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -68,6 +71,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
+                else {
+                    handlerExceptionResolver.resolveException(request, response, null,
+                            new ExpiredJwtException(null, null, "Token expired"));
+                    return;
+                }
+            }
+            else {
+                handlerExceptionResolver.resolveException(request, response, null,
+                        new MalformedJwtException("Bad Token"));
+                return;
             }
 
             filterChain.doFilter(request, response);
