@@ -3,6 +3,8 @@ import 'package:BrewBuddy/models/Brewery.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 
+import 'BeerPage.dart';
+
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
 
@@ -91,9 +93,9 @@ class SearchPageState extends State<SearchPage> {
                 border: OutlineInputBorder(),
                 suffixIcon: query.isNotEmpty
                     ? IconButton(
-                  icon: Icon(Icons.clear),
-                  onPressed: clearSearchQuery,
-                )
+                        icon: Icon(Icons.clear),
+                        onPressed: clearSearchQuery,
+                      )
                     : null,
               ),
               onChanged: updateSearchQuery,
@@ -129,8 +131,8 @@ class SearchPageState extends State<SearchPage> {
                           );
                         },
                       ),
-                      asyncItems: (String filter) => Future.value(breweries).then(
-                              (breweries) => breweries
+                      asyncItems: (String filter) => Future.value(breweries)
+                          .then((breweries) => breweries
                               .where((brewery) => brewery.name.contains(filter))
                               .toList()),
                       itemAsString: (Brewery b) => b.name,
@@ -165,7 +167,7 @@ class SearchPageState extends State<SearchPage> {
                         },
                       ),
                       asyncItems: (String filter) => Future.value(types).then(
-                              (types) => types
+                          (types) => types
                               .where((type) => type.contains(filter))
                               .toList()),
                       itemAsString: (String t) => t,
@@ -201,8 +203,8 @@ class SearchPageState extends State<SearchPage> {
                       ),
                       asyncItems: (String filter) => Future.value(alcoholLevels)
                           .then((levels) => levels
-                          .where((level) => level.contains(filter))
-                          .toList()),
+                              .where((level) => level.contains(filter))
+                              .toList()),
                       itemAsString: (String t) => t,
                       dropdownDecoratorProps: const DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
@@ -219,22 +221,97 @@ class SearchPageState extends State<SearchPage> {
                 ],
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: filteredBeers.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(filteredBeers[index].name),
-                    onTap: () {
-                      // Handle the beer selection
-                      print('Selected beer: ${filteredBeers[index].name}');
-                    },
-                  );
-                },
-              ),
+          Expanded(
+              child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 20,
+              mainAxisSpacing: 20,
+              childAspectRatio: 0.681,
             ),
+            itemCount: filteredBeers.length,
+            itemBuilder: (context, index) {
+              return buildBeerCard(index, context);
+            },
+          )),
         ],
       ),
     );
+  }
+
+  GestureDetector buildBeerCard(int index, BuildContext context) {
+    return GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => BeerPage(
+                beerId: filteredBeers[index].id,
+              )));
+        },
+        child: Container(
+          width: 150,
+          decoration: BoxDecoration(
+            color: const Color.fromRGBO(151, 151, 151, 0.22),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Image.asset(
+                "assets/beer.png",
+                width: 120,
+                height: 120,
+              ),
+              Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        filteredBeers[index].type,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        "${filteredBeers[index].percentageOfAlcohol}%",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    filteredBeers[index].name,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: Theme.of(context).colorScheme.onSecondary,
+                      fontSize: 22,
+                    ),
+                  ),
+                  const Text(
+                    "Powered By",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w300,
+                      color: Colors.white,
+                      fontSize: 10,
+                    ),
+                  ),
+                  Text(
+                    filteredBeers[index].brewery.name,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ));
   }
 }
