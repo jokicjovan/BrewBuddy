@@ -4,8 +4,8 @@ INSERT INTO Cities(id, name, postal_code) VALUES (2, 'Beograd', '11000');
 INSERT INTO Cities(id, name, postal_code) VALUES (3, 'Sremska Mitrovica', '22000');
 
 -- Roles
-INSERT INTO ROLES (id, name) VALUES(1, 'ROLE_ADMIN');
-INSERT INTO ROLES (id, name) VALUES(2, 'ROLE_USER');
+INSERT INTO ROLES (id, name) VALUES(1, 'ROLE_USER');
+INSERT INTO ROLES (id, name) VALUES(2, 'ROLE_ADMIN');
 
 -- Users
 INSERT INTO Users(id, name, surname, birth_date, is_account_non_expired, is_account_non_locked) VALUES (1, 'Vukasin', 'Bogdanovic', '2001-12-7', true, true);
