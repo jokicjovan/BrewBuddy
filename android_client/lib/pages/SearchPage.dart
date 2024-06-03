@@ -24,7 +24,7 @@ class SearchPageState extends State<SearchPage> {
 
   List<Beer> filteredBeers = [];
   String query = '';
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
   bool showFilters = false;
 
   @override
@@ -90,10 +90,10 @@ class SearchPageState extends State<SearchPage> {
               decoration: InputDecoration(
                 labelText: 'Search for a beer',
                 hintText: 'Type the beer name',
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 suffixIcon: query.isNotEmpty
                     ? IconButton(
-                        icon: Icon(Icons.clear),
+                        icon: const Icon(Icons.clear),
                         onPressed: clearSearchQuery,
                       )
                     : null,

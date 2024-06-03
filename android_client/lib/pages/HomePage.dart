@@ -80,7 +80,7 @@ class MainPageState extends State<MainPage> {
   Padding buildDrinkDialog(BuildContext context) {
     return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Container(
+              child: SizedBox(
                 height:150 ,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -134,7 +134,7 @@ class MainPageState extends State<MainPage> {
   Padding buildRateDialog(BuildContext context) {
     return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Container(
+              child: SizedBox(
                 height:250 ,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -166,7 +166,7 @@ class MainPageState extends State<MainPage> {
                         hintText: 'Enter your text here',
                       ),
                     ),
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                     TextButton(onPressed: (){
                       Navigator.pop(context);
                     },

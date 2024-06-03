@@ -1,12 +1,23 @@
-import 'package:BrewBuddy/pages/MainPage.dart';
+import 'package:BrewBuddy/pages/LoginPage.dart';
+import 'package:BrewBuddy/pages/HomePage.dart';
+import 'package:BrewBuddy/services/AuthService.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+
+  final AuthService _authService = AuthService();
+
+  Future<Widget> _getInitialScreen() async {
+    if (await _authService.isTokenValid()) {
+      return const MainPage();
+    }
+    return const LoginPage();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +38,29 @@ class MyApp extends StatelessWidget {
           onError: Colors.white,
           brightness: Brightness.dark,
         ),
-        cardColor: const Color.fromRGBO(33,33,33, 1.0),
+        cardColor: const Color.fromRGBO(33, 33, 33, 1.0),
         useMaterial3: true,
       ),
-      home: const MainPage(),
+      home: FutureBuilder<Widget>(
+        future: _getInitialScreen(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            return Scaffold(
+              body: Center(
+                child: Text('Error: ${snapshot.error}'),
+              ),
+            );
+          } else {
+            return snapshot.data!;
+          }
+        },
+      ),
     );
   }
 }
