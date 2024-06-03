@@ -185,7 +185,7 @@ class PopularPageState extends State<PopularPage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Image.asset(
-            "assets/beer.png",
+            "lib/assets/beer.png",
             width: 120,
             height: 120,
           ),
@@ -200,10 +200,10 @@ class PopularPageState extends State<PopularPage> {
           index < 3
               ? Image.asset(
                   index == 0
-                      ? "assets/gold-medal.png"
+                      ? "lib/assets/gold-medal.png"
                       : index == 1
-                          ? "assets/silver-medal.png"
-                          : "assets/bronze-medal.png",
+                          ? "lib/assets/silver-medal.png"
+                          : "lib/assets/bronze-medal.png",
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
@@ -239,7 +239,7 @@ class PopularPageState extends State<PopularPage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Image.asset(
-            "assets/brewery.png",
+            "lib/assets/brewery.png",
             width: 120,
             height: 120,
           ),
@@ -254,10 +254,10 @@ class PopularPageState extends State<PopularPage> {
           index < 3
               ? Image.asset(
                   index == 0
-                      ? "assets/gold-medal.png"
+                      ? "lib/assets/gold-medal.png"
                       : index == 1
-                          ? "assets/silver-medal.png"
-                          : "assets/bronze-medal.png",
+                          ? "lib/assets/silver-medal.png"
+                          : "lib/assets/bronze-medal.png",
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
@@ -303,10 +303,10 @@ class PopularPageState extends State<PopularPage> {
                     index < 3
                         ? Image.asset(
                             index == 0
-                                ? "assets/gold-medal.png"
+                                ? "lib/assets/gold-medal.png"
                                 : index == 1
-                                    ? "assets/silver-medal.png"
-                                    : "assets/bronze-medal.png",
+                                    ? "lib/assets/silver-medal.png"
+                                    : "lib/assets/bronze-medal.png",
                             width: 50,
                             height: 50,
                             fit: BoxFit.cover,

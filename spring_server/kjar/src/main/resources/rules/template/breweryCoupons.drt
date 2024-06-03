@@ -64,15 +64,13 @@ salience 98
 no-loop
     when
         $user:User()
-        $drunkBeers: Number() from accumulate(BreweryBeerLogger($user==user)
+        $drunkBeers: Number()>=@{minBeers} from accumulate(BreweryBeerLogger($user==user)
                                               over window: time(@{range}d),count(1))
     then
-       if($drunkBeers.intValue()>=@{minBeers}){
-           UserBeersAccumulated accumulatedValues=new UserBeersAccumulated();
-           accumulatedValues.setUser($user);
-           accumulatedValues.setDrunkBeers($drunkBeers.intValue());
-           insert(accumulatedValues);
-       }
+       UserBeersAccumulated accumulatedValues=new UserBeersAccumulated();
+       accumulatedValues.setUser($user);
+       accumulatedValues.setDrunkBeers($drunkBeers.intValue());
+       insert(accumulatedValues);
 end
 
 rule "Sort By Drunken Beers"

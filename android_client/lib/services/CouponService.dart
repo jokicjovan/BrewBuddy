@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:BrewBuddy/models/Coupon.dart';
 import 'package:http/http.dart' as http;
+import 'package:BrewBuddy/assets/constants.dart';
 
 class CouponService {
-  static const String baseUrl = 'http://localhost:8080/api';
 
   Future<List<Coupon>> getUserCoupons() async {
     final response = await http.get(Uri.parse('$baseUrl/user/coupon'));

@@ -51,7 +51,7 @@ class MainPageState extends State<MainPage> {
         tooltip: "Drink",
         backgroundColor: Theme.of(context).colorScheme.onSecondary,
         child: ImageIcon(
-          const AssetImage('assets/beers-icon.png'),
+          const AssetImage('lib/assets/beers-icon.png'),
           color: Theme.of(context).colorScheme.onPrimary,
           size: 50,
         ),

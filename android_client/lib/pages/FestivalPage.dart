@@ -182,7 +182,7 @@ class FestivalPageState extends State<FestivalPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Image.asset(
-                "assets/beer.png",
+                "lib/assets/beer.png",
                 width: 120,
                 height: 120,
               ),
@@ -254,7 +254,7 @@ class FestivalPageState extends State<FestivalPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Image.asset(
-                "assets/brewery.png",
+                "lib/assets/brewery.png",
                 width: 120,
                 height: 120,
               ),

@@ -257,7 +257,7 @@ class SearchPageState extends State<SearchPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Image.asset(
-                "assets/beer.png",
+                "lib/assets/beer.png",
                 width: 120,
                 height: 120,
               ),

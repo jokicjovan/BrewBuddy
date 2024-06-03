@@ -65,13 +65,7 @@ flutter:
 
     # To add assets to your application, add an assets section, like this:
   assets:
-     - assets/cheers.gif
-     - assets/beers-icon.png
-     - assets/beer.png
-     - assets/brewery.png
-     - assets/bronze-medal.png
-     - assets/silver-medal.png
-     - assets/gold-medal.png
+     - lib/assets/
 
     # An image asset can refer to one or more resolution-specific "variants", see
     # https://flutter.dev/assets-and-images/#resolution-aware
