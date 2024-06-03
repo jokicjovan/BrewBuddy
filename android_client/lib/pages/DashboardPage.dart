@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:BrewBuddy/models/Beer.dart';
 import 'package:BrewBuddy/models/Brewery.dart';
 import 'package:BrewBuddy/models/Festival.dart';
@@ -5,7 +6,10 @@ import 'package:BrewBuddy/pages/BeerPage.dart';
 import 'package:BrewBuddy/pages/BreweryPage.dart';
 import 'package:BrewBuddy/pages/FestivalPage.dart';
 import 'package:BrewBuddy/pages/ItemListPage.dart';
-import 'package:flutter/material.dart';
+import 'package:BrewBuddy/services/BreweryService.dart';
+import 'package:BrewBuddy/services/ImageService.dart';
+import 'package:BrewBuddy/services/UserService.dart';
+import 'dart:typed_data';
 import 'package:intl/intl.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -16,19 +20,61 @@ class DashboardPage extends StatefulWidget {
 }
 
 class DashboardPageState extends State<DashboardPage> {
+  UserService userService = UserService();
+  BreweryService breweryService = BreweryService();
+  ImageService imageService = ImageService();
   List<Beer> beers = [];
   List<Brewery> breweries = [];
   List<Festival> festivals = [];
+  bool isUserDrunk = false;
 
-  void getData() {
-    beers = Beer.getBeers();
-    breweries = Brewery.getBreweries();
-    festivals = Festival.getFestivals();
+  Future<void> getBeers() async {
+    final beers = await userService.getBeerRecommendation();
+    for (int i = 0; i < beers.length; i++) {
+      final Uint8List img = await imageService.getBeerImage(beers[i].imageName);
+      beers[i].image = img;
+    }
+    ;
+    setState(() {
+      this.beers = beers;
+    });
+  }
+
+  Future<void> isDrunk() async {
+    final isDrunk = await userService.isUserDrunk();
+    setState(() {
+      this.isUserDrunk = isDrunk;
+    });
+  }
+
+  Future<void> getBreweries() async {
+    final breweries = await breweryService.getBreweries();
+    for (int i = 0; i < breweries.length; i++) {
+      final img = await imageService.getBreweryImage(breweries[i].imageName);
+      breweries[i].image = img;
+    }
+    setState(() {
+      this.breweries = breweries;
+    });
+  }
+
+  Future<void> getFestivals() async {
+    final festivals = await userService.getFestivalRecommendation();
+    setState(() {
+      this.festivals = festivals;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getBreweries();
+    getBeers();
+    isDrunk();
   }
 
   @override
   Widget build(BuildContext context) {
-    getData();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -45,7 +91,11 @@ class DashboardPageState extends State<DashboardPage> {
         padding: const EdgeInsets.only(bottom: 64.0),
         child: Column(
           children: [
-            buildWarningCard(context),
+            isUserDrunk
+                ? buildWarningCard(context)
+                : const SizedBox(
+                    width: 0,
+                  ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -82,26 +132,37 @@ class DashboardPageState extends State<DashboardPage> {
             ),
             SizedBox(
               height: 220,
-              child: ListView.separated(
-                itemBuilder: (context, index) {
-                  return buildBeerCard(index, context);
-                },
-                separatorBuilder: (context, index) => const SizedBox(
-                  width: 25,
-                ),
-                itemCount: beers.length,
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.only(left: 20, right: 20),
-              ),
+              child: beers.isNotEmpty
+                  ? ListView.separated(
+                      itemBuilder: (context, index) {
+                        return buildBeerCard(index, context);
+                      },
+                      separatorBuilder: (context, index) => const SizedBox(
+                        width: 25,
+                      ),
+                      itemCount: beers.length < 10 ? beers.length : 10,
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                    )
+                  : const SizedBox(
+                      height: 220,
+                      child: Text(
+                        "No beers to recommend.",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w300,
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      )),
             ),
             const SizedBox(
               height: 20,
             ),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                SizedBox(width: 30),
-                Expanded(
+                const SizedBox(width: 30),
+                const Expanded(
                     child: Text(
                   "Breweries",
                   style: TextStyle(
@@ -110,14 +171,24 @@ class DashboardPageState extends State<DashboardPage> {
                     fontSize: 25,
                   ),
                 )),
-                Text(
-                  "See more...",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w200,
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ItemListPage(
+                                widgets: List.generate(
+                                    breweries.length,
+                                    (index) =>
+                                        buildBreweryCard(index, context)),
+                              )));
+                    },
+                    child: const Text(
+                      "See more...",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w200,
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    )),
               ],
             ),
             const SizedBox(
@@ -125,17 +196,28 @@ class DashboardPageState extends State<DashboardPage> {
             ),
             SizedBox(
               height: 220,
-              child: ListView.separated(
-                itemBuilder: (context, index) {
-                  return buildBreweryCard(index, context);
-                },
-                separatorBuilder: (context, index) => const SizedBox(
-                  width: 25,
-                ),
-                itemCount: breweries.length,
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.only(left: 20, right: 20),
-              ),
+              child: breweries.isNotEmpty
+                  ? ListView.separated(
+                      itemBuilder: (context, index) {
+                        return buildBreweryCard(index, context);
+                      },
+                      separatorBuilder: (context, index) => const SizedBox(
+                        width: 25,
+                      ),
+                      itemCount: breweries.length > 10 ? 10 : breweries.length,
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                    )
+                  : const SizedBox(
+                      height: 220,
+                      child: Text(
+                        "No breweries to recommend.",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w300,
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      )),
             ),
             const SizedBox(
               height: 30,
@@ -158,21 +240,32 @@ class DashboardPageState extends State<DashboardPage> {
             const SizedBox(
               height: 10,
             ),
-            ListView.separated(
-              shrinkWrap: true,
-              // Makes the ListView take only the necessary height
-              physics: const NeverScrollableScrollPhysics(),
-              // Disables scrolling of this ListView
-              itemBuilder: (context, index) {
-                return buildFestivalCard(index, context);
-              },
-              separatorBuilder: (context, index) => const SizedBox(
-                height: 15,
-              ),
-              itemCount: breweries.length,
-              scrollDirection: Axis.vertical,
-              padding: const EdgeInsets.only(left: 20, right: 20),
-            ),
+            festivals.isNotEmpty
+                ? ListView.separated(
+                    shrinkWrap: true,
+                    // Makes the ListView take only the necessary height
+                    physics: const NeverScrollableScrollPhysics(),
+                    // Disables scrolling of this ListView
+                    itemBuilder: (context, index) {
+                      return buildFestivalCard(index, context);
+                    },
+                    separatorBuilder: (context, index) => const SizedBox(
+                      height: 15,
+                    ),
+                    itemCount: festivals.length,
+                    scrollDirection: Axis.vertical,
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                  )
+                : const SizedBox(
+                    height: 220,
+                    child: Text(
+                      "Nothing to visit.",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w300,
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    )),
           ],
         ),
       )),
@@ -196,11 +289,14 @@ class DashboardPageState extends State<DashboardPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Image.asset(
-                "lib/assets/beer.png",
-                width: 120,
-                height: 120,
-              ),
+              beers[index].image != null
+                  ? Image.memory(
+                      beers[index].image ?? Uint8List(0),
+                      height: 120,
+                      width: 120,
+                      fit: BoxFit.cover,
+                    )
+                  : const Text("Missing Image"),
               Column(
                 children: [
                   Row(
@@ -272,11 +368,14 @@ class DashboardPageState extends State<DashboardPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Image.asset(
-                "lib/assets/brewery.png",
-                width: 120,
-                height: 120,
-              ),
+              breweries[index].image != null
+                  ? Image.memory(
+                      breweries[index].image ?? Uint8List(0),
+                      height: 120,
+                      width: 120,
+                      fit: BoxFit.cover,
+                    )
+                  : const Text("Missing Image"),
               Column(
                 children: [
                   Text(
@@ -299,7 +398,9 @@ class DashboardPageState extends State<DashboardPage> {
                         width: 5,
                       ),
                       Text(
-                        beers[index].brewery.city.name,
+                        breweries[index].city.name.length > 13
+                            ? "${breweries[index].city.name.substring(0, 10)}..."
+                            : breweries[index].city.name,
                         style: const TextStyle(
                           fontWeight: FontWeight.w500,
                           color: Colors.white,

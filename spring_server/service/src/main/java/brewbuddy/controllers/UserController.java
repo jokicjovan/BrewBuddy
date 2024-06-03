@@ -54,6 +54,16 @@ public class UserController {
 		return userService.mostPopularUsers();
 	}
 
+	@RequestMapping("/isDrunk")
+	public Boolean isUserDrunk(){
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User currentUser = ((Credential) authentication.getPrincipal()).getUser();
+
+		User user = userService.get(currentUser.getId());
+
+		return userService.isUserDrunk(user);
+	}
+
 	@RequestMapping(value = "/coupon", method = RequestMethod.GET)
 	public List<CouponDTO> getAllCoupons(){
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

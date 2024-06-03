@@ -1,13 +1,19 @@
 package brewbuddy.services;
 
+import brewbuddy.drools.DroolsHelper;
+import brewbuddy.enums.BeerType;
+import brewbuddy.events.Alarm;
+import brewbuddy.events.Rating;
 import brewbuddy.events.UserBeerLogger;
 import brewbuddy.exceptions.BadRequestException;
+import brewbuddy.models.Beer;
+import brewbuddy.models.Brewery;
 import brewbuddy.models.User;
 import brewbuddy.exceptions.NotFoundException;
 import brewbuddy.repositories.UserBeerLoggerRepository;
 import brewbuddy.services.interfaces.IUserService;
-import brewbuddy.repositories.CredentialRepository;
 import brewbuddy.repositories.UserRepository;
+import org.drools.core.ClassObjectFilter;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
@@ -17,6 +23,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -55,6 +62,22 @@ public class UserService implements IUserService {
         } catch (DataIntegrityViolationException e) {
             throw new BadRequestException("Email already in use");
         }
+    }
+
+    @Override
+    public Boolean isUserDrunk(User user) {
+        KieSession kieSession = kieContainer.newKieSession("beerKsession");
+
+        // forwards
+        kieSession.insert(user);
+        for (UserBeerLogger usl : userBeerLoggerRepository.findAll()) {
+            kieSession.insert(usl);
+        }
+        kieSession.getAgenda().getAgendaGroup("beerAlarm").setFocus();
+        kieSession.fireAllRules();
+        Collection<Alarm> alarms = (Collection<Alarm>) kieSession.getObjects(new ClassObjectFilter(Alarm.class));
+
+        return !alarms.isEmpty();
     }
     @Override
     public List<User> mostPopularUsers(){

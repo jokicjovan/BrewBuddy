@@ -1,0 +1,29 @@
+
+
+
+import 'dart:convert';
+
+import 'package:BrewBuddy/interceptors/AuthInterceptor.dart';
+import 'package:BrewBuddy/models/Brewery.dart';
+
+import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
+import 'package:http_interceptor/http/intercepted_client.dart';
+import '../assets/constants.dart';
+
+class BreweryService{
+  final String breweryServiceUrl = '$baseUrl/brewery';
+  Client client = InterceptedClient.build(interceptors: [
+    AuthInterceptor(),
+  ]);
+  Future<List<Brewery>> getBreweries () async {
+    final response = await client.get(Uri.parse("$breweryServiceUrl/"));
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body) as List;
+      return jsonData.map((json) => Brewery.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load breweries');
+    }
+  }
+}

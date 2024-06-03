@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'Brewery.dart';
 import 'City.dart';
 
@@ -10,6 +11,7 @@ class Beer {
   final String type;
   final String imageName;
   final Brewery brewery;
+  late  Uint8List? image;
 
   Beer({
     required this.id,
@@ -20,6 +22,7 @@ class Beer {
     required this.type,
     required this.imageName,
     required this.brewery,
+    this.image
   });
 
   factory Beer.fromJson(Map<String, dynamic> json) {

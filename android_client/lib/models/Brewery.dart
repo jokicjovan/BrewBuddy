@@ -1,5 +1,6 @@
 import 'package:BrewBuddy/models/Beer.dart';
 import 'package:BrewBuddy/models/City.dart';
+import 'dart:typed_data';
 
 class Brewery {
   final int id;
@@ -7,6 +8,7 @@ class Brewery {
   final String imageName;
   final City city;
   final List<Beer>? beers;
+  Uint8List? image;
 
   Brewery({
     required this.id,
@@ -14,6 +16,7 @@ class Brewery {
     required this.imageName,
     required this.city,
     this.beers,
+    this.image
   });
 
   factory Brewery.fromJson(Map<String, dynamic> json) {

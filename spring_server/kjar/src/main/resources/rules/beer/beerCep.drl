@@ -93,7 +93,7 @@ end
 
 
 rule "beer alarm"
-agenda-group "beerCep"
+agenda-group "beerAlarm"
     when
         $user: User()
         Number(intValue > 5) from accumulate (

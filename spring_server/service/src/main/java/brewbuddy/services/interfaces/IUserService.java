@@ -11,5 +11,7 @@ public interface IUserService {
 
     User insert(User user);
 
+    Boolean isUserDrunk(User user);
+
     List<User> mostPopularUsers();
 }

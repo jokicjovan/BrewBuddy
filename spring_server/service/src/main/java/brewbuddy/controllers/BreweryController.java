@@ -23,8 +23,10 @@ public class BreweryController {
         this.breweryService = breweryService;
     }
     @RequestMapping("/")
-    public List<Brewery> getAll(){
-        return breweryService.getAll();
+    public List<BreweryDTO> getAll(){
+        return breweryService.getAll().stream()
+                .map(BreweryDTO::convertToSimpleDTO)
+                .collect(Collectors.toList());
     }
 
     @RequestMapping("/{id}")

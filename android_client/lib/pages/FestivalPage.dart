@@ -280,7 +280,7 @@ class FestivalPageState extends State<FestivalPage> {
                         width: 5,
                       ),
                       Text(
-                        beers[index].brewery.city.name,
+                        breweries[index].city.name,
                         style: const TextStyle(
                           fontWeight: FontWeight.w500,
                           color: Colors.white,
