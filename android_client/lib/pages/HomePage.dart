@@ -14,39 +14,51 @@ class HomePage extends StatefulWidget {
   HomePageState createState() => HomePageState();
 }
 
-class HomePageState extends State<HomePage> {
-  int _currentIndex = 0;
+class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin{
+  final PageStorageBucket _bucket = PageStorageBucket();
+  late final TabController _tabController;
 
-  final List<Widget> _tabs = [
-    const DashboardPage(),
-    const SearchPage(),
-    const PopularPage(),
-    const CouponPage(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 4, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _tabs.map((Widget tab) {
-          return Navigator(
-            onGenerateRoute: (RouteSettings settings) {
-              return MaterialPageRoute(
-                builder: (context) => tab,
-              );
-            },
-          );
-        }).toList(),
+      body: PageStorage(
+        bucket: _bucket,
+        child: TabBarView(
+          controller: _tabController,
+          children: [
+            const DashboardPage(),
+            Builder(
+              builder: (context) => const SearchPage(),
+            ),
+            Builder(
+              builder: (context) => const PopularPage(),
+            ),
+            Builder(
+              builder: (context) => const CouponPage(),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton.large(
         onPressed: () => showDialog<String>(
-            context: context,
-
-            builder: (BuildContext context) => Dialog(
-              child: buildDrinkDialog(context),
-            )),
+          context: context,
+          builder: (BuildContext context) => Dialog(
+            child: buildDrinkDialog(context),
+          ),
+        ),
         shape: const CircleBorder(),
         tooltip: "Drink",
         backgroundColor: Theme.of(context).colorScheme.onSecondary,
@@ -79,112 +91,114 @@ class HomePageState extends State<HomePage> {
 
   Padding buildDrinkDialog(BuildContext context) {
     return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                height:150 ,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: DropdownSearch<Beer>(
-
-                        popupProps: const PopupProps.dialog(
-                          showSearchBox: true,
-                        ),
-                        asyncItems: (String filter) => Future.value(Beer.getBeers()).then((beers) =>
-                          beers.where((beer) => beer.name.contains(filter)).toList()),
-                        itemAsString: (Beer u) => u.name,
-                        onChanged: (Beer? data) => print(data?.name),
-                        dropdownDecoratorProps: const DropDownDecoratorProps(
-                          dropdownSearchDecoration: InputDecoration(
-                            labelText: "Select Beer",
-                            hintText: "Select beer to log",
-                          ),
-                        ),
-
-                      ),
-                    ),
-                    TextButton(onPressed: (){
-                      Navigator.pop(context);
-                      showDialog<String>(
-                          context: context,
-
-                          builder: (BuildContext context) => Dialog(
-                            child: buildRateDialog(context),
-                          ));
-                    },
-                      style: TextButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.onSecondary, // Set background color here
-                      )
-                      , child: const Text(
-                      "Drink!",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black,
-                        fontSize: 20,
-                      ),
-                    ),)
-                  ],
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+        height: 150,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: DropdownSearch<Beer>(
+                popupProps: const PopupProps.dialog(
+                  showSearchBox: true,
+                ),
+                asyncItems: (String filter) => Future.value(Beer.getBeers())
+                    .then((beers) => beers.where((beer) => beer.name.contains(filter)).toList()),
+                itemAsString: (Beer u) => u.name,
+                onChanged: (Beer? data) => print(data?.name),
+                dropdownDecoratorProps: const DropDownDecoratorProps(
+                  dropdownSearchDecoration: InputDecoration(
+                    labelText: "Select Beer",
+                    hintText: "Select beer to log",
+                  ),
                 ),
               ),
-            );
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => Dialog(
+                    child: buildRateDialog(context),
+                  ),
+                );
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.onSecondary, // Set background color here
+              ),
+              child: const Text(
+                "Drink!",
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                  fontSize: 20,
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
+
   Padding buildRateDialog(BuildContext context) {
     return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                height:250 ,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: RatingBar.builder(
-                        initialRating: 3,
-                        minRating: 1,
-                        direction: Axis.horizontal,
-                        allowHalfRating: false,
-                        itemCount: 5,
-                        itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                        itemBuilder: (context, _) => Icon(
-                          Icons.star,
-                          color: Theme.of(context).colorScheme.onSecondary,
-                        ),
-                        onRatingUpdate: (rating) {
-                          print(rating);
-                        },
-                      )
-                    ),
-
-                    const TextField(
-                      maxLines: 3, // Makes the TextField a text area
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Enter your text here',
-                      ),
-                    ),
-                    const SizedBox(height: 10,),
-                    TextButton(onPressed: (){
-                      Navigator.pop(context);
-                    },
-                      style: TextButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.onSecondary, // Set background color here
-                      )
-                      , child: const Text(
-                        "Rate",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black,
-                          fontSize: 20,
-                        ),
-                      ),),
-                  ],
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+        height: 250,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: RatingBar.builder(
+                initialRating: 3,
+                minRating: 1,
+                direction: Axis.horizontal,
+                allowHalfRating: false,
+                itemCount: 5,
+                itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                itemBuilder: (context, _) => Icon(
+                  Icons.star,
+                  color: Theme.of(context).colorScheme.onSecondary,
+                ),
+                onRatingUpdate: (rating) {
+                  print(rating);
+                },
+              ),
+            ),
+            const TextField(
+              maxLines: 3, // Makes the TextField a text area
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Enter your text here',
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.onSecondary, // Set background color here
+              ),
+              child: const Text(
+                "Rate",
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                  fontSize: 20,
                 ),
               ),
-            );
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget buildNavItem({
@@ -195,7 +209,7 @@ class HomePageState extends State<HomePage> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          _currentIndex = index;
+          _tabController.animateTo(index);
         });
       },
       child: Column(
@@ -203,7 +217,7 @@ class HomePageState extends State<HomePage> {
         children: [
           Icon(
             icon,
-            color: _currentIndex == index
+            color: _tabController.index == index
                 ? Theme.of(context).colorScheme.onSecondary
                 : Colors.white,
             size: 35,
@@ -213,7 +227,7 @@ class HomePageState extends State<HomePage> {
             child: Text(
               label,
               style: TextStyle(
-                color: _currentIndex == index
+                color: _tabController.index == index
                     ? Theme.of(context).colorScheme.onSecondary
                     : Colors.white,
               ),

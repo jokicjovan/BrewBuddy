@@ -5,6 +5,8 @@ import io.jsonwebtoken.ClaimJwtException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -71,19 +73,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
-                else {
-                    handlerExceptionResolver.resolveException(request, response, null,
-                            new ExpiredJwtException(null, null, "Token expired"));
-                    return;
-                }
             }
-            else {
-                handlerExceptionResolver.resolveException(request, response, null,
-                        new MalformedJwtException("Bad Token"));
-                return;
-            }
-
             filterChain.doFilter(request, response);
+        } catch (ExpiredJwtException ex) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.TEXT_PLAIN);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write(ex.getMessage());
+            return;
         } catch (Exception exception) {
             handlerExceptionResolver.resolveException(request, response, null, exception);
         }

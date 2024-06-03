@@ -24,7 +24,7 @@ class LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _signIn() async {
+  void _logIn() async {
     if (_formKey.currentState?.validate() ?? false) {
       try {
         await _authService.login(
@@ -108,7 +108,7 @@ class LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 32),
                         ElevatedButton(
-                          onPressed: _signIn,
+                          onPressed: _logIn,
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(200, 50),
                             backgroundColor: Theme.of(context).colorScheme.primary,
@@ -120,7 +120,7 @@ class LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           child: Text(
-                            'Sign in',
+                            'Log in',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 20,

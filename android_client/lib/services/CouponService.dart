@@ -10,8 +10,10 @@ class CouponService {
     AuthInterceptor(),
   ]);
 
+
   Future<List<Coupon>> getUserCoupons() async {
     final response = await client.get(Uri.parse('$baseUrl/user/coupon'));
+    print("Kuponi");
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body) as List;
       return jsonData.map((json) => Coupon.fromJson(json)).toList();

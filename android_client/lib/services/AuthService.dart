@@ -50,7 +50,6 @@ class AuthService {
         'Authorization': 'Bearer $token',
       },
     );
-
     if (response.statusCode != 200) {
       await prefs.remove('token');
       return false;

@@ -24,7 +24,7 @@ class Coupon {
     final int id = json['id'] as int;
     final String type = json['type'];
     final double discountPercentage = json['discountPercentage'] as double;
-    final DateTime validUntil = DateTime.parse(json['validUntil']);
+    final DateTime validUntil = DateTime.fromMillisecondsSinceEpoch(json['validUntil'] as int);
     final Map<String, dynamic>? breweryJson = json['brewery'];
     final Map<String, dynamic>? festivalJson = json['festival'];
 

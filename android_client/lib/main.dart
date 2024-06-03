@@ -1,29 +1,25 @@
+import 'package:flutter/material.dart';
 import 'package:BrewBuddy/pages/LoginPage.dart';
 import 'package:BrewBuddy/pages/HomePage.dart';
 import 'package:BrewBuddy/services/AuthService.dart';
-import 'package:flutter/material.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
-
   final AuthService _authService = AuthService();
 
-  Future<Widget> _getInitialScreen() async {
-    if (await _authService.isTokenValid()) {
-      return const HomePage();
-    }
-    return const LoginPage();
-  }
+  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'BrewBuddy',
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
       theme: ThemeData(
         fontFamily: 'Poppins',
         scaffoldBackgroundColor: const Color.fromRGBO(0, 0, 0, 1.0),
@@ -41,6 +37,10 @@ class MyApp extends StatelessWidget {
         cardColor: const Color.fromRGBO(33, 33, 33, 1.0),
         useMaterial3: true,
       ),
+      routes: {
+        '/login': (context) => const LoginPage(),
+        '/home': (context) => const HomePage(),
+      },
       home: FutureBuilder<Widget>(
         future: _getInitialScreen(),
         builder: (context, snapshot) {
@@ -62,5 +62,12 @@ class MyApp extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Future<Widget> _getInitialScreen() async {
+    if (await _authService.isTokenValid()) {
+      return const HomePage();
+    }
+    return const LoginPage();
   }
 }

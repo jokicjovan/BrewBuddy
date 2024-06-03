@@ -21,7 +21,7 @@ class Festival {
       id: json['id'] as int,
       name: json['name'] as String,
       city: City.fromJson(json['city']),
-      eventDate: DateTime.parse(json['eventDate']),
+      eventDate: DateTime.fromMillisecondsSinceEpoch(json['eventDate'] as int),
       breweries: (json['breweries'] as List<dynamic>?)
           ?.map((breweryJson) => Brewery.fromJson(breweryJson))
           .toList(),
