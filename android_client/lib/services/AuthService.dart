@@ -1,14 +1,20 @@
 import 'dart:convert';
+import 'package:BrewBuddy/interceptors/AuthInterceptor.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
+import 'package:http_interceptor/http/intercepted_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../assets/constants.dart';
 
 class AuthService {
+  Client client = InterceptedClient.build(interceptors: [
+    AuthInterceptor(),
+  ]);
   final String authServiceUrl = '$baseUrl/auth';
 
   Future<void> login(String email, String password) async {
     final url = Uri.parse('$authServiceUrl/login');
-    final response = await http.post(
+    final response = await client.post(
       url,
       headers: {
         'Content-Type': 'application/json',
@@ -38,7 +44,7 @@ class AuthService {
     }
 
     final url = Uri.parse('$authServiceUrl/validate-token');
-    final response = await http.post(
+    final response = await client.post(
       url,
       headers: {
         'Content-Type': 'application/json',

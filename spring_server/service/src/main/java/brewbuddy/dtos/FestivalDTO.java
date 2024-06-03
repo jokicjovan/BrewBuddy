@@ -21,14 +21,19 @@ public class FestivalDTO {
     private List<BreweryDTO> breweries;
 
     public static FestivalDTO convertToDetailedDTO(Festival festival) {
+        FestivalDTO dto = convertToSimpleDTO(festival);
+        dto.setBreweries(festival.getBreweries().stream()
+                .map(BreweryDTO::convertToSimpleDTO)
+                .collect(Collectors.toList()));
+        return dto;
+    }
+
+    public static FestivalDTO convertToSimpleDTO(Festival festival) {
         FestivalDTO dto = new FestivalDTO();
         dto.setId(festival.getId());
         dto.setName(festival.getName());
         dto.setCity(festival.getCity());
         dto.setEventDate(festival.getEventDate());
-        dto.setBreweries(festival.getBreweries().stream()
-                .map(BreweryDTO::convertToSimpleDTO)
-                .collect(Collectors.toList()));
         return dto;
     }
 }

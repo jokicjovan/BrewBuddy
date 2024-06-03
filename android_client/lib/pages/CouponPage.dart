@@ -13,43 +13,12 @@ class CouponPage extends StatefulWidget {
 
 class CouponPageState extends State<CouponPage> {
   CouponService couponService = CouponService();
-  List<Coupon> userCoupons = [
-    Coupon(
-        id: 1,
-        type: "APPLICATION",
-        validUntil: DateTime.now(),
-        discountPercentage: 30.5),
-    Coupon(
-        id: 2,
-        type: "APPLICATION",
-        validUntil: DateTime.now(),
-        discountPercentage: 30.5),
-    Coupon(
-        id: 3,
-        type: "APPLICATION",
-        validUntil: DateTime.now(),
-        discountPercentage: 30.5),
-    Coupon(
-        id: 4,
-        type: "APPLICATION",
-        validUntil: DateTime.now(),
-        discountPercentage: 30.5),
-    Coupon(
-        id: 5,
-        type: "APPLICATION",
-        validUntil: DateTime.now(),
-        discountPercentage: 30.5),
-    Coupon(
-        id: 6,
-        type: "APPLICATION",
-        validUntil: DateTime.now(),
-        discountPercentage: 30.5)
-  ];
+  List<Coupon> userCoupons = [];
 
   @override
   void initState() {
     super.initState();
-    //fetchUserCoupons();
+    fetchUserCoupons();
   }
 
   Future<void> fetchUserCoupons() async {

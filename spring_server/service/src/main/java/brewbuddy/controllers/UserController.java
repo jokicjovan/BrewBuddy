@@ -54,7 +54,7 @@ public class UserController {
 		return userService.mostPopularUsers();
 	}
 
-	@RequestMapping("/coupon")
+	@RequestMapping(value = "/coupon", method = RequestMethod.GET)
 	public List<CouponDTO> getAllCoupons(){
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User currentUser = ((Credential) authentication.getPrincipal()).getUser();
