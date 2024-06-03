@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
 
   Future<Widget> _getInitialScreen() async {
     if (await _authService.isTokenValid()) {
-      return const MainPage();
+      return const HomePage();
     }
     return const LoginPage();
   }

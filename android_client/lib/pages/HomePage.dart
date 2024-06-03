@@ -7,14 +7,14 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  MainPageState createState() => MainPageState();
+  HomePageState createState() => HomePageState();
 }
 
-class MainPageState extends State<MainPage> {
+class HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
   final List<Widget> _tabs = [
