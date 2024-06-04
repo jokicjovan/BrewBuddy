@@ -50,3 +50,8 @@ INSERT INTO Ratings(rate, comment, user_id, beer_id, timestamp) VALUES(5, 'nice'
 INSERT INTO Coupon_Criterias(id,type,min_beers,percentage,expire_in,days_range) VALUES (1,'FESTIVAL',2,50,10,30);
 INSERT INTO Coupon_Criterias(id,type,min_beers,percentage,expire_in,days_range) VALUES (2,'BREWERY',2,50,10,30);
 INSERT INTO Coupon_Criterias(id,type,min_beers,percentage,expire_in,days_range) VALUES (3,'APPLICATION',2,50,10,30);
+
+INSERT INTO Users_Beers_Logger(id,user_id,beer_id,timestamp) VALUES ( 1,1,1,'2024-06-02');
+INSERT INTO Users_Beers_Logger(id,user_id,beer_id,timestamp) VALUES ( 2,1,2,'2024-06-02');
+INSERT INTO Users_Beers_Logger(id,user_id,beer_id,timestamp) VALUES ( 3,1,3,'2024-06-02');
+INSERT INTO Users_Beers_Logger(id,user_id,beer_id,timestamp) VALUES ( 4,1,4,'2024-06-02');

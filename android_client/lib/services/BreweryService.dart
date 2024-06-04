@@ -37,4 +37,14 @@ class BreweryService{
       throw Exception('Failed to load popular breweries');
     }
   }
+  Future<Brewery> getBrewery (int id) async {
+    final response = await client.get(Uri.parse("$breweryServiceUrl/$id"));
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      return Brewery.fromJson(jsonData);
+    } else {
+      throw Exception('Failed to load brewery');
+    }
+  }
 }

@@ -8,6 +8,7 @@ import '../pages/BeerPage.dart';
 class BeerCard extends StatelessWidget {
   final Beer beer;
 
+
   const BeerCard({
     super.key,
     required this.beer

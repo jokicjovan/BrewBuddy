@@ -47,4 +47,36 @@ class BeerService{
       throw Exception('Failed to load beers by type');
     }
   }
+
+  Future<List<Beer>> filterBeers ({String type="",String alcohol="",String breweryId=""}) async {
+    String uri="$beerServiceUrl/filter";
+    if (type!=""){
+      uri+="?beerType=$type&";
+    }
+    if (alcohol!=""){
+      uri+="?alcoholCategory=$alcohol&";
+    }
+    if (breweryId!=""){
+      uri+="?breweryId=$breweryId&";
+    }
+    final response = await client.get(Uri.parse(uri));
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body) as List;
+      return jsonData.map((json) => Beer.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load beers by type');
+    }
+  }
+
+  Future<Beer> getBeer (int id) async {
+    final response = await client.get(Uri.parse("$beerServiceUrl/$id"));
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      return Beer.fromJson(jsonData);
+    } else {
+      throw Exception('Failed to load beer');
+    }
+  }
 }

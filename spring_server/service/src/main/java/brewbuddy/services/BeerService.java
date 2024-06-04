@@ -147,15 +147,18 @@ public class BeerService implements IBeerService {
     public List<Beer> filterBeers(BeerType type, Brewery brewery, String alcoholCategory) {
         HashMap<Integer, Integer> filterMap = new HashMap<>();
         HashMap<Integer, Integer> result = new HashMap<>();
-        result = breweryFilter(brewery);
+        result = brewery!=null?breweryFilter(brewery):new HashMap<>(beerRepository.findAll().stream()
+                .collect(Collectors.toMap(Beer::getId, beer -> 1)));
         for (Map.Entry<Integer, Integer> entry : result.entrySet()) {
             filterMap.put(entry.getKey(), filterMap.getOrDefault(entry.getKey(), 0) + 1);
         }
-        result = alcoholFilter(alcoholCategory);
+        result = alcoholCategory!=null?alcoholFilter(alcoholCategory):new HashMap<>(beerRepository.findAll().stream()
+                .collect(Collectors.toMap(Beer::getId, beer -> 1)));
         for (Map.Entry<Integer, Integer> entry : result.entrySet()) {
             filterMap.put(entry.getKey(), filterMap.getOrDefault(entry.getKey(), 0) + 1);
         }
-        result = typeFilter(type);
+        result = type!=null?typeFilter(type):new HashMap<>(beerRepository.findAll().stream()
+                .collect(Collectors.toMap(Beer::getId, beer -> 1)));
         for (Map.Entry<Integer, Integer> entry : result.entrySet()) {
             filterMap.put(entry.getKey(), filterMap.getOrDefault(entry.getKey(), 0) + 1);
         }
