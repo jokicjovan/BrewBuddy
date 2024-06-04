@@ -1,5 +1,6 @@
 import 'package:BrewBuddy/models/Beer.dart';
 import 'package:BrewBuddy/models/Brewery.dart';
+import 'package:BrewBuddy/widgets/BeerCard.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 
@@ -231,7 +232,7 @@ class SearchPageState extends State<SearchPage> {
             ),
             itemCount: filteredBeers.length,
             itemBuilder: (context, index) {
-              return buildBeerCard(index, context);
+              return BeerCard(beer: beers[index]);
             },
           )),
         ],
@@ -239,79 +240,4 @@ class SearchPageState extends State<SearchPage> {
     );
   }
 
-  GestureDetector buildBeerCard(int index, BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => BeerPage(
-                beerId: filteredBeers[index].id,
-              )));
-        },
-        child: Container(
-          width: 150,
-          decoration: BoxDecoration(
-            color: const Color.fromRGBO(151, 151, 151, 0.22),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Image.asset(
-                "lib/assets/beer.png",
-                width: 120,
-                height: 120,
-              ),
-              Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                        filteredBeers[index].type,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
-                      ),
-                      Text(
-                        "${filteredBeers[index].percentageOfAlcohol}%",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    filteredBeers[index].name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: Theme.of(context).colorScheme.onSecondary,
-                      fontSize: 22,
-                    ),
-                  ),
-                  const Text(
-                    "Powered By",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w300,
-                      color: Colors.white,
-                      fontSize: 10,
-                    ),
-                  ),
-                  Text(
-                    filteredBeers[index].brewery.name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ));
-  }
 }

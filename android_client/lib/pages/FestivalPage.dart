@@ -1,6 +1,8 @@
 import 'package:BrewBuddy/models/Beer.dart';
 import 'package:BrewBuddy/models/Brewery.dart';
 import 'package:BrewBuddy/models/Festival.dart';
+import 'package:BrewBuddy/widgets/BeerCard.dart';
+import 'package:BrewBuddy/widgets/BreweryCard.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -116,7 +118,7 @@ class FestivalPageState extends State<FestivalPage> {
                   height: 220,
                   child: ListView.separated(
                     itemBuilder: (context, index) {
-                      return buildBreweryCard(index, context);
+                      return BreweryCard(brewery: breweries[index]);
                     },
                     separatorBuilder: (context, index) => const SizedBox(
                       width: 25,
@@ -153,7 +155,7 @@ class FestivalPageState extends State<FestivalPage> {
                   height: 220,
                   child: ListView.separated(
                     itemBuilder: (context, index) {
-                      return buildBeerCard(index, context);
+                      return BeerCard(beer: beers[index]);
                     },
                     separatorBuilder: (context, index) => const SizedBox(
                       width: 25,
@@ -165,134 +167,5 @@ class FestivalPageState extends State<FestivalPage> {
                 ),
               ],
             )));
-  }
-
-  GestureDetector buildBeerCard(int index, BuildContext context) {
-    return GestureDetector(
-        onTap: (){
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => BeerPage(beerId: beers[index].id,)));
-        },
-        child:Container(
-          width: 150,
-          decoration: BoxDecoration(
-            color: const Color.fromRGBO(151, 151, 151, 0.22),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Image.asset(
-                "lib/assets/beer.png",
-                width: 120,
-                height: 120,
-              ),
-              Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                        beers[index].type,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
-                      ),
-                      Text(
-                        "${beers[index].percentageOfAlcohol}%",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    beers[index].name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: Theme.of(context).colorScheme.onSecondary,
-                      fontSize: 22,
-                    ),
-                  ),
-                  const Text(
-                    "Powered By",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w300,
-                      color: Colors.white,
-                      fontSize: 10,
-                    ),
-                  ),
-                  Text(
-                    beers[index].brewery.name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ));
-  }
-  GestureDetector buildBreweryCard(int index, BuildContext context) {
-    return GestureDetector(
-        onTap: (){
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => BreweryPage(breweryId: breweries[index].id,)));
-        },
-        child:Container(
-          width: 150,
-          decoration: BoxDecoration(
-            color: const Color.fromRGBO(151, 151, 151, 0.22),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Image.asset(
-                "lib/assets/brewery.png",
-                width: 120,
-                height: 120,
-              ),
-              Column(
-                children: [
-                  Text(
-                    breweries[index].name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: Theme.of(context).colorScheme.onSecondary,
-                      fontSize: 22,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.location_on_rounded,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        breweries[index].city.name,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ));
   }
 }

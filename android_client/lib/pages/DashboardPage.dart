@@ -1,3 +1,5 @@
+import 'package:BrewBuddy/widgets/BeerCard.dart';
+import 'package:BrewBuddy/widgets/BreweryCard.dart';
 import 'package:flutter/material.dart';
 import 'package:BrewBuddy/models/Beer.dart';
 import 'package:BrewBuddy/models/Brewery.dart';
@@ -114,7 +116,7 @@ class DashboardPageState extends State<DashboardPage> {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => ItemListPage(
                                 widgets: List.generate(beers.length,
-                                    (index) => buildBeerCard(index, context)),
+                                    (index) => BeerCard(beer:beers[index])),
                               )));
                     },
                     child: const Text(
@@ -135,7 +137,7 @@ class DashboardPageState extends State<DashboardPage> {
               child: beers.isNotEmpty
                   ? ListView.separated(
                       itemBuilder: (context, index) {
-                        return buildBeerCard(index, context);
+                        return BeerCard(beer: beers[index]);
                       },
                       separatorBuilder: (context, index) => const SizedBox(
                         width: 25,
@@ -178,8 +180,8 @@ class DashboardPageState extends State<DashboardPage> {
                                 widgets: List.generate(
                                     breweries.length,
                                     (index) =>
-                                        buildBreweryCard(index, context)),
-                              )));
+                                        BreweryCard(brewery: breweries[index]),
+                              ))));
                     },
                     child: const Text(
                       "See more...",
@@ -199,7 +201,7 @@ class DashboardPageState extends State<DashboardPage> {
               child: breweries.isNotEmpty
                   ? ListView.separated(
                       itemBuilder: (context, index) {
-                        return buildBreweryCard(index, context);
+                        return BreweryCard(brewery: breweries[index]);
                       },
                       separatorBuilder: (context, index) => const SizedBox(
                         width: 25,
@@ -272,149 +274,8 @@ class DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  GestureDetector buildBeerCard(int index, BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => BeerPage(
-                    beerId: beers[index].id,
-                  )));
-        },
-        child: Container(
-          width: 150,
-          decoration: BoxDecoration(
-            color: const Color.fromRGBO(151, 151, 151, 0.22),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              beers[index].image != null
-                  ? Image.memory(
-                      beers[index].image ?? Uint8List(0),
-                      height: 120,
-                      width: 120,
-                      fit: BoxFit.cover,
-                    )
-                  : const Text("Missing Image"),
-              Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                        beers[index].type,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
-                      ),
-                      Text(
-                        "${beers[index].percentageOfAlcohol}%",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    beers[index].name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: Theme.of(context).colorScheme.onSecondary,
-                      fontSize: 22,
-                    ),
-                  ),
-                  const Text(
-                    "Powered By",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w300,
-                      color: Colors.white,
-                      fontSize: 10,
-                    ),
-                  ),
-                  Text(
-                    beers[index].brewery.name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ));
-  }
 
-  GestureDetector buildBreweryCard(int index, BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => BreweryPage(
-                    breweryId: breweries[index].id,
-                  )));
-        },
-        child: Container(
-          width: 150,
-          decoration: BoxDecoration(
-            color: const Color.fromRGBO(151, 151, 151, 0.22),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              breweries[index].image != null
-                  ? Image.memory(
-                      breweries[index].image ?? Uint8List(0),
-                      height: 120,
-                      width: 120,
-                      fit: BoxFit.cover,
-                    )
-                  : const Text("Missing Image"),
-              Column(
-                children: [
-                  Text(
-                    breweries[index].name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: Theme.of(context).colorScheme.onSecondary,
-                      fontSize: 22,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.location_on_rounded,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        breweries[index].city.name.length > 13
-                            ? "${breweries[index].city.name.substring(0, 10)}..."
-                            : breweries[index].city.name,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ));
-  }
+
 
   Container buildWarningCard(BuildContext context) {
     return Container(
