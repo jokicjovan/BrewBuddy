@@ -60,7 +60,6 @@ public class UserController {
 		User currentUser = ((Credential) authentication.getPrincipal()).getUser();
 
 		User user = userService.get(currentUser.getId());
-
 		return userService.isUserDrunk(user);
 	}
 

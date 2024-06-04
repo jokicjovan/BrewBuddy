@@ -1,14 +1,11 @@
 import 'dart:typed_data';
 import 'package:BrewBuddy/pages/BeerTypeListPage.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import 'BeerPage.dart';
 import 'package:BrewBuddy/models/Beer.dart';
 import 'package:BrewBuddy/models/Brewery.dart';
-import 'package:BrewBuddy/models/Festival.dart';
 import 'package:BrewBuddy/pages/BreweryPage.dart';
-import 'package:BrewBuddy/pages/FestivalPage.dart';
 import 'package:BrewBuddy/pages/ItemListPage.dart';
 import 'package:BrewBuddy/services/BeerService.dart';
 import 'package:BrewBuddy/services/BreweryService.dart';

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
-
   @override
   LoginPageState createState() => LoginPageState();
 }
@@ -36,11 +35,17 @@ class LoginPageState extends State<LoginPage> {
           MaterialPageRoute(builder: (context) => const HomePage()),
         );
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Login Successful')),
+          const SnackBar(
+            content: Text('Login Successful'),
+            behavior: SnackBarBehavior.floating,
+          ),
         );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Login Failed: $e')),
+          SnackBar(
+            content: Text('Login Failed: $e'),
+            behavior: SnackBarBehavior.floating,
+          ),
         );
       }
     }
@@ -111,12 +116,14 @@ class LoginPageState extends State<LoginPage> {
                           onPressed: _logIn,
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size(200, 50),
-                            backgroundColor: Theme.of(context).colorScheme.primary,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
                             textStyle: TextStyle(
                               color: Theme.of(context).colorScheme.onPrimary,
                             ),
                             shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
                             ),
                           ),
                           child: Text(

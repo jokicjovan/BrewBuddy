@@ -65,6 +65,11 @@ public class BeerService implements IBeerService {
     }
 
     @Override
+    public boolean isBeerRatedByUser(Beer beer, User user) {
+        return ratingRepository.existsRatingByBeerAndUser(beer, user);
+    }
+
+    @Override
     public HashMap<Brewery, Beer> getMostPopularBeerByBrewery(List<Brewery> breweries) {
         List<Beer> mostPopularBeers = new ArrayList<>();
         for (Brewery brewery : breweries) {
@@ -79,6 +84,8 @@ public class BeerService implements IBeerService {
                 .collect(Collectors.toMap(Beer::getBrewery, beer -> beer));
         return new HashMap<>(breweryBeerMap);
     }
+
+
 
     @Override
     public Rating rate(User user, Beer beer, Integer rate, String comment) {

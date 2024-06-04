@@ -1,18 +1,16 @@
 import 'package:BrewBuddy/widgets/BeerCard.dart';
 import 'package:BrewBuddy/widgets/BreweryCard.dart';
-import 'package:flutter/material.dart';
+import 'package:BrewBuddy/widgets/DrunkWarningCard.dart';
+import 'package:BrewBuddy/widgets/FestivalCard.dart';
 import 'package:BrewBuddy/models/Beer.dart';
 import 'package:BrewBuddy/models/Brewery.dart';
 import 'package:BrewBuddy/models/Festival.dart';
-import 'package:BrewBuddy/pages/BeerPage.dart';
-import 'package:BrewBuddy/pages/BreweryPage.dart';
-import 'package:BrewBuddy/pages/FestivalPage.dart';
 import 'package:BrewBuddy/pages/ItemListPage.dart';
 import 'package:BrewBuddy/services/BreweryService.dart';
 import 'package:BrewBuddy/services/ImageService.dart';
 import 'package:BrewBuddy/services/UserService.dart';
+import 'package:flutter/material.dart';
 import 'dart:typed_data';
-import 'package:intl/intl.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -47,7 +45,7 @@ class DashboardPageState extends State<DashboardPage> {
   Future<void> isDrunk() async {
     final isDrunk = await userService.isUserDrunk();
     setState(() {
-      this.isUserDrunk = isDrunk;
+      isUserDrunk = isDrunk;
     });
   }
 
@@ -103,7 +101,7 @@ class DashboardPageState extends State<DashboardPage> {
         child: Column(
           children: [
             isUserDrunk
-                ? buildWarningCard(context)
+                ? const DrunkWarningCard()
                 : const SizedBox(
                     width: 0,
                   ),
@@ -128,12 +126,15 @@ class DashboardPageState extends State<DashboardPage> {
                                     (index) => BeerCard(beer: beers[index])),
                               )));
                     },
-                    child: const Text(
-                      "See more...",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w200,
-                        color: Colors.white,
-                        fontSize: 16,
+                    child: const Padding(
+                      padding: EdgeInsets.only(right: 8.0),
+                      child: Text(
+                        "See more...",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w200,
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
                       ),
                     )),
               ],
@@ -192,12 +193,15 @@ class DashboardPageState extends State<DashboardPage> {
                                     BreweryCard(brewery: breweries[index]),
                               ))));
                     },
-                    child: const Text(
-                      "See more...",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w200,
-                        color: Colors.white,
-                        fontSize: 16,
+                    child: const Padding(
+                      padding: EdgeInsets.only(right: 8.0),
+                      child: Text(
+                        "See more...",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w200,
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
                       ),
                     )),
               ],
@@ -258,7 +262,7 @@ class DashboardPageState extends State<DashboardPage> {
                     physics: const NeverScrollableScrollPhysics(),
                     // Disables scrolling of this ListView
                     itemBuilder: (context, index) {
-                      return buildFestivalCard(index, context);
+                      return FestivalCard(festivals: festivals, index: index);
                     },
                     separatorBuilder: (context, index) => const SizedBox(
                       height: 15,
@@ -283,130 +287,4 @@ class DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Container buildWarningCard(BuildContext context) {
-    return Container(
-      height: 80,
-      margin: const EdgeInsets.only(left: 10, right: 10, bottom: 25),
-      padding: const EdgeInsets.only(left: 15, right: 15),
-      decoration: BoxDecoration(
-        color: const Color.fromRGBO(225, 131, 131, 0.38),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: const Row(
-        children: [
-          Icon(
-            Icons.warning_rounded,
-            color: Colors.white,
-            size: 60,
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("You are probably drunk",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          fontSize: 20,
-                        )),
-                    Text("Consider taking a nap",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                          fontSize: 14,
-                        ))
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  GestureDetector buildFestivalCard(int index, BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => FestivalPage(
-                    festivalId: festivals[index].id,
-                  )));
-        },
-        child: Container(
-          width: 150,
-          decoration: BoxDecoration(
-            color: const Color.fromRGBO(151, 151, 151, 0.22),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          festivals[index].name,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: Theme.of(context).colorScheme.onSecondary,
-                            fontSize: 22,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.location_on_rounded,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              festivals[index].city.name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    )),
-                    Column(
-                      children: [
-                        Text(festivals[index].eventDate.day.toString(),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                              fontSize: 22,
-                            )),
-                        Text(
-                            DateFormat.MMM().format(festivals[index].eventDate),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                              fontSize: 18,
-                            )),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ));
-  }
 }

@@ -6,8 +6,6 @@ import 'package:BrewBuddy/widgets/BreweryCard.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'BeerPage.dart';
-import 'BreweryPage.dart';
 
 
 class FestivalPage extends StatefulWidget {

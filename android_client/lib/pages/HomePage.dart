@@ -1,11 +1,10 @@
-import 'package:BrewBuddy/models/Beer.dart';
 import 'package:BrewBuddy/pages/CouponPage.dart';
 import 'package:BrewBuddy/pages/DashboardPage.dart';
 import 'package:BrewBuddy/pages/SearchPage.dart';
 import 'package:BrewBuddy/pages/PopularPage.dart';
-import 'package:dropdown_search/dropdown_search.dart';
+import 'package:BrewBuddy/widgets/dialogs/DrinkDialog.dart';
+import 'package:BrewBuddy/widgets/dialogs/RateDialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,7 +13,8 @@ class HomePage extends StatefulWidget {
   HomePageState createState() => HomePageState();
 }
 
-class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin{
+class HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   final PageStorageBucket _bucket = PageStorageBucket();
   late final TabController _tabController;
 
@@ -22,6 +22,9 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin{
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+    _tabController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -56,7 +59,36 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin{
         onPressed: () => showDialog<String>(
           context: context,
           builder: (BuildContext context) => Dialog(
-            child: buildDrinkDialog(context),
+            child: DrinkDialog(
+              onDrinkPressed: (selectedBeer, isBeerRated) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Drink logged successfully'),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+                if (!isBeerRated) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) => Dialog(
+                      child: RateDialog(
+                        selectedBeer: selectedBeer,
+                        onRatePressed: () {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Drink rated successfully'),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
           ),
         ),
         shape: const CircleBorder(),
@@ -81,120 +113,12 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin{
             buildNavItem(icon: Icons.home_rounded, label: "Home", index: 0),
             buildNavItem(icon: Icons.search_rounded, label: "Search", index: 1),
             const SizedBox(width: 50),
-            buildNavItem(icon: Icons.local_fire_department_rounded, label: "Popular", index: 2),
-            buildNavItem(icon: Icons.local_activity_rounded, label: "Coupon", index: 3),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Padding buildDrinkDialog(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SizedBox(
-        height: 150,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: DropdownSearch<Beer>(
-                popupProps: const PopupProps.dialog(
-                  showSearchBox: true,
-                ),
-                asyncItems: (String filter) => Future.value(Beer.getBeers())
-                    .then((beers) => beers.where((beer) => beer.name.contains(filter)).toList()),
-                itemAsString: (Beer u) => u.name,
-                onChanged: (Beer? data) => print(data?.name),
-                dropdownDecoratorProps: const DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    labelText: "Select Beer",
-                    hintText: "Select beer to log",
-                  ),
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                showDialog<String>(
-                  context: context,
-                  builder: (BuildContext context) => Dialog(
-                    child: buildRateDialog(context),
-                  ),
-                );
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.onSecondary, // Set background color here
-              ),
-              child: const Text(
-                "Drink!",
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  fontSize: 20,
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Padding buildRateDialog(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SizedBox(
-        height: 250,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: RatingBar.builder(
-                initialRating: 3,
-                minRating: 1,
-                direction: Axis.horizontal,
-                allowHalfRating: false,
-                itemCount: 5,
-                itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                itemBuilder: (context, _) => Icon(
-                  Icons.star,
-                  color: Theme.of(context).colorScheme.onSecondary,
-                ),
-                onRatingUpdate: (rating) {
-                  print(rating);
-                },
-              ),
-            ),
-            const TextField(
-              maxLines: 3, // Makes the TextField a text area
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Enter your text here',
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.onSecondary, // Set background color here
-              ),
-              child: const Text(
-                "Rate",
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  fontSize: 20,
-                ),
-              ),
-            ),
+            buildNavItem(
+                icon: Icons.local_fire_department_rounded,
+                label: "Popular",
+                index: 2),
+            buildNavItem(
+                icon: Icons.local_activity_rounded, label: "Coupon", index: 3),
           ],
         ),
       ),

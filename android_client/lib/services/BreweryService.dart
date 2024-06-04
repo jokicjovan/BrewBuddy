@@ -1,12 +1,8 @@
-
-
-
 import 'dart:convert';
 
 import 'package:BrewBuddy/interceptors/AuthInterceptor.dart';
 import 'package:BrewBuddy/models/Brewery.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:http_interceptor/http/intercepted_client.dart';
 import '../assets/constants.dart';
@@ -22,9 +18,8 @@ class BreweryService{
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body) as List;
       return jsonData.map((json) => Brewery.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load breweries');
     }
+    throw Exception("Exception while loading breweries: ${response.reasonPhrase}");
   }
 
   Future<List<Brewery>> getPopularBreweries() async {
@@ -33,8 +28,7 @@ class BreweryService{
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body) as List;
       return jsonData.map((json) => Brewery.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load popular breweries');
     }
+    throw Exception("Exception while loading popular breweries: ${response.reasonPhrase}");
   }
 }

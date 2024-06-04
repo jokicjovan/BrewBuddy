@@ -19,6 +19,8 @@ public interface IBeerService {
 
     Beer insert(Beer beer);
 
+    boolean isBeerRatedByUser(Beer beer, User user);
+
     List<Beer> recommend(User user);
 
     List<Beer> filterBeers(BeerType type, Brewery brewery, String alcoholCategory);

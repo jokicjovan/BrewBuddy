@@ -3,7 +3,6 @@ import 'package:BrewBuddy/models/Brewery.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/BeerCard.dart';
-import 'BeerPage.dart';
 
 
 class BreweryPage extends StatefulWidget {

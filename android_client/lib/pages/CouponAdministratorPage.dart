@@ -1,10 +1,6 @@
-import 'package:BrewBuddy/models/Coupon.dart';
-import 'package:BrewBuddy/services/CouponService.dart';
-import 'package:BrewBuddy/widgets/RibbedVerticalDivider.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 
 import '../models/Brewery.dart';
 import '../models/Festival.dart';
@@ -79,7 +75,7 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
     return Column(
       children: [
         TextField(
-          decoration: new InputDecoration(labelText: "Minimum beers"),
+          decoration: const InputDecoration(labelText: "Minimum beers"),
           keyboardType: TextInputType.number,
           controller: _minBeersBController,
           inputFormatters: <TextInputFormatter>[
@@ -87,7 +83,7 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
           ], // Only numbers can be entered
         ),
         TextField(
-          decoration: new InputDecoration(labelText: "Discount percentage"),
+          decoration: const InputDecoration(labelText: "Discount percentage"),
           keyboardType: TextInputType.number,
           controller: _percentageBController,
           inputFormatters: <TextInputFormatter>[
@@ -95,7 +91,7 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
           ], // Only numbers can be entered
         ),
         TextField(
-          decoration: new InputDecoration(labelText: "Valid for (days)"),
+          decoration: const InputDecoration(labelText: "Valid for (days)"),
           keyboardType: TextInputType.number,
           controller: _expireInBController,
           inputFormatters: <TextInputFormatter>[
@@ -103,7 +99,7 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
           ], // Only numbers can be entered
         ),
         TextField(
-          decoration: new InputDecoration(labelText: "Range (days)"),
+          decoration: const InputDecoration(labelText: "Range (days)"),
           keyboardType: TextInputType.number,
           controller: _rangeDaysFController,
           inputFormatters: <TextInputFormatter>[
@@ -138,7 +134,7 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
           ),
           onChanged: (Festival? selectedBrewery) {
             setState(() {
-              this.selectedFestival = selectedFestival!;
+              selectedFestival = selectedFestival;
             });
           },
         ),
@@ -174,7 +170,7 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
     return Column(
       children: [
         TextField(
-          decoration: new InputDecoration(labelText: "Minimum beers"),
+          decoration: const InputDecoration(labelText: "Minimum beers"),
           keyboardType: TextInputType.number,
           controller: _minBeersFController,
           inputFormatters: <TextInputFormatter>[
@@ -182,7 +178,7 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
           ], // Only numbers can be entered
         ),
         TextField(
-          decoration: new InputDecoration(labelText: "Discount percentage"),
+          decoration: const InputDecoration(labelText: "Discount percentage"),
           keyboardType: TextInputType.number,
           controller: _percentageFController,
           inputFormatters: <TextInputFormatter>[
@@ -190,7 +186,7 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
           ], // Only numbers can be entered
         ),
         TextField(
-          decoration: new InputDecoration(labelText: "Valid for (days)"),
+          decoration: const InputDecoration(labelText: "Valid for (days)"),
           keyboardType: TextInputType.number,
           controller: _expireInFController,
           inputFormatters: <TextInputFormatter>[
@@ -198,7 +194,7 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
           ], // Only numbers can be entered
         ),
         TextField(
-          decoration: new InputDecoration(labelText: "Range (days)"),
+          decoration: const InputDecoration(labelText: "Range (days)"),
           keyboardType: TextInputType.number,
           controller: _rangeDaysBController,
           inputFormatters: <TextInputFormatter>[
@@ -269,7 +265,7 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
     return Column(
       children: [
         TextField(
-          decoration: new InputDecoration(labelText: "Minimum beers"),
+          decoration: const InputDecoration(labelText: "Minimum beers"),
           keyboardType: TextInputType.number,
           controller: _minBeersAController,
           inputFormatters: <TextInputFormatter>[
@@ -277,7 +273,7 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
           ], // Only numbers can be entered
         ),
         TextField(
-          decoration: new InputDecoration(labelText: "Discount percentage"),
+          decoration: const InputDecoration(labelText: "Discount percentage"),
           keyboardType: TextInputType.number,
           controller: _percentageAController,
           inputFormatters: <TextInputFormatter>[
@@ -285,7 +281,7 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
           ], // Only numbers can be entered
         ),
         TextField(
-          decoration: new InputDecoration(labelText: "Valid for (days)"),
+          decoration: const InputDecoration(labelText: "Valid for (days)"),
           keyboardType: TextInputType.number,
           controller: _expireInAController,
           inputFormatters: <TextInputFormatter>[
@@ -293,7 +289,7 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
           ], // Only numbers can be entered
         ),
         TextField(
-          decoration: new InputDecoration(labelText: "Range (days)"),
+          decoration: const InputDecoration(labelText: "Range (days)"),
           keyboardType: TextInputType.number,
           controller: _rangeDaysAController,
           inputFormatters: <TextInputFormatter>[

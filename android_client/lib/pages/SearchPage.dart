@@ -4,7 +4,6 @@ import 'package:BrewBuddy/widgets/BeerCard.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 
-import 'BeerPage.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
