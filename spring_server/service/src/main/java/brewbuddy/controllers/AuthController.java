@@ -4,6 +4,7 @@ import brewbuddy.dtos.TokenDTO;
 import brewbuddy.dtos.LoginDTO;
 import brewbuddy.dtos.RegisterDTO;
 import brewbuddy.models.Credential;
+import brewbuddy.models.Role;
 import brewbuddy.models.User;
 import brewbuddy.services.AuthenticationService;
 import brewbuddy.services.JwtService;
@@ -14,6 +15,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -63,5 +66,17 @@ public class AuthController {
             return ResponseEntity.ok("Token is valid");
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token is invalid");
+    }
+
+    @GetMapping("/role")
+    public ResponseEntity<String> getRole() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<Role> roles = ((Credential) authentication.getPrincipal()).getRoles();
+
+        if (roles.stream()
+                .anyMatch(role -> role.getAuthority().toLowerCase().equals("role_admin"))){
+            return ResponseEntity.ok("admin");
+        }
+        return ResponseEntity.ok("user");
     }
 }

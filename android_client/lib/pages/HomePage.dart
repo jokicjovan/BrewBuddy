@@ -1,9 +1,13 @@
+import 'package:BrewBuddy/models/Beer.dart';
+import 'package:BrewBuddy/pages/CouponAdministratorPage.dart';
 import 'package:BrewBuddy/pages/CouponPage.dart';
 import 'package:BrewBuddy/pages/DashboardPage.dart';
 import 'package:BrewBuddy/pages/SearchPage.dart';
 import 'package:BrewBuddy/pages/PopularPage.dart';
 import 'package:BrewBuddy/widgets/dialogs/DrinkDialog.dart';
 import 'package:BrewBuddy/widgets/dialogs/RateDialog.dart';
+import 'package:BrewBuddy/services/AuthService.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,11 +20,23 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   final PageStorageBucket _bucket = PageStorageBucket();
+  String role="user";
+  AuthService authService= AuthService();
   late final TabController _tabController;
+
+  getRole() async{
+    final role=await authService.getRole();
+    if (mounted) {
+      setState(() {
+        this.role = role;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    getRole();
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() {
       setState(() {});
@@ -50,7 +66,7 @@ class HomePageState extends State<HomePage>
               builder: (context) => const PopularPage(),
             ),
             Builder(
-              builder: (context) => const CouponPage(),
+              builder: (context) => role=="user"?const CouponPage():const CouponAdministratorPage(),
             ),
           ],
         ),

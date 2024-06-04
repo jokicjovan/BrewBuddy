@@ -60,4 +60,15 @@ class AuthService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
   }
+
+  Future<String> getRole() async {
+    final response = await client.get(Uri.parse("$authServiceUrl/role"));
+
+    if (response.statusCode == 200) {
+      print(response.body);
+      return response.body;
+    } else {
+      throw Exception('Failed to load role');
+    }
+  }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:BrewBuddy/pages/LoginPage.dart';
 import 'package:BrewBuddy/pages/HomePage.dart';
 import 'package:BrewBuddy/services/AuthService.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 

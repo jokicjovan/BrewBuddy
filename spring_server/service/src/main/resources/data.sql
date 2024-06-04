@@ -15,8 +15,8 @@ INSERT INTO Users(id, name, surname, birth_date, is_account_non_expired, is_acco
 INSERT INTO Credentials(email, password, user_id, is_credentials_non_expired, is_enabled) VALUES ('vukasin@example.com', '$2a$12$uBftIaKM3BrgSaXFQNtDPeVHbyW6MuJNgVjLACB/hVElB6xKkyssS', 1, true, true);
 INSERT INTO Credentials(email, password, user_id, is_credentials_non_expired, is_enabled) VALUES ('jovan@example.com', '$2a$12$HgYP3ud5pL7OXkDMhT1tmeUdDZBBXC9ZcBxnG/rixVEG.jPd.OTfq', 2, true, true);
 
-INSERT INTO users_roles (credential_id, role_id) VALUES (1, 2);
-INSERT INTO users_roles (credential_id, role_id) VALUES (2, 1);
+INSERT INTO users_roles (credential_id, role_id) VALUES (1, 1);
+INSERT INTO users_roles (credential_id, role_id) VALUES (2, 2);
 
 -- Breweries
 INSERT INTO Breweries(id, name, city_id, image_name) VALUES (1, '3Bir', 1, '9efb59f7-e6e6-4818-9ca3-56afb7a693be');
