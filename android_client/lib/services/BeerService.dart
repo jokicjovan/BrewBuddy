@@ -5,7 +5,6 @@ import 'dart:convert';
 
 import 'package:BrewBuddy/interceptors/AuthInterceptor.dart';
 import 'package:BrewBuddy/models/Beer.dart';
-import 'package:BrewBuddy/models/Brewery.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
@@ -25,6 +24,27 @@ class BeerService{
       return jsonData.map((json) => Beer.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load beers');
+    }
+  }
+  Future<List<String>> getPopularBeerTypes () async {
+    final response = await client.get(Uri.parse("$beerServiceUrl/beerType/popular"));
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body) as List;
+      return jsonData.map((json) => json.toString()).toList();
+    } else {
+      throw Exception('Failed to load popular Beer Types');
+    }
+  }
+
+  Future<List<Beer>> getBeersByType (String type) async {
+    final response = await client.get(Uri.parse("$beerServiceUrl/type/$type"));
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body) as List;
+      return jsonData.map((json) => Beer.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load beers by type');
     }
   }
 }

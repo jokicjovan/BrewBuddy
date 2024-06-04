@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:BrewBuddy/pages/BeerTypeListPage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -27,7 +28,7 @@ class PopularPageState extends State<PopularPage> {
   ImageService imageService=ImageService();
   List<Beer> beers = [];
   List<Brewery> breweries = [];
-  List<Festival> festivals = [];
+  List<String> beerTypes = [];
 
   Future<void> getBeers() async {
     final beers = await beerService.getPopularBeers();
@@ -35,7 +36,6 @@ class PopularPageState extends State<PopularPage> {
       final Uint8List img = await imageService.getBeerImage(beers[i].imageName);
       beers[i].image = img;
     }
-    ;
     setState(() {
       this.beers = beers;
     });
@@ -50,11 +50,18 @@ class PopularPageState extends State<PopularPage> {
       this.breweries = breweries;
     });
   }
+  Future<void> getBeerTypes() async {
+    final beerTypes = await beerService.getPopularBeerTypes();
+    setState(() {
+      this.beerTypes = beerTypes;
+    });
+  }
   @override
   void initState() {
     super.initState();
     getBeers();
     getBreweries();
+    getBeerTypes();
   }
 
   @override
@@ -185,7 +192,7 @@ class PopularPageState extends State<PopularPage> {
                 SizedBox(width: 30),
                 Expanded(
                     child: Text(
-                  "You should visit",
+                  "Beer Types",
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     color: Colors.white,
@@ -203,12 +210,12 @@ class PopularPageState extends State<PopularPage> {
               physics: const NeverScrollableScrollPhysics(),
               // Disables scrolling of this ListView
               itemBuilder: (context, index) {
-                return buildFestivalCard(index, context);
+                return buildBeerTypeCard(index, context);
               },
               separatorBuilder: (context, index) => const SizedBox(
                 height: 15,
               ),
-              itemCount: breweries.length,
+              itemCount: beerTypes.length,
               scrollDirection: Axis.vertical,
               padding: const EdgeInsets.only(left: 20, right: 20),
             ),
@@ -338,12 +345,12 @@ class PopularPageState extends State<PopularPage> {
         ));
   }
 
-  GestureDetector buildFestivalCard(int index, BuildContext context) {
+  GestureDetector buildBeerTypeCard(int index, BuildContext context) {
     return GestureDetector(
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => FestivalPage(
-                    festivalId: festivals[index].id,
+              builder: (context) => BeerTypeListPage(
+                    beerType: beerTypes[index],
                   )));
         },
         child: Container(
@@ -390,52 +397,17 @@ class PopularPageState extends State<PopularPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          festivals[index].name,
+                          beerTypes[index],
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             color: Theme.of(context).colorScheme.onSecondary,
                             fontSize: 22,
                           ),
                         ),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.location_on_rounded,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              festivals[index].city.name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
+
                       ],
                     )),
-                    Column(
-                      children: [
-                        Text(festivals[index].eventDate.day.toString(),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                              fontSize: 22,
-                            )),
-                        Text(
-                            DateFormat.MMM().format(festivals[index].eventDate),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                              fontSize: 18,
-                            )),
-                      ],
-                    )
+
                   ],
                 ),
               ),

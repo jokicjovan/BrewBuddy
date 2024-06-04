@@ -36,10 +36,12 @@ class DashboardPageState extends State<DashboardPage> {
       final Uint8List img = await imageService.getBeerImage(beers[i].imageName);
       beers[i].image = img;
     }
-    ;
-    setState(() {
-      this.beers = beers;
-    });
+
+    if (mounted) {
+      setState(() {
+        this.beers = beers;
+      });
+    }
   }
 
   Future<void> isDrunk() async {
@@ -55,9 +57,11 @@ class DashboardPageState extends State<DashboardPage> {
       final img = await imageService.getBreweryImage(breweries[i].imageName);
       breweries[i].image = img;
     }
-    setState(() {
-      this.breweries = breweries;
-    });
+    if (mounted) {
+      setState(() {
+        this.breweries = breweries;
+      });
+    }
   }
 
   Future<void> getFestivals() async {
@@ -65,6 +69,11 @@ class DashboardPageState extends State<DashboardPage> {
     setState(() {
       this.festivals = festivals;
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -116,7 +125,7 @@ class DashboardPageState extends State<DashboardPage> {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => ItemListPage(
                                 widgets: List.generate(beers.length,
-                                    (index) => BeerCard(beer:beers[index])),
+                                    (index) => BeerCard(beer: beers[index])),
                               )));
                     },
                     child: const Text(
@@ -177,10 +186,10 @@ class DashboardPageState extends State<DashboardPage> {
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => ItemListPage(
-                                widgets: List.generate(
-                                    breweries.length,
-                                    (index) =>
-                                        BreweryCard(brewery: breweries[index]),
+                                  widgets: List.generate(
+                                breweries.length,
+                                (index) =>
+                                    BreweryCard(brewery: breweries[index]),
                               ))));
                     },
                     child: const Text(
@@ -273,9 +282,6 @@ class DashboardPageState extends State<DashboardPage> {
       )),
     );
   }
-
-
-
 
   Container buildWarningCard(BuildContext context) {
     return Container(
