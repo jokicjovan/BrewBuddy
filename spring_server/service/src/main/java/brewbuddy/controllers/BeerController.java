@@ -42,6 +42,13 @@ public class BeerController {
         return beerService.getAll();
     }
 
+    @RequestMapping("/type/{tpe")
+    public List<BeerDTO> getByType(@PathVariable BeerType type){
+        return beerService.getByType(type).stream()
+                .map(BeerDTO::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     @RequestMapping("/{id}")
     public Beer getById(@PathVariable @NotNull @PositiveOrZero Integer id){
         return beerService.get(id);

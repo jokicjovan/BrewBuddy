@@ -1,6 +1,7 @@
 package brewbuddy.controllers;
 
 import brewbuddy.dtos.BreweryDTO;
+import brewbuddy.enums.BeerType;
 import brewbuddy.models.Brewery;
 import brewbuddy.services.interfaces.IBreweryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +30,12 @@ public class BreweryController {
                 .collect(Collectors.toList());
     }
 
+
     @RequestMapping("/{id}")
     public Brewery getById(@PathVariable Integer id){
         return breweryService.get(id);
     }
+
 
     @RequestMapping("/popular")
     public List<BreweryDTO> getPopular(){

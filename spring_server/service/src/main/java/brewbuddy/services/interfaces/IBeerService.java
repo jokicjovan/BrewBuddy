@@ -15,6 +15,8 @@ public interface IBeerService {
 
     List<Beer> getAll();
 
+    List<Beer> getByType(BeerType type);
+
     Beer insert(Beer beer);
 
     List<Beer> recommend(User user);

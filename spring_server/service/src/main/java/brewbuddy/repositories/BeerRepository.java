@@ -1,5 +1,6 @@
 package brewbuddy.repositories;
 
+import brewbuddy.enums.BeerType;
 import brewbuddy.models.Beer;
 import brewbuddy.models.Brewery;
 import org.springframework.data.domain.Page;
@@ -28,4 +29,6 @@ public interface BeerRepository extends JpaRepository<Beer,Integer> {
             "GROUP BY ubl.beer " +
             "ORDER BY COUNT(ubl.beer) DESC")
     Page<Beer> getMostPopularBeersByBrewery(@Param("brewery") Brewery brewery, Pageable pageable);
+
+    List<Beer> findBeerByType(BeerType type);
 }

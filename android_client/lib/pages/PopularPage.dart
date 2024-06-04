@@ -1,12 +1,18 @@
+import 'dart:typed_data';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import 'BeerPage.dart';
 import 'package:BrewBuddy/models/Beer.dart';
 import 'package:BrewBuddy/models/Brewery.dart';
 import 'package:BrewBuddy/models/Festival.dart';
 import 'package:BrewBuddy/pages/BreweryPage.dart';
 import 'package:BrewBuddy/pages/FestivalPage.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:BrewBuddy/pages/ItemListPage.dart';
+import 'package:BrewBuddy/services/BeerService.dart';
+import 'package:BrewBuddy/services/BreweryService.dart';
+import 'package:BrewBuddy/services/ImageService.dart';
 
-import 'BeerPage.dart';
 
 class PopularPage extends StatefulWidget {
   const PopularPage({super.key});
@@ -16,19 +22,43 @@ class PopularPage extends StatefulWidget {
 }
 
 class PopularPageState extends State<PopularPage> {
+  BeerService beerService=BeerService();
+  BreweryService breweryService=BreweryService();
+  ImageService imageService=ImageService();
   List<Beer> beers = [];
   List<Brewery> breweries = [];
   List<Festival> festivals = [];
 
-  void getData() {
-    beers = Beer.getBeers();
-    breweries = Brewery.getBreweries();
-    festivals = Festival.getFestivals();
+  Future<void> getBeers() async {
+    final beers = await beerService.getPopularBeers();
+    for (int i = 0; i < beers.length; i++) {
+      final Uint8List img = await imageService.getBeerImage(beers[i].imageName);
+      beers[i].image = img;
+    }
+    ;
+    setState(() {
+      this.beers = beers;
+    });
+  }
+  Future<void> getBreweries() async {
+    final breweries = await breweryService.getPopularBreweries();
+    for (int i = 0; i < breweries.length; i++) {
+      final img = await imageService.getBreweryImage(breweries[i].imageName);
+      breweries[i].image = img;
+    }
+    setState(() {
+      this.breweries = breweries;
+    });
+  }
+  @override
+  void initState() {
+    super.initState();
+    getBeers();
+    getBreweries();
   }
 
   @override
   Widget build(BuildContext context) {
-    getData();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -42,14 +72,14 @@ class PopularPageState extends State<PopularPage> {
       ),
       body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.only(bottom:64.0),
-            child: Column(
-                    children: [
-            const Row(
+        padding: const EdgeInsets.only(bottom: 64.0),
+        child: Column(
+          children: [
+             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                SizedBox(width: 30),
-                Expanded(
+                const SizedBox(width: 30),
+                const Expanded(
                     child: Text(
                   "Beers",
                   style: TextStyle(
@@ -58,14 +88,22 @@ class PopularPageState extends State<PopularPage> {
                     fontSize: 25,
                   ),
                 )),
-                Text(
-                  "See more...",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w200,
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ItemListPage(
+                            widgets: List.generate(beers.length,
+                                    (index) => buildBeerCard(index, context)),
+                          )));
+                    },
+                    child: const Text(
+                      "See more...",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w200,
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    )),
               ],
             ),
             const SizedBox(
@@ -80,7 +118,7 @@ class PopularPageState extends State<PopularPage> {
                 separatorBuilder: (context, index) => const SizedBox(
                   width: 25,
                 ),
-                itemCount: beers.length,
+                itemCount: beers.length < 10 ? beers.length : 10,
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.only(left: 20, right: 20),
               ),
@@ -88,11 +126,11 @@ class PopularPageState extends State<PopularPage> {
             const SizedBox(
               height: 20,
             ),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                SizedBox(width: 30),
-                Expanded(
+                const SizedBox(width: 30),
+                const Expanded(
                     child: Text(
                   "Breweries",
                   style: TextStyle(
@@ -101,14 +139,24 @@ class PopularPageState extends State<PopularPage> {
                     fontSize: 25,
                   ),
                 )),
-                Text(
-                  "See more...",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w200,
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ItemListPage(
+                              widgets: List.generate(
+                                breweries.length,
+                                    (index) =>
+                                    buildBreweryCard(index, context),
+                              ))));
+                    },
+                    child: const Text(
+                      "See more...",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w200,
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    )),
               ],
             ),
             const SizedBox(
@@ -123,7 +171,7 @@ class PopularPageState extends State<PopularPage> {
                 separatorBuilder: (context, index) => const SizedBox(
                   width: 25,
                 ),
-                itemCount: breweries.length,
+                itemCount: breweries.length > 10 ? 10 : breweries.length,
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.only(left: 20, right: 20),
               ),
@@ -164,118 +212,130 @@ class PopularPageState extends State<PopularPage> {
               scrollDirection: Axis.vertical,
               padding: const EdgeInsets.only(left: 20, right: 20),
             ),
-                    ],
-                  ),
-          )),
+          ],
+        ),
+      )),
     );
   }
 
   GestureDetector buildBeerCard(int index, BuildContext context) {
     return GestureDetector(
-        onTap: (){
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => BeerPage(beerId: beers[index].id,)));
-    },
-    child:Container(
-      width: 150,
-      decoration: BoxDecoration(
-        color: const Color.fromRGBO(151, 151, 151, 0.22),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Image.asset(
-            "lib/assets/beer.png",
-            width: 120,
-            height: 120,
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => BeerPage(
+                    beerId: beers[index].id,
+                  )));
+        },
+        child: Container(
+          width: 150,
+          decoration: BoxDecoration(
+            color: const Color.fromRGBO(151, 151, 151, 0.22),
+            borderRadius: BorderRadius.circular(20),
           ),
-          Text(
-            beers[index].name,
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              color: Theme.of(context).colorScheme.onSecondary,
-              fontSize: 22,
-            ),
-          ),
-          index < 3
-              ? Image.asset(
-                  index == 0
-                      ? "lib/assets/gold-medal.png"
-                      : index == 1
-                          ? "lib/assets/silver-medal.png"
-                          : "lib/assets/bronze-medal.png",
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
-                )
-              : SizedBox(
-                  height: 50,
-                  child: Text(
-                    "${index + 1}.",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                      fontSize: 25,
-                    ),
-                  ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              beers[index].image != null
+                  ? Image.memory(
+                beers[index].image ?? Uint8List(0),
+                height: 120,
+                width: 120,
+                fit: BoxFit.cover,
+              )
+                  : const Text("Missing Image"),
+              Text(
+                beers[index].name,
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  color: Theme.of(context).colorScheme.onSecondary,
+                  fontSize: 22,
                 ),
-        ],
-      ),
-    ));
+              ),
+              index < 3
+                  ? Image.asset(
+                      index == 0
+                          ? "lib/assets/gold-medal.png"
+                          : index == 1
+                              ? "lib/assets/silver-medal.png"
+                              : "lib/assets/bronze-medal.png",
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    )
+                  : SizedBox(
+                      height: 50,
+                      child: Text(
+                        "${index + 1}.",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                          fontSize: 25,
+                        ),
+                      ),
+                    ),
+            ],
+          ),
+        ));
   }
 
   GestureDetector buildBreweryCard(int index, BuildContext context) {
     return GestureDetector(
-        onTap: (){
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => BreweryPage(breweryId: breweries[index].id,)));
-    },
-    child:Container(
-      width: 150,
-      decoration: BoxDecoration(
-        color: const Color.fromRGBO(151, 151, 151, 0.22),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Image.asset(
-            "lib/assets/brewery.png",
-            width: 120,
-            height: 120,
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => BreweryPage(
+                    breweryId: breweries[index].id,
+                  )));
+        },
+        child: Container(
+          width: 150,
+          decoration: BoxDecoration(
+            color: const Color.fromRGBO(151, 151, 151, 0.22),
+            borderRadius: BorderRadius.circular(20),
           ),
-          Text(
-            breweries[index].name,
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              color: Theme.of(context).colorScheme.onSecondary,
-              fontSize: 22,
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              breweries[index].image != null
+                  ? Image.memory(
+                breweries[index].image ?? Uint8List(0),
+                height: 120,
+                width: 120,
+                fit: BoxFit.cover,
+              )
+                  : const Text("Missing Image"),
+              Text(
+                breweries[index].name,
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  color: Theme.of(context).colorScheme.onSecondary,
+                  fontSize: 22,
+                ),
+              ),
+              index < 3
+                  ? Image.asset(
+                      index == 0
+                          ? "lib/assets/gold-medal.png"
+                          : index == 1
+                              ? "lib/assets/silver-medal.png"
+                              : "lib/assets/bronze-medal.png",
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    )
+                  : SizedBox(
+                      height: 50,
+                      child: Text(
+                        "${index + 1}.",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                          fontSize: 25,
+                        ),
+                      ),
+                    )
+            ],
           ),
-          index < 3
-              ? Image.asset(
-                  index == 0
-                      ? "lib/assets/gold-medal.png"
-                      : index == 1
-                          ? "lib/assets/silver-medal.png"
-                          : "lib/assets/bronze-medal.png",
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
-                )
-              : SizedBox(
-                  height: 50,
-                  child: Text(
-                    "${index + 1}.",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                      fontSize: 25,
-                    ),
-                  ),
-                )
-        ],
-      ),
-    ));
+        ));
   }
 
   GestureDetector buildFestivalCard(int index, BuildContext context) {

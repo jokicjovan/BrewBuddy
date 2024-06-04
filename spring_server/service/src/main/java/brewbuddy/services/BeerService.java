@@ -55,6 +55,11 @@ public class BeerService implements IBeerService {
     }
 
     @Override
+    public List<Beer> getByType(BeerType type) {
+        return beerRepository.findBeerByType(type);
+    }
+
+    @Override
     public Beer insert(Beer beer) {
         return beerRepository.save(beer);
     }
