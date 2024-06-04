@@ -1,9 +1,7 @@
 package brewbuddy.configs;
 
 import brewbuddy.services.JwtService;
-import io.jsonwebtoken.ClaimJwtException;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

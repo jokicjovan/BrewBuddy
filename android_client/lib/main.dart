@@ -10,7 +10,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  final AuthService _authService = AuthService();
+  final AuthService authService = AuthService();
 
   MyApp({super.key});
 
@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
   }
 
   Future<Widget> _getInitialScreen() async {
-    if (await _authService.isTokenValid()) {
+    if (await authService.isTokenValid()) {
       return const HomePage();
     }
     return const LoginPage();
