@@ -40,8 +40,8 @@ public class FestivalController {
     }
 
     @RequestMapping("/{id}")
-    public Festival getById(@PathVariable Integer id){
-        return festivalService.get(id);
+    public FestivalDTO getById(@PathVariable Integer id){
+        return FestivalDTO.convertToExtraDetailedDTO(festivalService.get(id));
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)

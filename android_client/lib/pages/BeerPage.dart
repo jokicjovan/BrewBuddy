@@ -1,5 +1,12 @@
+import 'dart:typed_data';
+import 'dart:ui';
+
 import 'package:BrewBuddy/models/Beer.dart';
+import 'package:BrewBuddy/models/Brewery.dart';
+import 'package:BrewBuddy/models/City.dart';
 import 'package:BrewBuddy/pages/BreweryPage.dart';
+import 'package:BrewBuddy/services/BeerService.dart';
+import 'package:BrewBuddy/services/ImageService.dart';
 import 'package:BrewBuddy/widgets/BeerCard.dart';
 import 'package:flutter/material.dart';
 
@@ -13,24 +20,41 @@ class BeerPage extends StatefulWidget {
 }
 
 class BeerPageState extends State<BeerPage> {
+  BeerService beerService=BeerService();
+  ImageService imageService=ImageService();
   int beerId=-1;
+  Beer beer=Beer(id: -1, name:"", percentageOfAlcohol:0, ibu:0, price:0, type:"", imageName:"", brewery:Brewery(id: -1, name: '', imageName: '', city: City(id: -1, name: '', postalCode: '',),));
+  List<Beer> beers = [];
+  void getData() async {
+    final beer=await beerService.getBeer(beerId);
+    Uint8List img = await imageService.getBeerImage(beer.imageName);
+    beer.image = img;
+    img = await imageService.getBreweryImage(beer.brewery.imageName);
+    beer.brewery.image = img;
+
+    final beers =await beerService.filterBeers(type:beer.type??"",alcohol:beer.percentageOfAlcohol<4.5?"LOW":beer.percentageOfAlcohol>7.0?"HIGH":""??"",breweryId: beer.brewery.id.toString()??"");
+    for (int i = 0; i < beers.length; i++) {
+      final Uint8List img = await imageService.getBeerImage(beers[i].imageName);
+      beers[i].image = img;
+    }
+
+    setState(() {
+      this.beer=beer;
+      this.beers=beers;
+    });
+
+  }
+
+
   @override
   void initState() {
     super.initState();
     beerId=widget.beerId;
-  }
-  late Beer beer;
-  List<Beer> beers = [];
-
-
-  void getData() {
-    beer = Beer.getBeers()[0];
-    beers = Beer.getBeers();
+    getData();
   }
 
   @override
   Widget build(BuildContext context) {
-    getData();
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -43,13 +67,16 @@ class BeerPageState extends State<BeerPage> {
           centerTitle: true,
         ),
         body: SingleChildScrollView(
-            child: Column(
+            child: beer.id!=-1?Column(
 
           children: [
-            Image.asset(
-              "lib/assets/beer.png",
+            beer.image != null
+                ? Image.memory(
+              beer.image ?? Uint8List(0),
               height: 250,
-                fit:BoxFit.fill),
+              fit: BoxFit.cover,
+            )
+                : const Text("Missing Image"),
 
             const SizedBox(height: 25,),
             Text(
@@ -189,7 +216,13 @@ class BeerPageState extends State<BeerPage> {
               ),
             ),
           ],
-        )));
+        )
+        : SizedBox(
+              height: MediaQuery.of(context).size.height / 1.3,
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            )));
   }
 
 }

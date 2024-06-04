@@ -32,8 +32,8 @@ public class BreweryController {
 
 
     @RequestMapping("/{id}")
-    public Brewery getById(@PathVariable Integer id){
-        return breweryService.get(id);
+    public BreweryDTO getById(@PathVariable Integer id){
+        return BreweryDTO.convertToDetailedDTO(breweryService.get(id));
     }
 
 

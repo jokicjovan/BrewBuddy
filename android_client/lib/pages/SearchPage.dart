@@ -1,5 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:BrewBuddy/models/Beer.dart';
 import 'package:BrewBuddy/models/Brewery.dart';
+import 'package:BrewBuddy/services/BeerService.dart';
+import 'package:BrewBuddy/services/BreweryService.dart';
+import 'package:BrewBuddy/services/ImageService.dart';
 import 'package:BrewBuddy/widgets/BeerCard.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
@@ -13,14 +18,19 @@ class SearchPage extends StatefulWidget {
 }
 
 class SearchPageState extends State<SearchPage> {
+  BeerService beerService=BeerService();
+  BreweryService breweryService=BreweryService();
+  ImageService imageService=ImageService();
+
   List<Beer> beers = [];
   List<Brewery> breweries = [];
   List<String> types = [];
   List<String> alcoholLevels = [];
 
+
   Brewery? selectedBrewery;
-  String? selectedType;
-  String? selectedLevel;
+  String? selectedType="";
+  String? selectedLevel="";
 
   List<Beer> filteredBeers = [];
   String query = '';
@@ -33,13 +43,21 @@ class SearchPageState extends State<SearchPage> {
     fetchData();
   }
 
-  void fetchData() {
+  Future<void> fetchData() async {
+
+    final beers =await beerService.filterBeers(type:this.selectedType??"",alcohol:this.selectedLevel??"",breweryId: this.selectedBrewery?.id.toString()??"");
+    for (int i = 0; i < beers.length; i++) {
+      final Uint8List img = await imageService.getBeerImage(beers[i].imageName);
+      beers[i].image = img;
+    }
+    final breweries = await breweryService.getBreweries();
     setState(() {
-      beers = Beer.getBeers();
-      breweries = Brewery.getBreweries();
+      this.beers=beers;
+      this.breweries=breweries;
       types = ["ALE", "IPA", "PILSNER"];
-      alcoholLevels = ["LOW", "MEDIUM", "HIGH"];
-      filteredBeers = beers;
+      alcoholLevels = ["LOW", "HIGH"];
+
+      filteredBeers=beers;
     });
   }
 
@@ -130,6 +148,7 @@ class SearchPageState extends State<SearchPage> {
                             title: Text(brewery.name),
                           );
                         },
+
                       ),
                       asyncItems: (String filter) => Future.value(breweries)
                           .then((breweries) => breweries
@@ -144,6 +163,7 @@ class SearchPageState extends State<SearchPage> {
                       onChanged: (Brewery? selectedBrewery) {
                         setState(() {
                           this.selectedBrewery = selectedBrewery;
+                          fetchData();
                         });
                       },
                     ),
@@ -179,6 +199,7 @@ class SearchPageState extends State<SearchPage> {
                       onChanged: (String? selectedType) {
                         setState(() {
                           this.selectedType = selectedType;
+                          fetchData();
                         });
                       },
                     ),
@@ -187,7 +208,7 @@ class SearchPageState extends State<SearchPage> {
                     padding: const EdgeInsets.all(8.0),
                     child: DropdownSearch<String>(
                       clearButtonProps: const ClearButtonProps(isVisible: true),
-                      popupProps: PopupProps.menu(
+                      popupProps: PopupProps.dialog(
                         showSearchBox: true,
                         searchFieldProps: const TextFieldProps(
                           decoration: InputDecoration(
@@ -214,6 +235,7 @@ class SearchPageState extends State<SearchPage> {
                       onChanged: (String? selectedLevel) {
                         setState(() {
                           this.selectedLevel = selectedLevel;
+                          fetchData();
                         });
                       },
                     ),

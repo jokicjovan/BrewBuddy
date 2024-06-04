@@ -21,6 +21,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -51,18 +52,24 @@ public class BeerController {
                 .collect(Collectors.toList());
     }
 
-    @RequestMapping("/{id}")
-    public Beer getById(@PathVariable @NotNull @PositiveOrZero Integer id) {
-        return beerService.get(id);
+    public BeerDTO getById(@PathVariable @NotNull @PositiveOrZero Integer id){
+        return BeerDTO.convertToDTO( beerService.get(id));
     }
 
     @RequestMapping(path = "/filter", method = RequestMethod.GET)
-    public List<BeerDTO> filter(@RequestParam @NotNull @PositiveOrZero Integer breweryId,
-                                @RequestParam @NotNull @NotEmpty String beerType,
-                                @RequestParam @NotNull @NotEmpty String alcoholCategory) {
-        Brewery brewery = breweryService.get(breweryId);
-        BeerType type = BeerType.valueOf(beerType);
-        return beerService.filterBeers(type, brewery, alcoholCategory).stream()
+    public List<BeerDTO> filter(@RequestParam Optional<Integer> breweryId,
+                                @RequestParam Optional<String> beerType,
+                                @RequestParam Optional<String> alcoholCategory){
+        Brewery brewery=null;
+        BeerType type=null;
+        String category=null;
+        if (breweryId.isPresent())
+            brewery=breweryService.get(breweryId.get());
+        if (beerType.isPresent())
+            type= BeerType.valueOf(beerType.get());
+        if (alcoholCategory.isPresent())
+            category=alcoholCategory.get();
+        return beerService.filterBeers(type,brewery,category).stream()
                 .map(BeerDTO::convertToDTO)
                 .collect(Collectors.toList());
     }

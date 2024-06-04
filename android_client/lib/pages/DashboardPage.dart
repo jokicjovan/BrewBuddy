@@ -64,9 +64,11 @@ class DashboardPageState extends State<DashboardPage> {
 
   Future<void> getFestivals() async {
     final festivals = await userService.getFestivalRecommendation();
-    setState(() {
-      this.festivals = festivals;
-    });
+    if (mounted) {
+      setState(() {
+        this.festivals = festivals;
+      });
+    }
   }
 
   @override
@@ -80,6 +82,7 @@ class DashboardPageState extends State<DashboardPage> {
     getBreweries();
     getBeers();
     isDrunk();
+    getFestivals();
   }
 
   @override

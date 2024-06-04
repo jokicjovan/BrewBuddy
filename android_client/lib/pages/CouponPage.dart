@@ -120,13 +120,16 @@ class CouponPageState extends State<CouponPage> {
                       gapLength: 5.0,
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        "${coupon.discountPercentage.round()}%",
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.primary,
+                      padding: const EdgeInsets.only(left:16.0,top: 16.0,bottom: 16.0),
+                      child: Container(
+                        width: 80,
+                        child: Text(
+                          "${coupon.discountPercentage.round()}%",
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         ),
                       ),
                     )

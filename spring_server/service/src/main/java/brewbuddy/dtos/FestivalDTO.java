@@ -28,6 +28,15 @@ public class FestivalDTO {
         return dto;
     }
 
+    public static FestivalDTO convertToExtraDetailedDTO(Festival festival) {
+        FestivalDTO dto = convertToSimpleDTO(festival);
+        dto.setBreweries(festival.getBreweries().stream()
+                .map(BreweryDTO::convertToDetailedDTO)
+                .collect(Collectors.toList()));
+        return dto;
+    }
+
+
     public static FestivalDTO convertToSimpleDTO(Festival festival) {
         FestivalDTO dto = new FestivalDTO();
         dto.setId(festival.getId());
