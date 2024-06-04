@@ -52,6 +52,7 @@ public class BeerController {
                 .collect(Collectors.toList());
     }
 
+    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
     public BeerDTO getById(@PathVariable @NotNull @PositiveOrZero Integer id){
         return BeerDTO.convertToDTO( beerService.get(id));
     }
@@ -86,7 +87,7 @@ public class BeerController {
     }
 
     @RequestMapping(path = "/log", method = RequestMethod.POST)
-    public UserBeerLoggerDTO filter(@RequestParam @NotNull @PositiveOrZero Integer beerId) {
+    public UserBeerLoggerDTO logBeer(@RequestParam @NotNull @PositiveOrZero Integer beerId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = ((Credential) authentication.getPrincipal()).getUser();
 
