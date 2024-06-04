@@ -12,8 +12,8 @@ INSERT INTO Users(id, name, surname, birth_date, is_account_non_expired, is_acco
 INSERT INTO Users(id, name, surname, birth_date, is_account_non_expired, is_account_non_locked) VALUES (2, 'Jovan', 'Jokic', '2001-3-9', true, true);
 
 -- Credentials
-INSERT INTO Credentials(email, password, user_id, is_credentials_non_expired, is_enabled) VALUES ('vukasin@example.com', '$2a$12$uBftIaKM3BrgSaXFQNtDPeVHbyW6MuJNgVjLACB/hVElB6xKkyssS', 1, true, true);
-INSERT INTO Credentials(email, password, user_id, is_credentials_non_expired, is_enabled) VALUES ('jovan@example.com', '$2a$12$HgYP3ud5pL7OXkDMhT1tmeUdDZBBXC9ZcBxnG/rixVEG.jPd.OTfq', 2, true, true);
+INSERT INTO Credentials(id, email, password, user_id, is_credentials_non_expired, is_enabled) VALUES (1, 'vukasin@example.com', '$2a$12$uBftIaKM3BrgSaXFQNtDPeVHbyW6MuJNgVjLACB/hVElB6xKkyssS', 1, true, true);
+INSERT INTO Credentials(id, email, password, user_id, is_credentials_non_expired, is_enabled) VALUES (2, 'jovan@example.com', '$2a$12$HgYP3ud5pL7OXkDMhT1tmeUdDZBBXC9ZcBxnG/rixVEG.jPd.OTfq', 2, true, true);
 
 INSERT INTO users_roles (credential_id, role_id) VALUES (1, 1);
 INSERT INTO users_roles (credential_id, role_id) VALUES (2, 2);

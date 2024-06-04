@@ -29,6 +29,7 @@ class AuthService {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', token);
+      return;
     }
     throw Exception('Exception while logging in: ${response.reasonPhrase}');
   }

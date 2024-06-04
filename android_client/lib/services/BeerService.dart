@@ -78,9 +78,8 @@ class BeerService {
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body) as List;
       return jsonData.map((json) => json.toString()).toList();
-    } else {
-      throw Exception('Failed to load popular Beer Types');
     }
+    throw Exception('Exception while loading popular beer types: ${response.reasonPhrase}');
   }
 
   Future<List<Beer>> getBeersByType(String type) async {
@@ -89,9 +88,8 @@ class BeerService {
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body) as List;
       return jsonData.map((json) => Beer.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load beers by type');
     }
+    throw Exception('Exception while loading beers by types: ${response.reasonPhrase}');
   }
 
   Future<List<Beer>> filterBeers ({String type="",String alcohol="",String breweryId=""}) async {
@@ -110,9 +108,8 @@ class BeerService {
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body) as List;
       return jsonData.map((json) => Beer.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load beers by type');
     }
+    throw Exception('Exception while loading beers with filter: ${response.reasonPhrase}');
   }
 
   Future<Beer> getBeer (int id) async {
@@ -121,8 +118,7 @@ class BeerService {
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
       return Beer.fromJson(jsonData);
-    } else {
-      throw Exception('Failed to load beer');
     }
+    throw Exception('Exception while loading beer: ${response.reasonPhrase}');
   }
 }
