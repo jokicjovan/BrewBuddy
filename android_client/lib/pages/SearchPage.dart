@@ -92,16 +92,6 @@ class SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.onPrimary,
-        title: const Text("BrewBuddy"),
-        titleTextStyle: TextStyle(
-          fontSize: 25,
-          fontWeight: FontWeight.w700,
-          color: Theme.of(context).colorScheme.onSecondary,
-        ),
-        centerTitle: true,
-      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

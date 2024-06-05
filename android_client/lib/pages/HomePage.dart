@@ -1,3 +1,4 @@
+import 'package:BrewBuddy/main.dart';
 import 'package:BrewBuddy/models/Beer.dart';
 import 'package:BrewBuddy/pages/CouponAdministratorPage.dart';
 import 'package:BrewBuddy/pages/CouponPage.dart';
@@ -11,17 +12,25 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   HomePageState createState() => HomePageState();
 }
 
-class HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
-  String role = "user";
+class HomePageState extends State<HomePage> {
   AuthService authService = AuthService();
+  String role = "user";
   int _currentIndex = 0;
+  bool isLogout = true;
+
+  final List<GlobalKey<NavigatorState>> _navigatorKeys = [
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+  ];
 
   getRole() async {
     final role = await authService.getRole();
@@ -41,40 +50,56 @@ class HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.onPrimary,
+        title: const Text("BrewBuddy"),
+        titleTextStyle: TextStyle(
+          fontSize: 25,
+          fontWeight: FontWeight.w700,
+          color: Theme.of(context).colorScheme.onSecondary,
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            _onBack();
+          },
+        ),
+      ),
       resizeToAvoidBottomInset: false,
       body: IndexedStack(
         index: _currentIndex,
-        children: [
+        children: <Widget>[
           Navigator(
-            onGenerateRoute: (settings) {
-              return MaterialPageRoute(
-                builder: (context) => const DashboardPage(
-                ),
-              );
-            },
+            key: _navigatorKeys[0],
+            onGenerateRoute: (route) => MaterialPageRoute(
+              settings: route,
+              builder: (context) => const DashboardPage(),
+            ),
           ),
           Navigator(
-            onGenerateRoute: (settings) {
-              return MaterialPageRoute(
-                builder: (context) => const SearchPage(
-                ),
-              );
-            },
+            key: _navigatorKeys[1],
+            onGenerateRoute: (route) => MaterialPageRoute(
+              settings: route,
+              builder: (context) => const SearchPage(),
+            ),
+          ),
+          Container(),
+          Navigator(
+            key: _navigatorKeys[3],
+            onGenerateRoute: (route) => MaterialPageRoute(
+              settings: route,
+              builder: (context) => const PopularPage(),
+            ),
           ),
           Navigator(
-            onGenerateRoute: (settings) {
-              return MaterialPageRoute(
-                builder: (context) => const PopularPage(
-                ),
-              );
-            },
-          ),
-          Navigator(
-            onGenerateRoute: (settings) {
-              return MaterialPageRoute(
-                builder: (context) => (role == "user" ? const CouponPage() : const CouponAdministratorPage()),
-              );
-            },
+            key: _navigatorKeys[4],
+            onGenerateRoute: (route) => MaterialPageRoute(
+              settings: route,
+              builder: (context) => (role == "user"
+                  ? const CouponPage()
+                  : const CouponAdministratorPage()),
+            ),
           ),
         ],
       ),
@@ -124,64 +149,109 @@ class HomePageState extends State<HomePage>
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        height: 80,
-        color: Colors.transparent,
-        notchMargin: 5,
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            buildNavItem(icon: Icons.home_rounded, label: "Home", index: 0),
-            buildNavItem(icon: Icons.search_rounded, label: "Search", index: 1),
-            const SizedBox(width: 50),
-            buildNavItem(
-                icon: Icons.local_fire_department_rounded,
-                label: "Popular",
-                index: 2),
-            buildNavItem(
-                icon: Icons.local_activity_rounded, label: "Coupon", index: 3),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildNavItem({
-    required IconData icon,
-    required String label,
-    required int index,
-  }) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _currentIndex = index;
-        });
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            color: _currentIndex == index
-                ? Theme.of(context).colorScheme.onSecondary
-                : Colors.white,
-            size: 35,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 2.0),
-            child: Text(
-              label,
-              style: TextStyle(
-                color: _currentIndex == index
-                    ? Theme.of(context).colorScheme.onSecondary
-                    : Colors.white,
-              ),
+      bottomNavigationBar: BottomNavigationBar(
+        selectedLabelStyle:
+            TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+        selectedItemColor: Theme.of(context).colorScheme.onSecondary,
+        unselectedLabelStyle: const TextStyle(color: Colors.white),
+        backgroundColor: Colors.transparent,
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _currentIndex,
+        onTap: _onTap,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home_rounded,
+              color: _currentIndex == 0
+                  ? Theme.of(context).colorScheme.onSecondary
+                  : Colors.white,
+              size: 35,
             ),
+            label: "Home",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.search_rounded,
+              color: _currentIndex == 1
+                  ? Theme.of(context).colorScheme.onSecondary
+                  : Colors.white,
+              size: 35,
+            ),
+            label: "Search",
+          ),
+          const BottomNavigationBarItem(
+            icon: SizedBox.shrink(), // Transparent item to fill space
+            label: "",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.local_fire_department_rounded,
+              color: _currentIndex == 3
+                  ? Theme.of(context).colorScheme.onSecondary
+                  : Colors.white,
+              size: 35,
+            ),
+            label: "Popular",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.local_activity_rounded,
+              color: _currentIndex == 4
+                  ? Theme.of(context).colorScheme.onSecondary
+                  : Colors.white,
+              size: 35,
+            ),
+            label: "Coupon",
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _onBack() async {
+    final navigator = _navigatorKeys[_currentIndex].currentState;
+    if (navigator == null) {
+      return;
+    }
+
+    if (navigator.canPop()) {
+      navigator.pop();
+    } else {
+      final shouldLogout = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Confirm Logout'),
+          content: const Text('Are you sure you want to logout?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Logout'),
+            ),
+          ],
+        ),
+      );
+
+      if (shouldLogout == true) {
+        authService.logout();
+        Navigator.of(context).pushNamed('/login');
+      }
+    }
+  }
+
+  void _onTap(int val) {
+    if (_currentIndex != val) {
+      setState(() {
+        _currentIndex = val;
+      });
+    } else {
+      final navigator = _navigatorKeys[_currentIndex].currentState;
+      if (navigator != null) {
+        navigator.popUntil((route) => route.isFirst);
+      }
+    }
   }
 }

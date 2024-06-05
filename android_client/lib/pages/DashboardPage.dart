@@ -100,16 +100,6 @@ class DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.onPrimary,
-        title: const Text("BrewBuddy"),
-        titleTextStyle: TextStyle(
-          fontSize: 25,
-          fontWeight: FontWeight.w700,
-          color: Theme.of(context).colorScheme.onSecondary,
-        ),
-        centerTitle: true,
-      ),
       body: SingleChildScrollView(
           child: Padding(
         padding: const EdgeInsets.only(bottom: 64.0),

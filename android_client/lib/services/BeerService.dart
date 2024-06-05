@@ -75,7 +75,6 @@ class BeerService {
           'rate': rate.toString(),
           'comment': comment,
         }));
-    print(response.statusCode);
     if (response.statusCode == 200) {
       return true;
     }
