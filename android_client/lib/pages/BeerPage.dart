@@ -37,11 +37,12 @@ class BeerPageState extends State<BeerPage> {
       final Uint8List img = await imageService.getBeerImage(beers[i].imageName);
       beers[i].image = img;
     }
-
-    setState(() {
-      this.beer=beer;
-      this.beers=beers;
-    });
+    if (mounted) {
+      setState(() {
+        this.beer = beer;
+        this.beers = beers;
+      });
+    }
 
   }
 

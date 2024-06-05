@@ -33,6 +33,17 @@ class BeerService {
         "Exception while loading popular beers: ${response.reasonPhrase}");
   }
 
+  Future<List<String>> getBeerTypes() async {
+    final response = await client.get(Uri.parse("$beerServiceUrl/beerTypes"));
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body) as List;
+      return jsonData.map((json) => json.toString()).toList();
+    }
+    throw Exception(
+        "Exception while loading popular beers: ${response.reasonPhrase}");
+  }
+
   Future<bool> logBeer(Beer beer) async {
     final response = await client
         .post(Uri.parse("$beerServiceUrl/log?beerId=${beer.id.toString()}"));

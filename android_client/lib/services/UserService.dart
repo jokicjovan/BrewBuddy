@@ -45,4 +45,15 @@ class UserService{
     }
     throw Exception("Exception while checking if user is drunk: ${response.reasonPhrase}");
   }
+
+  Future<List<String>> getPopularUsers() async {
+    final response = await client.get(Uri.parse("$userServiceUrl/popular"));
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body) as List;
+      return jsonData.map((json) => json.toString()).toList();
+    }
+    throw Exception(
+        "Exception while loading popular users: ${response.reasonPhrase}");
+  }
 }

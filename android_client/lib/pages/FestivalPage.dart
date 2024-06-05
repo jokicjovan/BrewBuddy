@@ -60,10 +60,12 @@ class FestivalPageState extends State<FestivalPage> {
         accumulatedBeers.add(newBeer);
       }
     }
-    setState(() {
-      this.festival = festival;
-      this.beers = accumulatedBeers;
-    });
+    if (mounted) {
+      setState(() {
+        this.festival = festival;
+        this.beers = accumulatedBeers;
+      });
+    }
   }
 
   @override

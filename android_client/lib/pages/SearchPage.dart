@@ -26,6 +26,7 @@ class SearchPageState extends State<SearchPage> {
   List<Brewery> breweries = [];
   List<String> types = [];
   List<String> alcoholLevels = [];
+  List<String> beerTypes = [];
 
 
   Brewery? selectedBrewery;
@@ -51,14 +52,17 @@ class SearchPageState extends State<SearchPage> {
       beers[i].image = img;
     }
     final breweries = await breweryService.getBreweries();
-    setState(() {
-      this.beers=beers;
-      this.breweries=breweries;
-      types = ["ALE", "IPA", "PILSNER"];
-      alcoholLevels = ["LOW", "HIGH"];
+    final beerTypes = await beerService.getBeerTypes();
+    if (mounted) {
+      setState(() {
+        this.beers = beers;
+        this.breweries = breweries;
+        types = beerTypes;
+        alcoholLevels = ["LOW", "HIGH"];
 
-      filteredBeers=beers;
-    });
+        filteredBeers = beers;
+      });
+    }
   }
 
   void updateSearchQuery(String newQuery) {

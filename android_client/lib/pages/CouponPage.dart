@@ -23,9 +23,11 @@ class CouponPageState extends State<CouponPage> {
 
   Future<void> fetchUserCoupons() async {
     final coupons = await couponService.getUserCoupons();
-    setState(() {
-      userCoupons = coupons;
-    });
+    if (mounted) {
+      setState(() {
+        userCoupons = coupons;
+      });
+    }
   }
 
   @override

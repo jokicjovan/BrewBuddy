@@ -12,6 +12,8 @@ public interface ICouponService {
     Coupon insert(Coupon coupon);
 
 
+    List<CouponCriteria> getCriterias();
+
     List<FestivalCoupon> createFestivalCoupon(Festival festival, CouponCriteria inputCriteria);
 
     List<BreweryCoupon> createBreweryCoupon(Brewery brewery, CouponCriteria inputCriteria);

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:BrewBuddy/interceptors/AuthInterceptor.dart';
 import 'package:BrewBuddy/models/Coupon.dart';
 import 'package:BrewBuddy/assets/constants.dart';
+import 'package:BrewBuddy/models/CouponCriterias.dart';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http/intercepted_client.dart';
 
@@ -82,5 +83,14 @@ class CouponService {
       return jsonData.map((json) => Coupon.fromJson(json)).toList();
     }
     throw Exception("Exception while getting user coupons: ${response.reasonPhrase}");
+  }
+
+  Future<CouponCriterias> getCouponCriterias() async {
+    final response = await client.get(Uri.parse('$baseUrl/coupon/criteria'));
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      return CouponCriterias.fromJson(jsonData);
+    }
+    throw Exception("Exception while getting coupon criterias: ${response.reasonPhrase}");
   }
 }

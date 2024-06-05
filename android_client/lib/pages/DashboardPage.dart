@@ -1,3 +1,5 @@
+import 'package:BrewBuddy/services/BeerService.dart';
+import 'package:BrewBuddy/services/FestivalService.dart';
 import 'package:BrewBuddy/widgets/BeerCard.dart';
 import 'package:BrewBuddy/widgets/BreweryCard.dart';
 import 'package:BrewBuddy/widgets/DrunkWarningCard.dart';
@@ -23,13 +25,18 @@ class DashboardPageState extends State<DashboardPage> {
   UserService userService = UserService();
   BreweryService breweryService = BreweryService();
   ImageService imageService = ImageService();
+  BeerService beerService = BeerService();
+  FestivalService festivalService = FestivalService();
   List<Beer> beers = [];
   List<Brewery> breweries = [];
   List<Festival> festivals = [];
   bool isUserDrunk = false;
 
   Future<void> getBeers() async {
-    final beers = await userService.getBeerRecommendation();
+    List<Beer> beers = await userService.getBeerRecommendation();
+    if (beers.isEmpty){
+      beers=await beerService.getPopularBeers();
+    }
     for (int i = 0; i < beers.length; i++) {
       final Uint8List img = await imageService.getBeerImage(beers[i].imageName);
       beers[i].image = img;
@@ -44,9 +51,11 @@ class DashboardPageState extends State<DashboardPage> {
 
   Future<void> isDrunk() async {
     final isDrunk = await userService.isUserDrunk();
-    setState(() {
-      isUserDrunk = isDrunk;
-    });
+    if (mounted) {
+      setState(() {
+        isUserDrunk = isDrunk;
+      });
+    }
   }
 
   Future<void> getBreweries() async {
@@ -63,7 +72,10 @@ class DashboardPageState extends State<DashboardPage> {
   }
 
   Future<void> getFestivals() async {
-    final festivals = await userService.getFestivalRecommendation();
+    List<Festival> festivals = await userService.getFestivalRecommendation();
+    if (festivals.isEmpty){
+      festivals=await festivalService.getFestivals();
+    }
     if (mounted) {
       setState(() {
         this.festivals = festivals;

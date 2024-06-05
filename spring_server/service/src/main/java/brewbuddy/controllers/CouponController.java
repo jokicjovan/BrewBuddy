@@ -1,6 +1,7 @@
 package brewbuddy.controllers;
 
 
+import brewbuddy.dtos.CouponCriteriasDTO;
 import brewbuddy.dtos.GenerateCouponDTO;
 import brewbuddy.enums.CouponType;
 import brewbuddy.models.*;
@@ -30,6 +31,16 @@ public class CouponController {
     @RequestMapping("/")
     public List<Coupon> getAll(){
         return couponService.getAll();
+    }
+
+    @RequestMapping("/criteria")
+    public CouponCriteriasDTO getCriterias(){
+        CouponCriteriasDTO criterias=new CouponCriteriasDTO();
+        List<CouponCriteria> listCriterias=couponService.getCriterias();
+        criterias.setFestivalCriteria(listCriterias.get(0));
+        criterias.setBreweryCriteria(listCriterias.get(1));
+        criterias.setAppCriteria(listCriterias.get(2));
+        return criterias;
     }
 
     @RequestMapping("/{id}")

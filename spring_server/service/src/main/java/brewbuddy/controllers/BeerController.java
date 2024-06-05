@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,6 +50,13 @@ public class BeerController {
     public List<BeerDTO> getByType(@PathVariable BeerType type){
         return beerService.getByType(type).stream()
                 .map(BeerDTO::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/beerTypes")
+    public List<String> getBeerTypes(){
+        return Arrays.stream(BeerType.values())
+                .map(Enum::name) // Convert each enum to its name
                 .collect(Collectors.toList());
     }
 

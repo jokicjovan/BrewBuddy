@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 import 'package:BrewBuddy/pages/BeerTypeListPage.dart';
+import 'package:BrewBuddy/services/AuthService.dart';
+import 'package:BrewBuddy/services/UserService.dart';
 import 'package:flutter/material.dart';
 
 import 'BeerPage.dart';
@@ -23,9 +25,22 @@ class PopularPageState extends State<PopularPage> {
   BeerService beerService=BeerService();
   BreweryService breweryService=BreweryService();
   ImageService imageService=ImageService();
+  AuthService authService=AuthService();
+  UserService userService=UserService();
   List<Beer> beers = [];
   List<Brewery> breweries = [];
   List<String> beerTypes = [];
+  List<String> users = [];
+  String role="user";
+
+  getRole() async {
+    final role = await authService.getRole();
+    if (mounted) {
+      setState(() {
+        this.role = role;
+      });
+    }
+  }
 
   Future<void> getBeers() async {
     final beers = await beerService.getPopularBeers();
@@ -33,9 +48,11 @@ class PopularPageState extends State<PopularPage> {
       final Uint8List img = await imageService.getBeerImage(beers[i].imageName);
       beers[i].image = img;
     }
-    setState(() {
-      this.beers = beers;
-    });
+    if(mounted) {
+      setState(() {
+        this.beers = beers;
+      });
+    }
   }
   Future<void> getBreweries() async {
     final breweries = await breweryService.getPopularBreweries();
@@ -43,15 +60,28 @@ class PopularPageState extends State<PopularPage> {
       final img = await imageService.getBreweryImage(breweries[i].imageName);
       breweries[i].image = img;
     }
-    setState(() {
-      this.breweries = breweries;
-    });
+    if (mounted) {
+      setState(() {
+        this.breweries = breweries;
+      });
+    }
   }
   Future<void> getBeerTypes() async {
     final beerTypes = await beerService.getPopularBeerTypes();
-    setState(() {
-      this.beerTypes = beerTypes;
-    });
+    if (mounted) {
+      setState(() {
+        this.beerTypes = beerTypes;
+      });
+    }
+  }
+
+  Future<void> getUsers() async {
+    final users = await userService.getPopularUsers();
+    if (mounted) {
+      setState(() {
+        this.users = users;
+      });
+    }
   }
   @override
   void initState() {
@@ -59,6 +89,8 @@ class PopularPageState extends State<PopularPage> {
     getBeers();
     getBreweries();
     getBeerTypes();
+    getRole();
+    getUsers();
   }
 
   @override
@@ -216,6 +248,47 @@ class PopularPageState extends State<PopularPage> {
               scrollDirection: Axis.vertical,
               padding: const EdgeInsets.only(left: 20, right: 20),
             ),
+
+            role=="admin"?Column(
+              children: [
+                const SizedBox(
+                  height: 30,
+                ),
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    SizedBox(width: 30),
+                    Expanded(
+                        child: Text(
+                          "Users",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                            fontSize: 25,
+                          ),
+                        )),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                ListView.separated(
+                  shrinkWrap: true,
+                  // Makes the ListView take only the necessary height
+                  physics: const NeverScrollableScrollPhysics(),
+                  // Disables scrolling of this ListView
+                  itemBuilder: (context, index) {
+                    return buildUserCard(index, context);
+                  },
+                  separatorBuilder: (context, index) => const SizedBox(
+                    height: 15,
+                  ),
+                  itemCount: users.length,
+                  scrollDirection: Axis.vertical,
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                ),
+              ],
+            ):Container(),
           ],
         ),
       )),
@@ -411,5 +484,69 @@ class PopularPageState extends State<PopularPage> {
             ],
           ),
         ));
+  }
+
+  Container buildUserCard(int index, BuildContext context) {
+    return Container(
+          width: 150,
+          decoration: BoxDecoration(
+            color: const Color.fromRGBO(151, 151, 151, 0.22),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+                child: Row(
+                  children: [
+                    index < 3
+                        ? Image.asset(
+                      index == 0
+                          ? "lib/assets/gold-medal.png"
+                          : index == 1
+                          ? "lib/assets/silver-medal.png"
+                          : "lib/assets/bronze-medal.png",
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    )
+                        : SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: Center(
+                        child: Text(
+                          "${index + 1}.",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                            fontSize: 25,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              users[index],
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: Theme.of(context).colorScheme.onSecondary,
+                                fontSize: 22,
+                              ),
+                            ),
+
+                          ],
+                        )),
+
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
   }
 }

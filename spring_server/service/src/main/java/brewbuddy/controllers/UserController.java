@@ -50,8 +50,11 @@ public class UserController {
 	}
 
 	@RequestMapping("/popular")
-	public List<User> getMostPopularUsers(){
-		return userService.mostPopularUsers();
+	public List<String> getMostPopularUsers() {
+		List<User> users = userService.mostPopularUsers();
+		return users.stream()
+				.map(user -> user.getName() + " " + user.getSurname())
+				.collect(Collectors.toList());
 	}
 
 	@RequestMapping("/isDrunk")

@@ -78,6 +78,18 @@ public class CouponService implements ICouponService {
 
 
     @Override
+    public List<CouponCriteria> getCriterias(){
+        CouponCriteria festivalCriteria = couponCriteriaRepository.findCouponCriteriaByType(CouponType.FESTIVAL);
+        CouponCriteria breweryCriteria = couponCriteriaRepository.findCouponCriteriaByType(CouponType.BREWERY);
+        CouponCriteria appCriteria = couponCriteriaRepository.findCouponCriteriaByType(CouponType.APPLICATION);
+        List<CouponCriteria> criterias=new ArrayList<>();
+        criterias.add(festivalCriteria);
+        criterias.add(breweryCriteria);
+        criterias.add(appCriteria);
+        return criterias;
+    }
+
+    @Override
     public List<FestivalCoupon> createFestivalCoupon(Festival festival, CouponCriteria inputCriteria) {
         InputStream template = CouponService.class.getResourceAsStream("/rules/template/festivalCoupons.drt");
         CouponCriteria criteria = couponCriteriaRepository.findCouponCriteriaByType(CouponType.FESTIVAL);
