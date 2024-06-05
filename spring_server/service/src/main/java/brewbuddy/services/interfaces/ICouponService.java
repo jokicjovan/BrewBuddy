@@ -11,11 +11,12 @@ public interface ICouponService {
 
     Coupon insert(Coupon coupon);
 
-    List<FestivalCoupon> createFestivalCoupon(Festival festival);
 
-    List<BreweryCoupon> createBreweryCoupon(Brewery brewery);
+    List<FestivalCoupon> createFestivalCoupon(Festival festival, CouponCriteria inputCriteria);
 
-    List<ApplicationCoupon> createAppCoupon();
+    List<BreweryCoupon> createBreweryCoupon(Brewery brewery, CouponCriteria inputCriteria);
+
+    List<ApplicationCoupon> createAppCoupon(CouponCriteria inputCriteria);
 
     List<Coupon> getUserCoupons(User user);
 }

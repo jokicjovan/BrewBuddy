@@ -73,7 +73,7 @@ salience 98
 no-loop
     when
         $user:User()
-        $drunkBeers: Number()>=@{minBeers} from accumulate(FestivalBeerLogger($user==user)
+        $drunkBeers: Number(intValue>=@{minBeers}) from accumulate(FestivalBeerLogger($user==user)
                                               over window: time(@{range}d),count(1))
     then
        UserBeersAccumulated accumulatedValues=new UserBeersAccumulated();

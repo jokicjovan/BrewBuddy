@@ -1,15 +1,14 @@
 package brewbuddy.controllers;
 
 
+import brewbuddy.dtos.GenerateCouponDTO;
+import brewbuddy.enums.CouponType;
 import brewbuddy.models.*;
 import brewbuddy.services.interfaces.IBreweryService;
 import brewbuddy.services.interfaces.ICouponService;
 import brewbuddy.services.interfaces.IFestivalService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,20 +37,40 @@ public class CouponController {
         return couponService.get(id);
     }
 
-    @RequestMapping(value = "/festival/{id}",method = RequestMethod.POST)
-    public List<FestivalCoupon> generateFestivalCoupons(@PathVariable Integer id){
-        Festival festival=festivalService.get(id);
-        return couponService.createFestivalCoupon(festival);
+    @RequestMapping(value = "/festival",method = RequestMethod.POST)
+    public List<FestivalCoupon> generateFestivalCoupons(@RequestBody GenerateCouponDTO dto){
+        Festival festival=festivalService.get(dto.getId());
+        CouponCriteria couponCriteria= new CouponCriteria();
+        couponCriteria.setMinBeers(dto.getMinBeers());
+        couponCriteria.setType(CouponType.FESTIVAL);
+        couponCriteria.setDaysRange(dto.getRange());
+        couponCriteria.setExpireIn(dto.getValidFor());
+        couponCriteria.setPercentage(dto.getPercentage());
+
+        return couponService.createFestivalCoupon(festival,couponCriteria);
     }
 
-    @RequestMapping(value = "/brewery/{id}",method = RequestMethod.POST)
-    public List<BreweryCoupon> generateBreweryCoupons(@PathVariable Integer id){
-        Brewery brewery=breweryService.get(id);
-        return couponService.createBreweryCoupon(brewery);
+    @RequestMapping(value = "/brewery",method = RequestMethod.POST)
+    public List<BreweryCoupon> generateBreweryCoupons(@RequestBody GenerateCouponDTO dto){
+        Brewery brewery=breweryService.get(dto.getId());
+        CouponCriteria couponCriteria= new CouponCriteria();
+        couponCriteria.setMinBeers(dto.getMinBeers());
+        couponCriteria.setType(CouponType.BREWERY);
+        couponCriteria.setDaysRange(dto.getRange());
+        couponCriteria.setExpireIn(dto.getValidFor());
+        couponCriteria.setPercentage(dto.getPercentage());
+        return couponService.createBreweryCoupon(brewery,couponCriteria);
     }
 
     @RequestMapping(value = "/application",method = RequestMethod.POST)
-    public List<ApplicationCoupon> generateAppCoupons(){
-        return couponService.createAppCoupon();
+    public List<ApplicationCoupon> generateAppCoupons(@RequestBody GenerateCouponDTO dto){
+        CouponCriteria couponCriteria= new CouponCriteria();
+        couponCriteria.setMinBeers(dto.getMinBeers());
+        couponCriteria.setType(CouponType.FESTIVAL);
+        couponCriteria.setDaysRange(dto.getRange());
+        couponCriteria.setExpireIn(dto.getValidFor());
+        couponCriteria.setPercentage(dto.getPercentage());
+
+        return couponService.createAppCoupon(couponCriteria);
     }
 }
