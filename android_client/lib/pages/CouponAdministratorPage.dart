@@ -1,3 +1,6 @@
+import 'package:BrewBuddy/services/BreweryService.dart';
+import 'package:BrewBuddy/services/CouponService.dart';
+import 'package:BrewBuddy/services/FestivalService.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +16,9 @@ class CouponAdministratorPage extends StatefulWidget {
 }
 
 class CouponAdministratorPageState extends State<CouponAdministratorPage> {
+  BreweryService breweryService = BreweryService();
+  FestivalService festivalService = FestivalService();
+  CouponService couponService = CouponService();
   final TextEditingController _minBeersBController = TextEditingController();
   final TextEditingController _percentageBController = TextEditingController();
   final TextEditingController _expireInBController = TextEditingController();
@@ -29,15 +35,93 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
   final TextEditingController _rangeDaysAController = TextEditingController();
   List<Brewery> breweries = [];
   List<Festival> festivals = [];
-  late Brewery selectedBrewery;
-  late Festival selectedFestival;
+  Brewery? selectedBrewery;
+  Festival? selectedFestival;
+
+  Future<void> fetchData() async {
+    final breweries = await breweryService.getBreweries();
+    final festivals = await festivalService.getFestivals();
+    setState(() {
+      this.breweries = breweries;
+      this.festivals = festivals;
+    });
+  }
+
+  Future<void> generateBreweryCoupons() async {
+    final isSuccess = await couponService.generateBreweryCoupon(
+        int.parse(_minBeersBController.text),
+        double.parse(_percentageBController.text),
+        int.parse(_expireInBController.text),
+        int.parse(_rangeDaysBController.text),
+        this.selectedBrewery!.id);
+    if (isSuccess) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Generated coupons successfully'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Something went wrong'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  Future<void> generateFestivalCoupons() async {
+    final isSuccess = await couponService.generateFestivalCoupon(
+        int.parse(_minBeersFController.text),
+        double.parse(_percentageFController.text),
+        int.parse(_expireInFController.text),
+        int.parse(_rangeDaysFController.text),
+        this.selectedFestival!.id);
+    if (isSuccess) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Generated coupons successfully'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Something went wrong'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  Future<void> generateAppCoupons() async {
+    final isSuccess = await couponService.generateAppCoupon(
+        int.parse(_minBeersAController.text),
+        double.parse(_percentageAController.text),
+        int.parse(_expireInAController.text),
+        int.parse(_rangeDaysAController.text));
+    if (isSuccess) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Generated coupons successfully'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Something went wrong'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    breweries = Brewery.getBreweries();
-    festivals = Festival.getFestivals();
-    //fetchUserCoupons();
+    fetchData();
   }
 
   @override
@@ -101,19 +185,19 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
         TextField(
           decoration: const InputDecoration(labelText: "Range (days)"),
           keyboardType: TextInputType.number,
-          controller: _rangeDaysFController,
+          controller: _rangeDaysBController,
           inputFormatters: <TextInputFormatter>[
             FilteringTextInputFormatter.digitsOnly
           ], // Only numbers can be entered
         ),
-        DropdownSearch<Festival>(
+        DropdownSearch<Brewery>(
           clearButtonProps: const ClearButtonProps(isVisible: true),
           popupProps: PopupProps.menu(
             showSearchBox: true,
             searchFieldProps: const TextFieldProps(
               decoration: InputDecoration(
-                labelText: 'Search for a festival',
-                hintText: 'Type the festival name',
+                labelText: 'Search for a brewery',
+                hintText: 'Type the brewery name',
               ),
             ),
             itemBuilder: (context, brewery, isSelected) {
@@ -122,19 +206,20 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
               );
             },
           ),
-          asyncItems: (String filter) => Future.value(festivals).then(
-              (festivals) => festivals
-                  .where((festival) => festival.name.contains(filter))
+          selectedItem: this.selectedBrewery,
+          asyncItems: (String filter) => Future.value(breweries).then(
+              (breweries) => breweries
+                  .where((brewery) => brewery.name.contains(filter))
                   .toList()),
-          itemAsString: (Festival f) => f.name,
+          itemAsString: (Brewery b) => b.name,
           dropdownDecoratorProps: const DropDownDecoratorProps(
             dropdownSearchDecoration: InputDecoration(
               labelText: "Select a brewery",
             ),
           ),
-          onChanged: (Festival? selectedBrewery) {
+          onChanged: (Brewery? selectedBrewery) {
             setState(() {
-              selectedFestival = selectedFestival;
+              this.selectedBrewery = selectedBrewery;
             });
           },
         ),
@@ -142,7 +227,9 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
           height: 20,
         ),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            generateBreweryCoupons();
+          },
           style: ElevatedButton.styleFrom(
             minimumSize: const Size(200, 50),
             backgroundColor: Theme.of(context).colorScheme.primary,
@@ -196,40 +283,41 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
         TextField(
           decoration: const InputDecoration(labelText: "Range (days)"),
           keyboardType: TextInputType.number,
-          controller: _rangeDaysBController,
+          controller: _rangeDaysFController,
           inputFormatters: <TextInputFormatter>[
             FilteringTextInputFormatter.digitsOnly
           ], // Only numbers can be entered
         ),
-        DropdownSearch<Brewery>(
+        DropdownSearch<Festival>(
           clearButtonProps: const ClearButtonProps(isVisible: true),
           popupProps: PopupProps.menu(
             showSearchBox: true,
             searchFieldProps: const TextFieldProps(
               decoration: InputDecoration(
-                labelText: 'Search for a brewery',
-                hintText: 'Type the brewery name',
+                labelText: 'Search for a festival',
+                hintText: 'Type the festival name',
               ),
             ),
-            itemBuilder: (context, brewery, isSelected) {
+            itemBuilder: (context, festival, isSelected) {
               return ListTile(
-                title: Text(brewery.name),
+                title: Text(festival.name),
               );
             },
           ),
-          asyncItems: (String filter) => Future.value(breweries).then(
-              (breweries) => breweries
-                  .where((brewery) => brewery.name.contains(filter))
+          selectedItem: this.selectedFestival,
+          asyncItems: (String filter) => Future.value(festivals).then(
+              (festivals) => festivals
+                  .where((festival) => festival.name.contains(filter))
                   .toList()),
-          itemAsString: (Brewery b) => b.name,
+          itemAsString: (Festival f) => f.name,
           dropdownDecoratorProps: const DropDownDecoratorProps(
             dropdownSearchDecoration: InputDecoration(
               labelText: "Select a festival",
             ),
           ),
-          onChanged: (Brewery? selectedBrewery) {
+          onChanged: (Festival? selectedFestival) {
             setState(() {
-              this.selectedBrewery = selectedBrewery!;
+              this.selectedFestival = selectedFestival;
             });
           },
         ),
@@ -237,7 +325,9 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
           height: 20,
         ),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            generateFestivalCoupons();
+          },
           style: ElevatedButton.styleFrom(
             minimumSize: const Size(200, 50),
             backgroundColor: Theme.of(context).colorScheme.primary,
@@ -300,7 +390,9 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
           height: 20,
         ),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            generateAppCoupons();
+          },
           style: ElevatedButton.styleFrom(
             minimumSize: const Size(200, 50),
             backgroundColor: Theme.of(context).colorScheme.primary,

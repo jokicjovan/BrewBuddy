@@ -28,4 +28,15 @@ class FestivalService{
       throw Exception('Failed to load festival');
     }
   }
+
+  Future<List<Festival>> getFestivals () async {
+    final response = await client.get(Uri.parse("$festivalServiceUrl/"));
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body) as List;
+      return jsonData.map((json) => Festival.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load festivals');
+    }
+  }
 }

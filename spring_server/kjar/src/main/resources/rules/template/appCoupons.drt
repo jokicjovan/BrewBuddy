@@ -53,7 +53,7 @@ salience 98
 no-loop
     when
         $user:User()
-        $drunkBeers: Number()>=@{minBeers} from accumulate(AppBeerLogger($user==user)
+        $drunkBeers: Number(intValue>=@{minBeers}) from accumulate(AppBeerLogger($user==user)
                                               over window: time(@{range}d),count(1))
     then
        UserBeersAccumulated accumulatedValues=new UserBeersAccumulated();
@@ -66,7 +66,6 @@ rule "Sort By Drunken Beers"
 salience 97
 no-loop
     when
-        $brewery:Brewery()
         $usersBeers:List( size > 0 ) from collect( UserBeersAccumulated() )
     then
         Collections.sort($usersBeers, new Comparator<UserBeersAccumulated>() {

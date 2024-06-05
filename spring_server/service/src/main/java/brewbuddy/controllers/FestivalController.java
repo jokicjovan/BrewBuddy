@@ -1,5 +1,6 @@
 package brewbuddy.controllers;
 
+import brewbuddy.dtos.BeerDTO;
 import brewbuddy.dtos.CreateFestivalDTO;
 import brewbuddy.dtos.FestivalDTO;
 import brewbuddy.models.Brewery;
@@ -35,8 +36,10 @@ public class FestivalController {
     }
 
     @RequestMapping("/")
-    public List<Festival> getAll(){
-        return festivalService.getAll();
+    public List<FestivalDTO> getAll(){
+        return festivalService.getAll().stream()
+                .map(FestivalDTO::convertToSimpleDTO)
+                .collect(Collectors.toList());
     }
 
     @RequestMapping("/{id}")

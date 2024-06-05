@@ -1,5 +1,6 @@
 package brewbuddy.services;
 
+import brewbuddy.events.UserBeerLogger;
 import brewbuddy.exceptions.NotFoundException;
 import brewbuddy.models.*;
 import brewbuddy.enums.CouponType;
@@ -41,13 +42,13 @@ public class CouponService implements ICouponService {
 
 
     @Autowired
-    public CouponService(KieContainer kieContainer,CouponCriteriaRepository couponCriteriaRepository, CouponRepository couponRepository, IUserService userService, UserBeerLoggerRepository userBeerLoggerRepository, IBeerService beerService) {
+    public CouponService(KieContainer kieContainer, CouponCriteriaRepository couponCriteriaRepository, CouponRepository couponRepository, IUserService userService, UserBeerLoggerRepository userBeerLoggerRepository, IBeerService beerService) {
         this.couponRepository = couponRepository;
         this.kieContainer = kieContainer;
         this.userService = userService;
         this.userBeerLoggerRepository = userBeerLoggerRepository;
         this.beerService = beerService;
-        this.couponCriteriaRepository=couponCriteriaRepository;
+        this.couponCriteriaRepository = couponCriteriaRepository;
     }
 
     @Override
@@ -77,11 +78,14 @@ public class CouponService implements ICouponService {
 
 
     @Override
-    public List<FestivalCoupon> createFestivalCoupon(Festival festival) {
+    public List<FestivalCoupon> createFestivalCoupon(Festival festival, CouponCriteria inputCriteria) {
         InputStream template = CouponService.class.getResourceAsStream("/rules/template/festivalCoupons.drt");
-        CouponCriteria criteria= couponCriteriaRepository.findCouponCriteriaByType(CouponType.FESTIVAL);
+        CouponCriteria criteria = couponCriteriaRepository.findCouponCriteriaByType(CouponType.FESTIVAL);
+        inputCriteria.setId(criteria.getId());
+        criteria = couponCriteriaRepository.save(inputCriteria);
+
         DataProvider dataProvider = new ArrayDataProvider(new String[][]{
-                new String[]{criteria.getMinBeers().toString(),criteria.getPercentage().toString(),criteria.getExpireIn().toString(),criteria.getDaysRange().toString()}
+                new String[]{criteria.getMinBeers().toString(), criteria.getPercentage().toString(), criteria.getExpireIn().toString(), criteria.getDaysRange().toString()}
         });
 
         DataProviderCompiler converter = new DataProviderCompiler();
@@ -94,9 +98,12 @@ public class CouponService implements ICouponService {
         ArrayList<FestivalCoupon> coupons = new ArrayList<>();
         ksession.setGlobal("coupons", coupons);
         ksession.insert(festival);
-        ksession.insert(userService.getAll());
-        ksession.insert(userService.getAll());
-        ksession.insert(userBeerLoggerRepository.findAll());
+        for (User u : userService.getAll()) {
+            ksession.insert(u);
+        }
+        for (UserBeerLogger logger : userBeerLoggerRepository.findAll()) {
+            ksession.insert(logger);
+        }
 
 
         int count = ksession.fireAllRules();
@@ -108,11 +115,13 @@ public class CouponService implements ICouponService {
     }
 
     @Override
-    public List<BreweryCoupon> createBreweryCoupon(Brewery brewery) {
+    public List<BreweryCoupon> createBreweryCoupon(Brewery brewery, CouponCriteria inputCriteria) {
         InputStream template = CouponService.class.getResourceAsStream("/rules/template/breweryCoupons.drt");
-        CouponCriteria criteria= couponCriteriaRepository.findCouponCriteriaByType(CouponType.BREWERY);
+        CouponCriteria criteria = couponCriteriaRepository.findCouponCriteriaByType(CouponType.BREWERY);
+        inputCriteria.setId(criteria.getId());
+        criteria = couponCriteriaRepository.save(inputCriteria);
         DataProvider dataProvider = new ArrayDataProvider(new String[][]{
-                new String[]{criteria.getMinBeers().toString(),criteria.getPercentage().toString(),criteria.getExpireIn().toString(),criteria.getDaysRange().toString()}
+                new String[]{criteria.getMinBeers().toString(), criteria.getPercentage().toString(), criteria.getExpireIn().toString(), criteria.getDaysRange().toString()}
         });
 
         DataProviderCompiler converter = new DataProviderCompiler();
@@ -124,10 +133,14 @@ public class CouponService implements ICouponService {
 
         ArrayList<BreweryCoupon> coupons = new ArrayList<>();
         ksession.setGlobal("coupons", coupons);
-
+        List<UserBeerLogger> loggers = userBeerLoggerRepository.findAll();
         ksession.insert(brewery);
-        ksession.insert(userService.getAll());
-        ksession.insert(userBeerLoggerRepository.findAll());
+        for (User u : userService.getAll()) {
+            ksession.insert(u);
+        }
+        for (UserBeerLogger logger : userBeerLoggerRepository.findAll()) {
+            ksession.insert(logger);
+        }
 
 
         int count = ksession.fireAllRules();
@@ -139,11 +152,13 @@ public class CouponService implements ICouponService {
     }
 
     @Override
-    public List<ApplicationCoupon> createAppCoupon() {
+    public List<ApplicationCoupon> createAppCoupon(CouponCriteria inputCriteria) {
         InputStream template = CouponService.class.getResourceAsStream("/rules/template/appCoupons.drt");
-        CouponCriteria criteria= couponCriteriaRepository.findCouponCriteriaByType(CouponType.APPLICATION);
+        CouponCriteria criteria = couponCriteriaRepository.findCouponCriteriaByType(CouponType.APPLICATION);
+        inputCriteria.setId(criteria.getId());
+        criteria = couponCriteriaRepository.save(inputCriteria);
         DataProvider dataProvider = new ArrayDataProvider(new String[][]{
-                new String[]{criteria.getMinBeers().toString(),criteria.getPercentage().toString(),criteria.getExpireIn().toString(),criteria.getDaysRange().toString()}
+                new String[]{criteria.getMinBeers().toString(), criteria.getPercentage().toString(), criteria.getExpireIn().toString(), criteria.getDaysRange().toString()}
         });
 
         DataProviderCompiler converter = new DataProviderCompiler();
@@ -156,10 +171,15 @@ public class CouponService implements ICouponService {
         ArrayList<ApplicationCoupon> coupons = new ArrayList<>();
         ksession.setGlobal("coupons", coupons);
 
-        ksession.insert(beerService.getAll());
-        ksession.insert(userService.getAll());
-        ksession.insert(userService.getAll());
-        ksession.insert(userBeerLoggerRepository.findAll());
+        for (Beer b : beerService.getAll()) {
+            ksession.insert(b);
+        }
+        for (User u : userService.getAll()) {
+            ksession.insert(u);
+        }
+        for (UserBeerLogger logger : userBeerLoggerRepository.findAll()) {
+            ksession.insert(logger);
+        }
 
 
         int count = ksession.fireAllRules();
@@ -187,6 +207,7 @@ public class CouponService implements ICouponService {
 
         return kieHelper.build(createStreamModeKieBaseConfiguration()).newKieSession();
     }
+
     private KieBaseConfiguration createStreamModeKieBaseConfiguration() {
         KieServices kieServices = KieServices.Factory.get();
         KieBaseConfiguration config = kieServices.newKieBaseConfiguration();

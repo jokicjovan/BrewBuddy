@@ -150,6 +150,7 @@ class SearchPageState extends State<SearchPage> {
                         },
 
                       ),
+                      selectedItem: this.selectedBrewery,
                       asyncItems: (String filter) => Future.value(breweries)
                           .then((breweries) => breweries
                               .where((brewery) => brewery.name.contains(filter))
@@ -186,6 +187,7 @@ class SearchPageState extends State<SearchPage> {
                           );
                         },
                       ),
+                      selectedItem: this.selectedType!=""?this.selectedType:null,
                       asyncItems: (String filter) => Future.value(types).then(
                           (types) => types
                               .where((type) => type.contains(filter))
@@ -221,7 +223,9 @@ class SearchPageState extends State<SearchPage> {
                             title: Text(item),
                           );
                         },
+
                       ),
+                      selectedItem: this.selectedLevel!=""?this.selectedLevel:null,
                       asyncItems: (String filter) => Future.value(alcoholLevels)
                           .then((levels) => levels
                               .where((level) => level.contains(filter))
