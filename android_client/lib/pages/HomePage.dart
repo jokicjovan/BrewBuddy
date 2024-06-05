@@ -11,7 +11,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   HomePageState createState() => HomePageState();
@@ -19,13 +19,12 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  final PageStorageBucket _bucket = PageStorageBucket();
-  String role="user";
-  AuthService authService= AuthService();
-  late final TabController _tabController;
+  String role = "user";
+  AuthService authService = AuthService();
+  int _currentIndex = 0;
 
-  getRole() async{
-    final role=await authService.getRole();
+  getRole() async {
+    final role = await authService.getRole();
     if (mounted) {
       setState(() {
         this.role = role;
@@ -37,39 +36,47 @@ class HomePageState extends State<HomePage>
   void initState() {
     super.initState();
     getRole();
-    _tabController = TabController(length: 4, vsync: this);
-    _tabController.addListener(() {
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: PageStorage(
-        bucket: _bucket,
-        child: TabBarView(
-          controller: _tabController,
-          children: [
-            const DashboardPage(),
-            Builder(
-              builder: (context) => const SearchPage(),
-            ),
-            Builder(
-              builder: (context) => const PopularPage(),
-            ),
-            Builder(
-              builder: (context) => role=="user"?const CouponPage():const CouponAdministratorPage(),
-            ),
-          ],
-        ),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: [
+          Navigator(
+            onGenerateRoute: (settings) {
+              return MaterialPageRoute(
+                builder: (context) => const DashboardPage(
+                ),
+              );
+            },
+          ),
+          Navigator(
+            onGenerateRoute: (settings) {
+              return MaterialPageRoute(
+                builder: (context) => const SearchPage(
+                ),
+              );
+            },
+          ),
+          Navigator(
+            onGenerateRoute: (settings) {
+              return MaterialPageRoute(
+                builder: (context) => const PopularPage(
+                ),
+              );
+            },
+          ),
+          Navigator(
+            onGenerateRoute: (settings) {
+              return MaterialPageRoute(
+                builder: (context) => (role == "user" ? const CouponPage() : const CouponAdministratorPage()),
+              );
+            },
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton.large(
         onPressed: () => showDialog<String>(
@@ -149,7 +156,7 @@ class HomePageState extends State<HomePage>
     return GestureDetector(
       onTap: () {
         setState(() {
-          _tabController.animateTo(index);
+          _currentIndex = index;
         });
       },
       child: Column(
@@ -157,7 +164,7 @@ class HomePageState extends State<HomePage>
         children: [
           Icon(
             icon,
-            color: _tabController.index == index
+            color: _currentIndex == index
                 ? Theme.of(context).colorScheme.onSecondary
                 : Colors.white,
             size: 35,
@@ -167,7 +174,7 @@ class HomePageState extends State<HomePage>
             child: Text(
               label,
               style: TextStyle(
-                color: _tabController.index == index
+                color: _currentIndex == index
                     ? Theme.of(context).colorScheme.onSecondary
                     : Colors.white,
               ),
