@@ -47,7 +47,7 @@ public class FestivalController {
         return FestivalDTO.convertToExtraDetailedDTO(festivalService.get(id));
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/", method = RequestMethod.POST)
     public FestivalDTO insert(@RequestBody CreateFestivalDTO festival){
         Festival newFestival=new Festival();
         newFestival.setName(festival.getName());

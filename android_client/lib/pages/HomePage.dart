@@ -1,5 +1,3 @@
-import 'package:BrewBuddy/main.dart';
-import 'package:BrewBuddy/models/Beer.dart';
 import 'package:BrewBuddy/pages/CouponAdministratorPage.dart';
 import 'package:BrewBuddy/pages/CouponPage.dart';
 import 'package:BrewBuddy/pages/DashboardPage.dart';
@@ -8,7 +6,6 @@ import 'package:BrewBuddy/pages/PopularPage.dart';
 import 'package:BrewBuddy/widgets/dialogs/DrinkDialog.dart';
 import 'package:BrewBuddy/widgets/dialogs/RateDialog.dart';
 import 'package:BrewBuddy/services/AuthService.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -24,6 +21,7 @@ class HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   bool isLogout = true;
 
+  final GlobalKey<DashboardPageState> _dashboardKey = GlobalKey<DashboardPageState>();
   final List<GlobalKey<NavigatorState>> _navigatorKeys = [
     GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
@@ -74,7 +72,7 @@ class HomePageState extends State<HomePage> {
             key: _navigatorKeys[0],
             onGenerateRoute: (route) => MaterialPageRoute(
               settings: route,
-              builder: (context) => const DashboardPage(),
+              builder: (context) => DashboardPage(key: _dashboardKey,),
             ),
           ),
           Navigator(
@@ -116,6 +114,7 @@ class HomePageState extends State<HomePage> {
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
+                _dashboardKey.currentState?.fetchData();
                 if (!isBeerRated) {
                   showDialog(
                     context: context,

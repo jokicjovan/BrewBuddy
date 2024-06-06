@@ -29,7 +29,6 @@ class UserService{
 
   Future<List<Festival>> getFestivalRecommendation() async {
     final response = await client.get(Uri.parse('$userServiceUrl/festival/recommend'));
-
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body) as List;
       return jsonData.map((json) => Festival.fromJson(json)).toList();
@@ -39,7 +38,6 @@ class UserService{
 
   Future<bool> isUserDrunk() async {
     final response = await client.get(Uri.parse('$userServiceUrl/isDrunk'));
-
     if (response.statusCode == 200) {
       return response.body=="true";
     }

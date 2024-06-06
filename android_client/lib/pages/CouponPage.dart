@@ -18,10 +18,10 @@ class CouponPageState extends State<CouponPage> {
   @override
   void initState() {
     super.initState();
-    fetchUserCoupons();
+    getUserCoupons();
   }
 
-  Future<void> fetchUserCoupons() async {
+  Future<void> getUserCoupons() async {
     final coupons = await couponService.getUserCoupons();
     if (mounted) {
       setState(() {

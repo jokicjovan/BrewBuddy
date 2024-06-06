@@ -83,18 +83,17 @@ class DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  Future<void> fetchData() async{
+    getBreweries();
+    getBeers();
+    getFestivals();
+    isDrunk();
   }
 
   @override
   void initState() {
     super.initState();
-    getBreweries();
-    getBeers();
-    isDrunk();
-    getFestivals();
+    fetchData();
   }
 
   @override

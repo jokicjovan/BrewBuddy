@@ -4,8 +4,8 @@ INSERT INTO Cities(id, name, postal_code) VALUES (2, 'Beograd', '11000');
 INSERT INTO Cities(id, name, postal_code) VALUES (3, 'Sremska Mitrovica', '22000');
 
 -- Roles
-INSERT INTO ROLES (id, name) VALUES(1, 'ROLE_USER');
-INSERT INTO ROLES (id, name) VALUES(2, 'ROLE_ADMIN');
+INSERT INTO Roles (id, name) VALUES(1, 'ROLE_USER');
+INSERT INTO Roles (id, name) VALUES(2, 'ROLE_ADMIN');
 
 -- Users
 INSERT INTO Users(id, name, surname, birth_date, is_account_non_expired, is_account_non_locked) VALUES (1, 'Vukasin', 'Bogdanovic', '2001-12-7', true, true);
@@ -55,3 +55,14 @@ INSERT INTO Users_Beers_Logger(id,user_id,beer_id,timestamp) VALUES ( 1,1,1,'202
 INSERT INTO Users_Beers_Logger(id,user_id,beer_id,timestamp) VALUES ( 2,1,2,'2024-06-02');
 INSERT INTO Users_Beers_Logger(id,user_id,beer_id,timestamp) VALUES ( 3,1,3,'2024-06-02');
 INSERT INTO Users_Beers_Logger(id,user_id,beer_id,timestamp) VALUES ( 4,1,4,'2024-06-02');
+
+
+ALTER TABLE Cities ALTER COLUMN id RESTART WITH (SELECT MAX(id) + 1 FROM Cities);
+ALTER TABLE Roles ALTER COLUMN id RESTART WITH (SELECT MAX(id) + 1 FROM ROLES);
+ALTER TABLE Users ALTER COLUMN id RESTART WITH (SELECT MAX(id) + 1 FROM Users);
+ALTER TABLE Credentials ALTER COLUMN id RESTART WITH (SELECT MAX(id) + 1 FROM Credentials);
+ALTER TABLE Breweries ALTER COLUMN id RESTART WITH (SELECT MAX(id) + 1 FROM Breweries);
+ALTER TABLE Festivals ALTER COLUMN id RESTART WITH (SELECT MAX(id) + 1 FROM Festivals);
+ALTER TABLE Coupons ALTER COLUMN id RESTART WITH (SELECT MAX(id) + 1 FROM Coupons);
+ALTER TABLE Ratings ALTER COLUMN id RESTART WITH (SELECT MAX(id) + 1 FROM Ratings);
+ALTER TABLE Users_Beers_Logger ALTER COLUMN id RESTART WITH (SELECT MAX(id) + 1 FROM Users_Beers_Logger);
