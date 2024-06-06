@@ -91,24 +91,6 @@ agenda-group "beerCep"
         }
 end
 
-
-rule "beer alarm"
-agenda-group "beerAlarm"
-    when
-        $user: User()
-        Number(intValue > 5) from accumulate (
-            $ubl: UserBeerLogger(user == $user)
-            over window: time(6h), count($ubl)
-        )
-    then
-        Alarm alarm = new Alarm();
-        alarm.setUser($user);
-        alarm.setTimestamp(new Date());
-        insert(alarm)
-end
-
-
-
 rule "recommend by high alcohol percentage in last 7d - accumulate"
 agenda-group "beerCep"
 salience 100
@@ -200,4 +182,20 @@ salience 99
         $beer:Beer(ibu<50.0)
     then
         recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);
+end
+
+
+rule "beer alarm"
+agenda-group "beerAlarm"
+    when
+        $user: User()
+        Number(intValue > 5) from accumulate (
+            $ubl: UserBeerLogger(user == $user)
+            over window: time(6h), count($ubl)
+        )
+    then
+        Alarm alarm = new Alarm();
+        alarm.setUser($user);
+        alarm.setTimestamp(new Date());
+        insert(alarm)
 end
