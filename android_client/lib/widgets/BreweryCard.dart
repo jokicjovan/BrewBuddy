@@ -37,7 +37,7 @@ class BreweryCard extends StatelessWidget {
                 brewery.image ?? Uint8List(0),
                 height: 120,
                 width: 120,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
               )
                   : const Text("Missing Image"),
               Column(

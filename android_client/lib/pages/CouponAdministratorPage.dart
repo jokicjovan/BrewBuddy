@@ -19,20 +19,20 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
   BreweryService breweryService = BreweryService();
   FestivalService festivalService = FestivalService();
   CouponService couponService = CouponService();
-  TextEditingController _minBeersBController = TextEditingController();
-  TextEditingController _percentageBController = TextEditingController();
-  TextEditingController _expireInBController = TextEditingController();
-  TextEditingController _rangeDaysBController = TextEditingController();
+  final TextEditingController _minBeersBController = TextEditingController();
+  final TextEditingController _percentageBController = TextEditingController();
+  final TextEditingController _expireInBController = TextEditingController();
+  final TextEditingController _rangeDaysBController = TextEditingController();
 
-  TextEditingController _minBeersFController = TextEditingController();
-  TextEditingController _percentageFController = TextEditingController();
-  TextEditingController _expireInFController = TextEditingController();
-  TextEditingController _rangeDaysFController = TextEditingController();
+  final TextEditingController _minBeersFController = TextEditingController();
+  final TextEditingController _percentageFController = TextEditingController();
+  final TextEditingController _expireInFController = TextEditingController();
+  final TextEditingController _rangeDaysFController = TextEditingController();
 
-  TextEditingController _minBeersAController = TextEditingController();
-  TextEditingController _percentageAController = TextEditingController();
-  TextEditingController _expireInAController = TextEditingController();
-  TextEditingController _rangeDaysAController = TextEditingController();
+  final TextEditingController _minBeersAController = TextEditingController();
+  final TextEditingController _percentageAController = TextEditingController();
+  final TextEditingController _expireInAController = TextEditingController();
+  final TextEditingController _rangeDaysAController = TextEditingController();
   List<Brewery> breweries = [];
   List<Festival> festivals = [];
   Brewery? selectedBrewery;
@@ -79,7 +79,7 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
         double.parse(_percentageBController.text),
         int.parse(_expireInBController.text),
         int.parse(_rangeDaysBController.text),
-        this.selectedBrewery!.id);
+        selectedBrewery!.id);
     if (isSuccess) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -103,7 +103,7 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
         double.parse(_percentageFController.text),
         int.parse(_expireInFController.text),
         int.parse(_rangeDaysFController.text),
-        this.selectedFestival!.id);
+        selectedFestival!.id);
     if (isSuccess) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -222,7 +222,7 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
               );
             },
           ),
-          selectedItem: this.selectedBrewery,
+          selectedItem: selectedBrewery,
           asyncItems: (String filter) => Future.value(breweries).then(
               (breweries) => breweries
                   .where((brewery) => brewery.name.contains(filter))
@@ -320,7 +320,7 @@ class CouponAdministratorPageState extends State<CouponAdministratorPage> {
               );
             },
           ),
-          selectedItem: this.selectedFestival,
+          selectedItem: selectedFestival,
           asyncItems: (String filter) => Future.value(festivals).then(
               (festivals) => festivals
                   .where((festival) => festival.name.contains(filter))

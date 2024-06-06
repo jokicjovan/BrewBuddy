@@ -48,7 +48,7 @@ class BreweryPageState extends State<BreweryPage> {
     if (mounted) {
       setState(() {
         this.brewery = brewery;
-        this.beers = brewery.beers!;
+        beers = brewery.beers!;
       });
     }
   }
