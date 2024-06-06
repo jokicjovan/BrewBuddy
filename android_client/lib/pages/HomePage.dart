@@ -6,6 +6,7 @@ import 'package:BrewBuddy/pages/PopularPage.dart';
 import 'package:BrewBuddy/widgets/dialogs/DrinkDialog.dart';
 import 'package:BrewBuddy/widgets/dialogs/RateDialog.dart';
 import 'package:BrewBuddy/services/AuthService.dart';
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -39,10 +40,27 @@ class HomePageState extends State<HomePage> {
     }
   }
 
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    final currentNavigator = _navigatorKeys[_currentIndex].currentState;
+    if (currentNavigator != null && currentNavigator.canPop()) {
+      currentNavigator.pop();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     getRole();
+    BackButtonInterceptor.add(myInterceptor);
+  }
+
+  @override
+  void dispose() {
+    BackButtonInterceptor.remove(myInterceptor);
+    super.dispose();
   }
 
   @override

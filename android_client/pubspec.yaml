@@ -36,6 +36,7 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   shared_preferences: ^2.0.6
   http_interceptor: ^1.0.1
+  back_button_interceptor: ^7.0.3
 
 
 
