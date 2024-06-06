@@ -117,6 +117,7 @@ public class BeerService implements IBeerService {
         for (Rating r : ratingRepository.findAll()) {
             kieSession.insert(r);
         }
+        List<Beer> asd=beerRepository.findAll();
         for (Beer b : beerRepository.findAll()) {
             kieSession.insert(b);
         }
