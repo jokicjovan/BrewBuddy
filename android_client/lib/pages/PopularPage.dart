@@ -307,7 +307,7 @@ class PopularPageState extends State<PopularPage> {
                 beers[index].image ?? Uint8List(0),
                 height: 120,
                 width: 120,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
               )
                   : const Text("Missing Image"),
               Text(
@@ -327,7 +327,7 @@ class PopularPageState extends State<PopularPage> {
                               : "lib/assets/bronze-medal.png",
                       width: 50,
                       height: 50,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                     )
                   : SizedBox(
                       height: 50,
@@ -367,7 +367,7 @@ class PopularPageState extends State<PopularPage> {
                 breweries[index].image ?? Uint8List(0),
                 height: 120,
                 width: 120,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
               )
                   : const Text("Missing Image"),
               Text(
@@ -387,7 +387,7 @@ class PopularPageState extends State<PopularPage> {
                               : "lib/assets/bronze-medal.png",
                       width: 50,
                       height: 50,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                     )
                   : SizedBox(
                       height: 50,
@@ -436,7 +436,7 @@ class PopularPageState extends State<PopularPage> {
                                     : "lib/assets/bronze-medal.png",
                             width: 50,
                             height: 50,
-                            fit: BoxFit.cover,
+                            fit: BoxFit.contain,
                           )
                         : SizedBox(
                             width: 50,
@@ -500,7 +500,7 @@ class PopularPageState extends State<PopularPage> {
                           : "lib/assets/bronze-medal.png",
                       width: 50,
                       height: 50,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                     )
                         : SizedBox(
                       width: 50,

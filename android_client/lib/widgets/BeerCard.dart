@@ -37,7 +37,7 @@ class BeerCard extends StatelessWidget {
                 beer.image ?? Uint8List(0),
                 height: 120,
                 width: 120,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
               )
                   : const Text("Missing Image"),
               Column(
@@ -46,7 +46,7 @@ class BeerCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Text(
-                        beer.type,
+                        beer.type.replaceAll('_', ' '),
                         style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           color: Colors.white,

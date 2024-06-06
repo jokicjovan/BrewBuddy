@@ -46,7 +46,7 @@ class SearchPageState extends State<SearchPage> {
 
   Future<void> fetchData() async {
 
-    final beers =await beerService.filterBeers(type:this.selectedType??"",alcohol:this.selectedLevel??"",breweryId: this.selectedBrewery?.id.toString()??"");
+    final beers =await beerService.filterBeers(type:selectedType??"",alcohol:selectedLevel??"",breweryId: selectedBrewery?.id.toString()??"");
     for (int i = 0; i < beers.length; i++) {
       final Uint8List img = await imageService.getBeerImage(beers[i].imageName);
       beers[i].image = img;
@@ -144,7 +144,7 @@ class SearchPageState extends State<SearchPage> {
                         },
 
                       ),
-                      selectedItem: this.selectedBrewery,
+                      selectedItem: selectedBrewery,
                       asyncItems: (String filter) => Future.value(breweries)
                           .then((breweries) => breweries
                               .where((brewery) => brewery.name.contains(filter))
@@ -181,7 +181,7 @@ class SearchPageState extends State<SearchPage> {
                           );
                         },
                       ),
-                      selectedItem: this.selectedType!=""?this.selectedType:null,
+                      selectedItem: selectedType!=""?selectedType:null,
                       asyncItems: (String filter) => Future.value(types).then(
                           (types) => types
                               .where((type) => type.contains(filter))
@@ -219,7 +219,7 @@ class SearchPageState extends State<SearchPage> {
                         },
 
                       ),
-                      selectedItem: this.selectedLevel!=""?this.selectedLevel:null,
+                      selectedItem: selectedLevel!=""?selectedLevel:null,
                       asyncItems: (String filter) => Future.value(alcoholLevels)
                           .then((levels) => levels
                               .where((level) => level.contains(filter))

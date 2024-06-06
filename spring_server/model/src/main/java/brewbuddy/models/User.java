@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class User{
     private Integer id;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Coupon> coupons;
+    private List<Coupon> coupons = new ArrayList<>();
 
     @Column(name = "is_account_non_expired",nullable = false)
     private boolean isAccountNonExpired = true;

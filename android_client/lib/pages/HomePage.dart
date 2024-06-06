@@ -89,6 +89,7 @@ class HomePageState extends State<HomePage> {
               settings: route,
               builder: (context) => const PopularPage(),
             ),
+
           ),
           Navigator(
             key: _navigatorKeys[4],

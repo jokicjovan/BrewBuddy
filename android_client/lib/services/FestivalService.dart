@@ -4,10 +4,8 @@
 import 'dart:convert';
 
 import 'package:BrewBuddy/interceptors/AuthInterceptor.dart';
-import 'package:BrewBuddy/models/Beer.dart';
 import 'package:BrewBuddy/models/Festival.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:http_interceptor/http/intercepted_client.dart';
 import '../assets/constants.dart';

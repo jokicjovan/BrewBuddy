@@ -113,7 +113,7 @@ class CouponPageState extends State<CouponPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left:16.0,top: 16.0,bottom: 16.0),
-                      child: Container(
+                      child: SizedBox(
                         width: 80,
                         child: Text(
                           "${coupon.discountPercentage.round()}%",

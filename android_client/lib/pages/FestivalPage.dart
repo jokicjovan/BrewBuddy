@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:BrewBuddy/models/Beer.dart';
-import 'package:BrewBuddy/models/Brewery.dart';
 import 'package:BrewBuddy/models/City.dart';
 import 'package:BrewBuddy/models/Festival.dart';
 import 'package:BrewBuddy/services/FestivalService.dart';
@@ -63,7 +62,7 @@ class FestivalPageState extends State<FestivalPage> {
     if (mounted) {
       setState(() {
         this.festival = festival;
-        this.beers = accumulatedBeers;
+        beers = accumulatedBeers;
       });
     }
   }

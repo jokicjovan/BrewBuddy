@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,5 +34,5 @@ public class Festival {
             name = "festivals_breweries",
             joinColumns = @JoinColumn(name = "festival_id"),
             inverseJoinColumns = @JoinColumn(name = "brewery_id"))
-    private List<Brewery> breweries;
+    private List<Brewery> breweries=new ArrayList<>();
 }

@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,10 +26,12 @@ public class Brewery {
     private City city;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "brewery", cascade = CascadeType.ALL)
-    private List<Beer> beers;
+    private List<Beer> beers=new ArrayList<>();
 
     @Column(name = "image_name")
     private String imageName;
+
+
 
     @Override
     public String toString() {

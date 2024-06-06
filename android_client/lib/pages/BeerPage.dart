@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:BrewBuddy/models/Beer.dart';
 import 'package:BrewBuddy/models/Brewery.dart';
@@ -119,11 +118,11 @@ class BeerPageState extends State<BeerPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        beer.type,
+                        beer.type.replaceAll('_', ' '),
                         style: const TextStyle(
                           fontWeight: FontWeight.w800,
                           color: Colors.white,
-                          fontSize: 30,
+                          fontSize: 26,
                         ),
                       ),
                       Row(
@@ -143,7 +142,7 @@ class BeerPageState extends State<BeerPage> {
                               style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 color: Colors.white,
-                                fontSize: 23,
+                                fontSize: 20,
                               )),
                           ],
                         ),
@@ -160,7 +159,7 @@ class BeerPageState extends State<BeerPage> {
                               style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 color: Colors.white,
-                                fontSize: 23,
+                                fontSize: 20,
                               ),),
                             ],
                           )
