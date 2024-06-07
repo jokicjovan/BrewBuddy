@@ -1,0 +1,11 @@
+<kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://jboss.org/kie/6.0.0/kmodule">
+    <kbase name="beerKbase" eventProcessingMode="stream" packages="rules.beer">
+        <ksession name="beerKsession" clockType="pseudo" type="stateful"/>
+    </kbase>
+    <kbase name="festivalKbase" eventProcessingMode="stream" packages="rules.festival">
+        <ksession name="festivalKsession" clockType="pseudo" type="stateful"/>
+    </kbase>
+    <kbase name="templateCouponKbase" eventProcessingMode="stream" packages="rules.templateCoupon">
+        <ksession name="templateCouponKsession" clockType="pseudo" type="stateful"/>
+    </kbase>
+</kmodule>

@@ -1,0 +1,81 @@
+package rules.beer;
+dialect  "mvel"
+
+import brewbuddy.models.Beer;
+import brewbuddy.models.Brewery;
+import brewbuddy.models.User;
+import brewbuddy.enums.BeerType;
+import brewbuddy.events.Rating;
+
+global java.util.HashMap<Beer, Integer> recommendationMap;
+
+declare HighRatedBeers
+    beer:Beer
+end
+
+
+rule "Insert High Rated Beers Wrapped"
+agenda-group "beerRecommendation"
+salience 100
+no-loop
+    when
+        $user: User()
+        $r: Rating(rate>=4,user==$user)
+    then
+        insert(new HighRatedBeers($r.getBeer()));
+end
+
+rule "Insert Types"
+agenda-group "beerRecommendation"
+salience 99
+no-loop
+    when
+        HighRatedBeers($beer:beer)
+    then
+        insert($beer.getType());
+end
+
+rule "Filter All Beers by Type"
+agenda-group "beerRecommendation"
+salience 98
+no-loop
+    when
+        $type: BeerType()
+        $beer: Beer(type==$type)
+    then
+         recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);
+end
+
+rule "Insert Breweries"
+agenda-group "beerRecommendation"
+salience 97
+no-loop
+    when
+        HighRatedBeers($beer:beer)
+    then
+        insert($beer.getBrewery());
+end
+
+rule "Filter All Beers by Brewery"
+agenda-group "beerRecommendation"
+salience 96
+no-loop
+    when
+        $brewery: Brewery()
+        $beer: Beer(brewery==$brewery)
+    then
+         recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);
+end
+
+rule "Filter All Beers by Alcohol Percentage"
+agenda-group "beerRecommendation"
+salience 95
+no-loop
+    when
+        $average: Number() from accumulate( HighRatedBeers( $alcohol:beer.getPercentageOfAlcohol() ),
+                                                 average( $alcohol ) )
+        $beer:Beer(percentageOfAlcohol>($average-1.5) && percentageOfAlcohol<($average+1.5))
+    then
+        recommendationMap.put($beer, recommendationMap.getOrDefault($beer, 0) + 1);
+end
+

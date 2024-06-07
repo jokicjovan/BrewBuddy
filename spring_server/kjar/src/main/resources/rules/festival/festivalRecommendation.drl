@@ -1,0 +1,22 @@
+package rules.festival;
+dialect  "mvel"
+
+import brewbuddy.models.StringWrapper;
+
+global java.util.HashMap<Integer, Integer> festivalsMap;
+
+
+query belongsTo(String x, String y,String wantedclass)
+    StringWrapper(x, y,wantedclass;)
+    or
+    (StringWrapper(z, y;) and belongsTo(x, z, wantedclass;))
+end
+
+
+rule "festivalRecommendation"
+agenda-group "festivalRecommendation"
+    when
+        belongsTo($festivalId,$x,"Festival";)
+    then
+        festivalsMap.put(Integer.parseInt($festivalId), ((Integer)festivalsMap.getOrDefault($festivalId, 0)) + 1);
+end

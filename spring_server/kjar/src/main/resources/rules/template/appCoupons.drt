@@ -1,0 +1,86 @@
+template header
+minBeers
+percentage
+expireIn
+range
+
+package rules.templateCoupon;
+import brewbuddy.models.Beer;
+import brewbuddy.models.Brewery;
+import brewbuddy.models.User;
+import brewbuddy.events.UserBeerLogger;
+import brewbuddy.models.ApplicationCoupon;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Comparator;
+import java.util.Collections
+import brewbuddy.enums.CouponType;
+import java.util.Date
+import java.time.LocalDate
+import java.time.ZoneId;
+
+declare AppBeerLogger
+    @role(event)
+    @timestamp(timestamp)
+    id : Integer
+    timestamp : Date
+    beer : Beer
+    user : User
+end
+
+declare UserBeersAccumulated
+    user:User
+    drunkBeers:Integer
+end
+
+global java.util.ArrayList<ApplicationCoupon> coupons;
+template "app-coupons"
+
+
+rule "Filter Logger By Beers"
+salience 99
+no-loop
+    when
+        $breweryBeer:Beer()
+        $userBeers:UserBeerLogger( beer==$breweryBeer)
+    then
+        insert(new AppBeerLogger($userBeers.getId(),$userBeers.getTimestamp(),$userBeers.getBeer(),$userBeers.getUser()));
+end
+
+
+rule "Accumulate Drunk Beers By Users"
+salience 98
+no-loop
+    when
+        $user:User()
+        $drunkBeers: Number(intValue>=@{minBeers}) from accumulate(AppBeerLogger($user==user)
+                                              over window: time(@{range}d),count(1))
+    then
+       UserBeersAccumulated accumulatedValues=new UserBeersAccumulated();
+       accumulatedValues.setUser($user);
+       accumulatedValues.setDrunkBeers($drunkBeers.intValue());
+       insert(accumulatedValues);
+end
+
+rule "Sort By Drunken Beers"
+salience 97
+no-loop
+    when
+        $usersBeers:List( size > 0 ) from collect( UserBeersAccumulated() )
+    then
+        Collections.sort($usersBeers, new Comparator<UserBeersAccumulated>() {
+                public int compare(UserBeersAccumulated p1, UserBeersAccumulated p2) {
+                    return Integer.compare(p1.getDrunkBeers(), p2.getDrunkBeers())*-1;
+                }
+        });
+        for( int i=0;i<$usersBeers.size();i++){
+            ApplicationCoupon coupon=new ApplicationCoupon();
+            coupon.setUser(((UserBeersAccumulated)$usersBeers.get(i)).getUser());
+            coupon.setType(CouponType.APPLICATION);
+            coupon.setValidUntil(Date.from(LocalDate.now().plusDays(@{expireIn}).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            coupon.setDiscountPercentage(@{percentage});
+            coupons.add(coupon);
+        }
+end
+
+end template

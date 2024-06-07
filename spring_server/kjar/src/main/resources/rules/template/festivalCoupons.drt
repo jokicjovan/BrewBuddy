@@ -1,0 +1,113 @@
+template header
+minBeers
+percentage
+expireIn
+range
+
+package rules.templateCoupon;
+import brewbuddy.models.Beer;
+import brewbuddy.models.Brewery;
+import brewbuddy.models.User;
+import brewbuddy.models.Festival;
+import brewbuddy.models.FestivalCoupon;
+import brewbuddy.enums.CouponType;
+import brewbuddy.events.UserBeerLogger;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Comparator;
+import java.util.Collections
+
+import brewbuddy.enums.CouponType;
+import java.util.Date
+import java.time.LocalDate
+import java.time.ZoneId;
+
+
+declare FestivalBeerLogger
+    @role(event)
+    @timestamp(timestamp)
+    id : Integer
+    timestamp : Date
+    beer : Beer
+    user : User
+end
+
+declare UserBeersAccumulated
+    user:User
+    drunkBeers:Integer
+end
+
+global java.util.ArrayList<FestivalCoupon> coupons;
+template "festival-coupons"
+
+rule "Filter Beers By Festival"
+salience 100
+no-loop
+    when
+        Festival($breweries: breweries)
+    then
+        ArrayList<Brewery> breweries=new ArrayList<Brewery>();
+        breweries.addAll($breweries);
+        for (Brewery brewery: breweries ){
+            for (Beer beer: brewery.getBeers()){
+                insert(beer);
+            }
+        }
+end
+
+
+rule "Filter Logger By Festival Beers"
+salience 99
+no-loop
+    when
+        $festivalBeer:Beer()
+        $userBeers:UserBeerLogger( beer==$festivalBeer)
+    then
+        insert(new FestivalBeerLogger($userBeers.getId(),$userBeers.getTimestamp(),$userBeers.getBeer(),$userBeers.getUser()));
+end
+
+
+rule "Accumulate DrunkAA Beers By Users"
+salience 98
+no-loop
+    when
+        $user:User()
+        $drunkBeers: Number(intValue>=@{minBeers}) from accumulate(FestivalBeerLogger($user==user)
+                                              over window: time(@{range}d),count(1))
+    then
+       UserBeersAccumulated accumulatedValues=new UserBeersAccumulated();
+       accumulatedValues.setUser($user);
+       accumulatedValues.setDrunkBeers($drunkBeers.intValue());
+       insert(accumulatedValues);
+end
+
+rule "Sort By Drunken Beers"
+salience 97
+no-loop
+    when
+        $festival:Festival()
+        $usersBeers:List( size > 0 ) from collect( UserBeersAccumulated() )
+    then
+        Collections.sort($usersBeers, new Comparator<UserBeersAccumulated>() {
+                public int compare(UserBeersAccumulated p1, UserBeersAccumulated p2) {
+                    return Integer.compare(p1.getDrunkBeers(), p2.getDrunkBeers())*-1;
+                }
+        });
+        for( int i=0;i<$usersBeers.size();i++){
+            FestivalCoupon coupon=new FestivalCoupon();
+                            coupon.setUser(((UserBeersAccumulated)$usersBeers.get(i)).getUser());
+                            coupon.setType(CouponType.FESTIVAL);
+                            coupon.setValidUntil(Date.from(LocalDate.now().plusDays(@{expireIn}).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                            coupon.setFestival($festival);
+            if (i<1){
+                coupon.setDiscountPercentage(@{percentage});
+            }
+            if (i>=1 && i<5){
+                coupon.setDiscountPercentage(@{percentage}/2);
+            }
+                coupons.add(coupon);
+        }
+end
+
+end template
